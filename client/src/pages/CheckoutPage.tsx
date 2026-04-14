@@ -37,6 +37,26 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
     setLoading(true);
     setError(null);
     try {
+      // ── Pre-redirect: capture lead for cart abandonment follow-up ──────────
+      // Fire-and-forget: non-fatal, never blocks the Stripe redirect.
+      fetch(`${PRO_API}/api/trpc/threeSixty.abandonedLead.capture`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          json: {
+            tier,
+            cadence,
+            customerName: `${form.firstName} ${form.lastName}`,
+            customerEmail: form.email,
+            customerPhone: form.phone,
+            serviceAddress: form.address,
+            serviceCity: form.city,
+            serviceState: form.state,
+            serviceZip: form.zip,
+          },
+        }),
+      }).catch(() => null); // swallow silently
+
       const res = await fetch(`${PRO_API}/api/trpc/threeSixty.checkout.createSession`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
