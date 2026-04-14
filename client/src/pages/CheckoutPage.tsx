@@ -41,12 +41,17 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
+          body: JSON.stringify({
           json: {
             tier,
             cadence,
             customerName: `${form.firstName} ${form.lastName}`,
             customerEmail: form.email,
+            customerPhone: form.phone,
+            serviceAddress: form.address,
+            serviceCity: form.city,
+            serviceState: form.state,
+            serviceZip: form.zip,
             origin: window.location.origin,
           },
         }),
