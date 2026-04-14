@@ -1,65 +1,85 @@
+/* ============================================================
+   HANDY PIONEERS DESIGN SYSTEM — 360° Method Funnel
+   Matches handypioneers.com visual language:
+   - Forest green dark sections + warm cream light sections
+   - Amber/golden CTA buttons, uppercase tracked overlines
+   - Playfair Display headings + Inter body
+   - Generous vertical rhythm, max-width 1200px
+   ============================================================ */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-navy: oklch(18% 0.06 255);
-  --color-navy-dark: oklch(12% 0.05 255);
-  --color-gold: oklch(68% 0.14 65);
-  --color-gold-light: oklch(82% 0.12 75);
-  --color-gold-dark: oklch(52% 0.13 60);
-  --color-cream: oklch(97% 0.01 80);
-  --color-slate: oklch(35% 0.03 255);
-  --font-display: "Playfair Display", serif;
-  --font-sans: "Inter", sans-serif;
+  /* HP Brand Colors */
+  --color-hp-green:        oklch(22% 0.07 155);   /* deep forest green #1a3a2a */
+  --color-hp-green-dark:   oklch(16% 0.06 155);   /* darker green for top bar */
+  --color-hp-green-mid:    oklch(30% 0.08 155);   /* mid green for hover states */
+  --color-hp-amber:        oklch(65% 0.15 72);    /* golden amber CTA #c8860a */
+  --color-hp-amber-dark:   oklch(55% 0.14 68);    /* darker amber for hover */
+  --color-hp-amber-light:  oklch(78% 0.13 78);    /* light amber for accents */
+  --color-hp-cream:        oklch(96% 0.015 80);   /* warm cream background */
+  --color-hp-cream-dark:   oklch(92% 0.02 78);    /* slightly darker cream for cards */
+  --color-hp-charcoal:     oklch(18% 0.03 60);    /* near-black body text */
+  --color-hp-gray:         oklch(50% 0.02 60);    /* muted body text */
+  --color-hp-border:       oklch(85% 0.02 80);    /* card borders */
+  --color-hp-white:        oklch(100% 0 0);
 
+  /* Typography */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans:    "Inter", system-ui, sans-serif;
+
+  /* Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
+
+  /* Semantic tokens */
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
 }
 
 :root {
-  --radius: 0.65rem;
-  --background: oklch(97% 0.01 80);
-  --foreground: oklch(18% 0.06 255);
-  --card: oklch(100% 0 0);
-  --card-foreground: oklch(18% 0.06 255);
-  --popover: oklch(100% 0 0);
-  --popover-foreground: oklch(18% 0.06 255);
-  --primary: oklch(18% 0.06 255);
-  --primary-foreground: oklch(97% 0.01 80);
-  --secondary: oklch(94% 0.01 80);
-  --secondary-foreground: oklch(18% 0.06 255);
-  --muted: oklch(94% 0.01 80);
-  --muted-foreground: oklch(50% 0.03 255);
-  --accent: oklch(68% 0.14 65);
-  --accent-foreground: oklch(18% 0.06 255);
-  --destructive: oklch(0.577 0.245 27.325);
+  --radius: 0.375rem;
+  --background:           oklch(96% 0.015 80);   /* warm cream */
+  --foreground:           oklch(18% 0.03 60);    /* charcoal */
+  --card:                 oklch(100% 0 0);
+  --card-foreground:      oklch(18% 0.03 60);
+  --popover:              oklch(100% 0 0);
+  --popover-foreground:   oklch(18% 0.03 60);
+  --primary:              oklch(22% 0.07 155);   /* forest green */
+  --primary-foreground:   oklch(100% 0 0);
+  --secondary:            oklch(92% 0.02 78);
+  --secondary-foreground: oklch(18% 0.03 60);
+  --muted:                oklch(92% 0.02 78);
+  --muted-foreground:     oklch(50% 0.02 60);
+  --accent:               oklch(65% 0.15 72);    /* amber */
+  --accent-foreground:    oklch(100% 0 0);
+  --destructive:          oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(88% 0.01 255);
-  --input: oklch(88% 0.01 255);
-  --ring: oklch(68% 0.14 65);
+  --border:               oklch(85% 0.02 80);
+  --input:                oklch(85% 0.02 80);
+  --ring:                 oklch(65% 0.15 72);    /* amber focus ring */
 }
 
 @layer base {
@@ -89,15 +109,146 @@ html, body {
   scroll-behavior: smooth;
 }
 
+/* ── Typography helpers ─────────────────────────────────── */
 .font-display {
   font-family: var(--font-display);
 }
 
-/* Smooth scroll offset for sticky nav */
+/* Section overline label — e.g. "WHO WE ARE" */
+.hp-overline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: oklch(65% 0.15 72); /* amber */
+  margin-bottom: 1rem;
+}
+.hp-overline::before,
+.hp-overline::after {
+  content: "";
+  flex: 1;
+  max-width: 3rem;
+  height: 1px;
+  background: oklch(65% 0.15 72);
+  opacity: 0.6;
+}
+
+/* ── Button helpers ─────────────────────────────────────── */
+/* Primary amber CTA — matches HP main site */
+.btn-hp-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: oklch(65% 0.15 72);
+  color: oklch(100% 0 0);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border-radius: 0.375rem;
+  border: none;
+  transition: background 0.2s, transform 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-hp-primary:hover {
+  background: oklch(55% 0.14 68);
+  transform: translateY(-1px);
+}
+
+/* Dashed-border amber variant */
+.btn-hp-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: oklch(65% 0.15 72);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border-radius: 0.375rem;
+  border: 2px dashed oklch(65% 0.15 72);
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-hp-outline:hover {
+  background: oklch(65% 0.15 72);
+  color: oklch(100% 0 0);
+}
+
+/* Ghost white (for dark green sections) */
+.btn-hp-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: oklch(100% 0 0);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border-radius: 0.375rem;
+  border: 2px solid oklch(100% 0 0 / 0.5);
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-hp-ghost:hover {
+  background: oklch(100% 0 0 / 0.1);
+  border-color: oklch(100% 0 0);
+}
+
+/* ── Section backgrounds ────────────────────────────────── */
+.section-cream {
+  background: oklch(96% 0.015 80);
+}
+.section-white {
+  background: oklch(100% 0 0);
+}
+.section-green {
+  background: oklch(22% 0.07 155);
+  color: oklch(100% 0 0);
+}
+.section-green-dark {
+  background: oklch(16% 0.06 155);
+  color: oklch(100% 0 0);
+}
+
+/* ── HP Card ────────────────────────────────────────────── */
+.hp-card {
+  background: oklch(100% 0 0);
+  border: 1px solid oklch(85% 0.02 80);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.hp-card:hover {
+  box-shadow: 0 4px 20px oklch(0% 0 0 / 0.08);
+  transform: translateY(-2px);
+}
+
+/* ── Scroll offset for sticky nav ──────────────────────── */
 [id] {
   scroll-margin-top: 80px;
 }
 
+/* ── Container ──────────────────────────────────────────── */
 @layer components {
   .container {
     width: 100%;
@@ -106,24 +257,21 @@ html, body {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-
   .flex {
     min-height: 0;
     min-width: 0;
   }
-
   @media (min-width: 640px) {
     .container {
       padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
-
   @media (min-width: 1024px) {
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px;
+      max-width: 1200px;
     }
   }
 }

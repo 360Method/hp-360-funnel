@@ -1,8 +1,19 @@
+/*
+ * FunnelPage — 360° Method by Handy Pioneers
+ * Design: matches handypioneers.com
+ *   - Forest green (#1a3a2a) dark sections
+ *   - Warm cream (#f5f0e8) light sections
+ *   - Amber/golden CTA buttons
+ *   - Playfair Display headings, Inter body
+ *   - HP overline labels (uppercase, tracked, amber, ruled)
+ *   - HP card style (white bg, subtle border, hover lift)
+ */
+
 import { useState } from "react";
 import type { MemberTier, BillingCadence } from "../tiers";
 import { TIERS, CADENCE_LABELS, getPrice, getSavingsVsMonthly } from "../tiers";
 
-// ─── STAT BUBBLE MODAL DATA ──────────────────────────────────────────────────
+// ─── STAT BUBBLE DATA ─────────────────────────────────────────────────────────
 
 interface StatBubble {
   icon: string;
@@ -49,7 +60,6 @@ interface SeasonData {
   season: string;
   emoji: string;
   timing: string;
-  color: string;
   tasks: string[];
 }
 
@@ -58,7 +68,6 @@ const SEASONS: SeasonData[] = [
     season: "Spring",
     emoji: "🌱",
     timing: "March–April",
-    color: "bg-green-50 border-green-200",
     tasks: [
       "Roof inspection — moss colonies, lifted shingles, flashing",
       "Gutter & downspout flush — needle/moss clogs cleared",
@@ -72,7 +81,6 @@ const SEASONS: SeasonData[] = [
     season: "Summer",
     emoji: "☀️",
     timing: "June–July",
-    color: "bg-yellow-50 border-yellow-200",
     tasks: [
       "HVAC filter swap + heat pump efficiency check",
       "Exterior paint & stain — dry-season application window",
@@ -86,7 +94,6 @@ const SEASONS: SeasonData[] = [
     season: "Fall",
     emoji: "🍂",
     timing: "September–October",
-    color: "bg-orange-50 border-orange-200",
     tasks: [
       "Gutter pre-season clear — before the rains hit",
       "Window & door weatherstripping — heat retention",
@@ -100,7 +107,6 @@ const SEASONS: SeasonData[] = [
     season: "Winter",
     emoji: "❄️",
     timing: "December–January",
-    color: "bg-blue-50 border-blue-200",
     tasks: [
       "Pipe insulation check — PNW freeze event prep",
       "Crawl space moisture — condensation & vapor barrier",
@@ -164,89 +170,148 @@ interface Props {
 export default function FunnelPage({ onEnroll }: Props) {
   const [cadence, setCadence] = useState<BillingCadence>("annual");
   const [openBubble, setOpenBubble] = useState<number | null>(null);
-  const [openFeature, setOpenFeature] = useState<{ tier: MemberTier; idx: number } | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openSeason, setOpenSeason] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-cream font-sans">
-      {/* ── STICKY NAV ── */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
+    <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
+
+      {/* ── TOP UTILITY BAR — matches HP dark green bar ── */}
+      <div style={{ background: "oklch(16% 0.06 155)" }} className="text-white/80 text-xs py-2 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <span>5-Star Rated · Licensed &amp; Insured · WA Lic. HANDYP*761NH</span>
+          <a href="tel:3605449858" className="hover:text-white transition-colors font-medium">
+            (360) 544-9858
+          </a>
+        </div>
+      </div>
+
+      {/* ── STICKY NAV — matches HP white nav ── */}
+      <nav className="sticky top-0 z-50 bg-white border-b shadow-sm" style={{ borderColor: "oklch(88% 0.01 80)" }}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <span className="text-2xl font-black text-navy font-display">360°</span>
+            {/* HP-style seal placeholder */}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
+              style={{ background: "oklch(22% 0.07 155)" }}
+            >
+              360°
+            </div>
             <div className="hidden sm:block">
-              <div className="text-xs text-gray-500 leading-tight">Delivered by</div>
-              <div className="text-sm font-bold text-navy leading-tight">Handy Pioneers</div>
+              <div className="text-xs leading-tight" style={{ color: "oklch(50% 0.02 60)" }}>Delivered by</div>
+              <div className="text-sm font-bold leading-tight" style={{ color: "oklch(22% 0.07 155)" }}>Handy Pioneers</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="tel:3605449858" className="hidden sm:block text-sm font-medium text-slate-600 hover:text-navy transition-colors">
+            <a
+              href="tel:3605449858"
+              className="hidden sm:block text-sm font-medium transition-colors"
+              style={{ color: "oklch(35% 0.03 255)" }}
+            >
               (360) 544-9858
             </a>
-            <a
-              href="#pricing"
-              className="bg-gold text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-gold-dark transition-colors whitespace-nowrap"
-            >
+            <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
               Enroll Now
             </a>
           </div>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section className="bg-navy text-white pt-20 pb-24 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
-        }} />
+      {/* ── HERO — dark forest green, matches HP hero aesthetic ── */}
+      <section
+        className="text-white pt-20 pb-28 px-4 relative overflow-hidden"
+        style={{ background: "oklch(22% 0.07 155)" }}
+      >
+        {/* Subtle texture overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E\")",
+          }}
+        />
         <div className="max-w-4xl mx-auto text-center relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm font-medium text-gold-light mb-6">
+          {/* Badge pill */}
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-6"
+            style={{ background: "oklch(100% 0 0 / 0.1)", color: "oklch(78% 0.13 78)" }}
+          >
             <span>🏠</span>
             <span>The 360° Method — Delivered by Handy Pioneers</span>
           </div>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
+
+          <h1
+            className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6"
+          >
             Your home loses value<br />
-            <span className="text-gold">every year you ignore it.</span><br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>every year you ignore it.</span><br />
             The 360° Method stops that.
           </h1>
-          <p className="text-lg sm:text-xl text-white/75 max-w-2xl mx-auto mb-10 leading-relaxed">
+
+          <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
             One annual scan. Four seasonal tune-ups. A labor credit that pays for itself.
-            Proactive home maintenance — done for you — starting at <strong className="text-white">$49/mo</strong>.
+            Proactive home maintenance — done for you — starting at{" "}
+            <strong className="text-white">$49/mo</strong>.
           </p>
-          <a
-            href="#pricing"
-            className="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors shadow-lg"
-          >
+
+          <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
             See My Savings →
           </a>
-          <p className="mt-4 text-white/50 text-sm">No contracts. Cancel anytime. PNW-specific service.</p>
+          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+            No contracts. Cancel anytime. PNW-specific service.
+          </p>
+
+          {/* Trust badges row */}
+          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+            {["5-Star Rated", "Licensed & Insured", "1-Year Labor Guarantee", "On-Time Service"].map((b) => (
+              <span key={b} className="flex items-center gap-1.5">
+                <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── STAT BUBBLES ── */}
-      <section className="py-16 px-4 bg-white">
+      {/* ── STAT BUBBLES — cream bg, HP card style ── */}
+      <section className="py-16 px-4 section-cream">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-sm font-semibold text-gold uppercase tracking-widest mb-10">
-            The cost of doing nothing
-          </p>
+          <div className="hp-overline">The Cost of Doing Nothing</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {STAT_BUBBLES.map((bubble, i) => (
               <button
                 key={i}
                 onClick={() => setOpenBubble(openBubble === i ? null : i)}
-                className="group text-left p-6 rounded-2xl border-2 border-gray-100 hover:border-gold hover:shadow-lg transition-all cursor-pointer bg-cream"
+                className="hp-card text-left group"
+                style={{ cursor: "pointer" }}
               >
                 <div className="text-4xl mb-3">{bubble.icon}</div>
-                <div className="text-3xl font-black text-navy font-display mb-1">{bubble.stat}</div>
-                <div className="text-sm text-slate-600 mb-3">{bubble.label}</div>
-                <div className="text-xs font-semibold text-gold group-hover:underline">
+                <div
+                  className="text-3xl font-black font-display mb-1"
+                  style={{ color: "oklch(22% 0.07 155)" }}
+                >
+                  {bubble.stat}
+                </div>
+                <div className="text-sm mb-3" style={{ color: "oklch(50% 0.02 60)" }}>
+                  {bubble.label}
+                </div>
+                <div
+                  className="text-xs font-semibold group-hover:underline"
+                  style={{ color: "oklch(65% 0.15 72)" }}
+                >
                   {openBubble === i ? "▲ Hide details" : "▼ Learn more"}
                 </div>
                 {openBubble === i && (
-                  <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-slate-700 leading-relaxed">
-                    <p className="font-bold text-navy mb-2">{bubble.modalTitle}</p>
+                  <div
+                    className="mt-4 pt-4 text-sm leading-relaxed"
+                    style={{ borderTop: "1px solid oklch(85% 0.02 80)", color: "oklch(35% 0.03 255)" }}
+                  >
+                    <p className="font-bold mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
+                      {bubble.modalTitle}
+                    </p>
                     <p>{bubble.modalBody}</p>
-                    <p className="mt-2 text-xs text-gray-400">Source: {bubble.source}</p>
+                    <p className="mt-2 text-xs" style={{ color: "oklch(60% 0.02 60)" }}>
+                      Source: {bubble.source}
+                    </p>
                   </div>
                 )}
               </button>
@@ -255,14 +320,16 @@ export default function FunnelPage({ onEnroll }: Props) {
         </div>
       </section>
 
-      {/* ── WHAT IS THE 360° METHOD ── */}
-      <section className="py-16 px-4 bg-navy text-white">
+      {/* ── FRAMEWORK — dark forest green section ── */}
+      <section className="py-16 px-4 section-green">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-gold text-sm font-semibold uppercase tracking-widest mb-4">The Framework</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-black mb-6">
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>
+            The Framework
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-6">
             AWARE → ACT → ADVANCE
           </h2>
-          <p className="text-white/75 text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
             The 360° Method is a complete proactive home maintenance system built on three phases.
             We deliver the done-for-you version — you get the results without lifting a finger.
           </p>
@@ -287,25 +354,39 @@ export default function FunnelPage({ onEnroll }: Props) {
                 body: "A maintained home appraises higher, sells faster, and costs less to own. Your 360° membership generates a documented maintenance log that adds real dollars at refinancing or sale.",
               },
             ].map((p) => (
-              <div key={p.phase} className="bg-white/10 rounded-xl p-6">
+              <div
+                key={p.phase}
+                className="rounded-lg p-6"
+                style={{ background: "oklch(100% 0 0 / 0.08)" }}
+              >
                 <div className="text-3xl mb-3">{p.icon}</div>
-                <div className="text-gold text-xs font-bold uppercase tracking-widest mb-1">{p.phase}</div>
+                <div
+                  className="text-xs font-bold uppercase tracking-widest mb-1"
+                  style={{ color: "oklch(65% 0.15 72)" }}
+                >
+                  {p.phase}
+                </div>
                 <div className="font-bold text-white text-lg mb-2">{p.title}</div>
-                <p className="text-white/70 text-sm leading-relaxed">{p.body}</p>
+                <p className="text-sm leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
+                  {p.body}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── SEASONAL VISITS ── */}
-      <section className="py-16 px-4 bg-white">
+      {/* ── SEASONAL VISITS — white bg, HP card style ── */}
+      <section className="py-16 px-4 section-white">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-gold text-sm font-semibold uppercase tracking-widest mb-4">PNW-Specific Service</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-navy text-center mb-4">
+          <div className="hp-overline">PNW-Specific Service</div>
+          <h2
+            className="font-display text-3xl sm:text-4xl font-black text-center mb-4"
+            style={{ color: "oklch(22% 0.07 155)" }}
+          >
             Four Visits. Zero Surprises.
           </h2>
-          <p className="text-center text-slate-600 max-w-xl mx-auto mb-10">
+          <p className="text-center max-w-xl mx-auto mb-10" style={{ color: "oklch(50% 0.02 60)" }}>
             Every task is calibrated to Portland and SW Washington's climate — moss-prone roofs,
             clay soil drainage, Douglas Fir needle accumulation, and freeze-thaw cycles.
           </p>
@@ -314,25 +395,36 @@ export default function FunnelPage({ onEnroll }: Props) {
               <button
                 key={i}
                 onClick={() => setOpenSeason(openSeason === i ? null : i)}
-                className={`text-left p-5 rounded-xl border-2 transition-all ${s.color} hover:shadow-md`}
+                className="hp-card text-left"
+                style={{ cursor: "pointer" }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <span className="text-2xl">{s.emoji}</span>
                     <div>
-                      <div className="font-bold text-navy">{s.season} Visit</div>
-                      <div className="text-xs text-slate-500">{s.timing}</div>
+                      <div className="font-bold" style={{ color: "oklch(22% 0.07 155)" }}>
+                        {s.season} Visit
+                      </div>
+                      <div className="text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
+                        {s.timing}
+                      </div>
                     </div>
                   </div>
-                  <span className="text-xs font-semibold text-gold">
+                  <span
+                    className="text-xs font-semibold"
+                    style={{ color: "oklch(65% 0.15 72)" }}
+                  >
                     {openSeason === i ? "▲ Hide" : "▼ See tasks"}
                   </span>
                 </div>
                 {openSeason === i && (
-                  <ul className="mt-3 space-y-1.5 border-t border-gray-200 pt-3">
+                  <ul
+                    className="mt-3 space-y-1.5 pt-3"
+                    style={{ borderTop: "1px solid oklch(85% 0.02 80)" }}
+                  >
                     {s.tasks.map((task, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-slate-700">
-                        <span className="text-gold mt-0.5">✓</span>
+                      <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
+                        <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
                         <span>{task}</span>
                       </li>
                     ))}
@@ -341,17 +433,20 @@ export default function FunnelPage({ onEnroll }: Props) {
               </button>
             ))}
           </div>
-          <p className="text-center text-xs text-gray-400 mt-4">
-            Bronze includes Spring + Fall. Silver and Gold include all four seasons.
+          <p className="text-center text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>
+            Essential includes Spring + Fall. Full Coverage and Maximum Protection include all four seasons.
           </p>
         </div>
       </section>
 
-      {/* ── SAVINGS CALCULATOR ── */}
-      <section className="py-16 px-4 bg-cream">
+      {/* ── SAVINGS STATS — cream bg ── */}
+      <section className="py-16 px-4 section-cream">
         <div className="max-w-3xl mx-auto text-center">
-          <p className="text-gold text-sm font-semibold uppercase tracking-widest mb-4">The Math</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-navy mb-6">
+          <div className="hp-overline">The Math</div>
+          <h2
+            className="font-display text-3xl sm:text-4xl font-black mb-6"
+            style={{ color: "oklch(22% 0.07 155)" }}
+          >
             What Does Membership Actually Return?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -360,48 +455,71 @@ export default function FunnelPage({ onEnroll }: Props) {
               { label: "Avg. incidents caught per year", value: "2.4", sub: "per home" },
               { label: "Avg. annual return on membership", value: "7.7×", sub: "vs. cost" },
             ].map((stat, i) => (
-              <div key={i} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-                <div className="text-3xl font-black text-gold font-display">{stat.value}</div>
-                <div className="text-xs text-gray-500 mt-1">{stat.sub}</div>
-                <div className="text-sm text-slate-700 mt-2 leading-snug">{stat.label}</div>
+              <div key={i} className="hp-card text-center">
+                <div
+                  className="text-3xl font-black font-display"
+                  style={{ color: "oklch(65% 0.15 72)" }}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-xs mt-1" style={{ color: "oklch(60% 0.02 60)" }}>{stat.sub}</div>
+                <div className="text-sm mt-2 leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
-          <p className="text-slate-600 text-sm max-w-xl mx-auto">
+          <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(50% 0.02 60)" }}>
             Based on Handy Pioneers field data from 2023–2025 across Portland metro properties.
             Individual results vary by home age, condition, and tier.
           </p>
         </div>
       </section>
 
-      {/* ── PRICING ── */}
-      <section id="pricing" className="py-20 px-4 bg-white">
+      {/* ── PRICING — white bg ── */}
+      <section id="pricing" className="py-20 px-4 section-white">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-gold text-sm font-semibold uppercase tracking-widest mb-4">Membership Tiers</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-navy text-center mb-3">
+          <div className="hp-overline">Membership Tiers</div>
+          <h2
+            className="font-display text-3xl sm:text-4xl font-black text-center mb-3"
+            style={{ color: "oklch(22% 0.07 155)" }}
+          >
             Choose Your Level of Protection
           </h2>
-          <p className="text-center text-slate-600 max-w-xl mx-auto mb-8">
+          <p className="text-center max-w-xl mx-auto mb-8" style={{ color: "oklch(50% 0.02 60)" }}>
             Step-ladder discounts protect our margin on larger jobs while still rewarding members.
             The bigger the job, the more you save in absolute dollars.
           </p>
 
           {/* Cadence toggle */}
           <div className="flex justify-center mb-10">
-            <div className="inline-flex bg-gray-100 rounded-xl p-1 gap-1">
+            <div
+              className="inline-flex rounded-lg p-1 gap-1"
+              style={{ background: "oklch(92% 0.02 78)" }}
+            >
               {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => (
                 <button
                   key={c}
                   onClick={() => setCadence(c)}
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  className="px-4 py-2 rounded-md text-sm font-semibold transition-all"
+                  style={
                     cadence === c
-                      ? "bg-white text-navy shadow-sm"
-                      : "text-slate-500 hover:text-navy"
-                  }`}
+                      ? {
+                          background: "oklch(100% 0 0)",
+                          color: "oklch(22% 0.07 155)",
+                          boxShadow: "0 1px 4px oklch(0% 0 0 / 0.1)",
+                        }
+                      : { color: "oklch(50% 0.02 60)" }
+                  }
                 >
                   {CADENCE_LABELS[c]}
                   {c === "annual" && (
-                    <span className="ml-1.5 text-xs text-gold font-bold">Best Value</span>
+                    <span
+                      className="ml-1.5 text-xs font-bold"
+                      style={{ color: "oklch(65% 0.15 72)" }}
+                    >
+                      Best Value
+                    </span>
                   )}
                 </button>
               ))}
@@ -416,53 +534,85 @@ export default function FunnelPage({ onEnroll }: Props) {
               return (
                 <div
                   key={tier.id}
-                  className={`relative rounded-2xl border-2 p-6 flex flex-col ${
-                    tier.popular
-                      ? "border-slate-400 shadow-xl scale-[1.02]"
-                      : "border-gray-200 shadow-sm"
-                  } bg-white`}
+                  className="relative rounded-lg border-2 p-6 flex flex-col bg-white transition-shadow hover:shadow-lg"
+                  style={{
+                    borderColor: tier.popular
+                      ? "oklch(22% 0.07 155)"
+                      : "oklch(85% 0.02 80)",
+                    transform: tier.popular ? "scale(1.02)" : undefined,
+                  }}
                 >
                   {tier.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-700 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
+                    <div
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap"
+                      style={{ background: "oklch(22% 0.07 155)" }}
+                    >
                       Most Popular
                     </div>
                   )}
-                  <div className={`inline-flex self-start px-3 py-1 rounded-full text-xs font-bold mb-4 ${tier.badgeBg} ${tier.badgeText}`}>
+
+                  {/* Tier badge */}
+                  <div
+                    className="inline-flex self-start px-3 py-1 rounded-full text-xs font-bold mb-4"
+                    style={{
+                      background: tier.popular
+                        ? "oklch(22% 0.07 155 / 0.1)"
+                        : "oklch(65% 0.15 72 / 0.12)",
+                      color: tier.popular
+                        ? "oklch(22% 0.07 155)"
+                        : "oklch(55% 0.14 68)",
+                    }}
+                  >
                     {tier.name}
                   </div>
+
+                  {/* Price */}
                   <div className="mb-1">
-                    <span className="text-4xl font-black text-navy font-display">${price}</span>
-                    <span className="text-slate-500 text-sm ml-1">
+                    <span
+                      className="text-4xl font-black font-display"
+                      style={{ color: "oklch(22% 0.07 155)" }}
+                    >
+                      ${price}
+                    </span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>
                       /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                     </span>
                   </div>
                   {cadence !== "monthly" && (
-                    <div className="text-xs text-slate-500 mb-1">
+                    <div className="text-xs mb-1" style={{ color: "oklch(50% 0.02 60)" }}>
                       ${tier.annualMonthly}/mo when billed annually
                     </div>
                   )}
                   {savings > 0 && (
-                    <div className="text-xs font-semibold text-green-600 mb-3">
+                    <div className="text-xs font-semibold mb-3" style={{ color: "oklch(40% 0.12 145)" }}>
                       Save ${savings}/yr vs. monthly
                     </div>
                   )}
-                  <p className="text-sm text-slate-600 mb-4 leading-relaxed">{tier.tagline}</p>
+
+                  <p className="text-sm mb-4 leading-relaxed" style={{ color: "oklch(50% 0.02 60)" }}>
+                    {tier.tagline}
+                  </p>
 
                   {tier.laborBankDollars > 0 && (
-                    <div className="bg-gold/10 border border-gold/30 rounded-lg px-3 py-2 mb-4 text-sm">
-                      <span className="font-bold text-gold-dark">${tier.laborBankDollars}</span>
-                      <span className="text-slate-700"> labor bank credit included</span>
+                    <div
+                      className="rounded-md px-3 py-2 mb-4 text-sm"
+                      style={{
+                        background: "oklch(65% 0.15 72 / 0.08)",
+                        border: "1px solid oklch(65% 0.15 72 / 0.25)",
+                      }}
+                    >
+                      <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
+                        ${tier.laborBankDollars}
+                      </span>
+                      <span style={{ color: "oklch(35% 0.03 255)" }}> labor bank credit included</span>
                     </div>
                   )}
 
-                  {/* Features — clickable */}
+                  {/* Features */}
                   <ul className="space-y-2 mb-6 flex-1">
                     {tier.features.map((feature, fi) => (
-                      <li
-                        key={fi}
-                        className="flex items-start gap-2 text-sm text-slate-700"
-                      >
-                        <span className="text-gold mt-0.5 flex-shrink-0">✓</span>
+                      <li key={fi} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
+                        <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -470,14 +620,19 @@ export default function FunnelPage({ onEnroll }: Props) {
 
                   {/* Discount brackets */}
                   <div className="mb-5">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                    <div
+                      className="text-xs font-bold uppercase tracking-wide mb-2"
+                      style={{ color: "oklch(60% 0.02 60)" }}
+                    >
                       Member Discounts
                     </div>
                     <div className="space-y-1">
                       {tier.discountBrackets.map((b, bi) => (
                         <div key={bi} className="flex justify-between text-xs">
-                          <span className="text-slate-600">{b.label}</span>
-                          <span className="font-bold text-navy">{b.pct}</span>
+                          <span style={{ color: "oklch(50% 0.02 60)" }}>{b.label}</span>
+                          <span className="font-bold" style={{ color: "oklch(22% 0.07 155)" }}>
+                            {b.pct}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -485,11 +640,22 @@ export default function FunnelPage({ onEnroll }: Props) {
 
                   <button
                     onClick={() => onEnroll(tier.id, cadence)}
-                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
-                      tier.popular
-                        ? "bg-navy text-white hover:bg-navy/90"
-                        : "bg-gold text-white hover:bg-gold-dark"
-                    }`}
+                    className="w-full py-3 rounded-md font-bold text-sm uppercase tracking-wide transition-all text-white"
+                    style={{
+                      background: tier.popular
+                        ? "oklch(22% 0.07 155)"
+                        : "oklch(65% 0.15 72)",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = tier.popular
+                        ? "oklch(30% 0.08 155)"
+                        : "oklch(55% 0.14 68)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLButtonElement).style.background = tier.popular
+                        ? "oklch(22% 0.07 155)"
+                        : "oklch(65% 0.15 72)";
+                    }}
                   >
                     Enroll — ${price}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                   </button>
@@ -497,93 +663,133 @@ export default function FunnelPage({ onEnroll }: Props) {
               );
             })}
           </div>
-          <p className="text-center text-xs text-gray-400 mt-6">
+          <p className="text-center text-xs mt-6" style={{ color: "oklch(60% 0.02 60)" }}>
             All plans include the Annual 360° Home Scan. No long-term contracts. Cancel anytime.
           </p>
         </div>
       </section>
 
-      {/* ── TIMELINE COMPARISON ── */}
-      <section className="py-16 px-4 bg-navy text-white">
+      {/* ── TIMELINE COMPARISON — dark green section ── */}
+      <section className="py-16 px-4 section-green">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-gold text-sm font-semibold uppercase tracking-widest mb-4">The Math Is Simple</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-10">
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>
+            The Math Is Simple
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-center text-white mb-10">
             5 Years — Two Very Different Outcomes
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Neglect column */}
             <div>
-              <div className="text-red-400 font-bold text-sm uppercase tracking-wide mb-4">Without the 360° Method</div>
+              <div className="text-sm font-bold uppercase tracking-wide mb-4" style={{ color: "oklch(70% 0.18 25)" }}>
+                Without the 360° Method
+              </div>
               <div className="space-y-3">
                 {NEGLECT_TIMELINE.map((row, i) => (
                   <div key={i} className="flex gap-3 items-start">
-                    <div className="bg-red-900/50 text-red-300 text-xs font-bold px-2 py-1 rounded whitespace-nowrap mt-0.5">
+                    <div
+                      className="text-xs font-bold px-2 py-1 rounded whitespace-nowrap mt-0.5"
+                      style={{ background: "oklch(70% 0.18 25 / 0.2)", color: "oklch(75% 0.15 25)" }}
+                    >
                       {row.year}
                     </div>
                     <div className="flex-1">
-                      <div className="text-white/80 text-sm">{row.event}</div>
-                      <div className="text-red-400 text-xs font-bold mt-0.5">{row.cost}</div>
+                      <div className="text-sm" style={{ color: "oklch(100% 0 0 / 0.8)" }}>{row.event}</div>
+                      <div className="text-xs font-bold mt-0.5" style={{ color: "oklch(70% 0.18 25)" }}>{row.cost}</div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 bg-red-900/30 rounded-lg p-3 text-center">
-                <div className="text-2xl font-black text-red-400 font-display">$20,400+</div>
-                <div className="text-xs text-white/60">total 5-year cost</div>
+              <div
+                className="mt-4 rounded-lg p-3 text-center"
+                style={{ background: "oklch(70% 0.18 25 / 0.15)" }}
+              >
+                <div className="text-2xl font-black font-display" style={{ color: "oklch(70% 0.18 25)" }}>
+                  $20,400+
+                </div>
+                <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.6)" }}>total 5-year cost</div>
               </div>
             </div>
+
             {/* Member column */}
             <div>
-              <div className="text-green-400 font-bold text-sm uppercase tracking-wide mb-4">With the 360° Method (Essential)</div>
+              <div className="text-sm font-bold uppercase tracking-wide mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
+                With the 360° Method (Essential)
+              </div>
               <div className="space-y-3">
                 {MEMBER_TIMELINE.map((row, i) => (
                   <div key={i} className="flex gap-3 items-start">
-                    <div className="bg-green-900/50 text-green-300 text-xs font-bold px-2 py-1 rounded whitespace-nowrap mt-0.5">
+                    <div
+                      className="text-xs font-bold px-2 py-1 rounded whitespace-nowrap mt-0.5"
+                      style={{ background: "oklch(65% 0.15 72 / 0.2)", color: "oklch(70% 0.14 75)" }}
+                    >
                       {row.year}
                     </div>
                     <div className="flex-1">
-                      <div className="text-white/80 text-sm">{row.event}</div>
-                      <div className="text-green-400 text-xs font-bold mt-0.5">{row.cost}</div>
+                      <div className="text-sm" style={{ color: "oklch(100% 0 0 / 0.8)" }}>{row.event}</div>
+                      <div className="text-xs font-bold mt-0.5" style={{ color: "oklch(65% 0.15 72)" }}>{row.cost}</div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 bg-green-900/30 rounded-lg p-3 text-center">
-                <div className="text-2xl font-black text-green-400 font-display">$2,940</div>
-                <div className="text-xs text-white/60">total 5-year cost ($49/mo × 60)</div>
+              <div
+                className="mt-4 rounded-lg p-3 text-center"
+                style={{ background: "oklch(65% 0.15 72 / 0.15)" }}
+              >
+                <div className="text-2xl font-black font-display" style={{ color: "oklch(65% 0.15 72)" }}>
+                  $2,940
+                </div>
+                <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                  total 5-year cost ($49/mo × 60)
+                </div>
               </div>
             </div>
           </div>
+
           <div className="text-center mt-10">
-            <a
-              href="#pricing"
-              className="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors"
-            >
+            <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
               Start Protecting My Home →
             </a>
           </div>
         </div>
       </section>
 
-      {/* ── FAQ ── */}
-      <section className="py-16 px-4 bg-white">
+      {/* ── FAQ — cream bg, HP card style ── */}
+      <section className="py-16 px-4 section-cream">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-display text-3xl font-black text-navy text-center mb-10">
-            Common Questions
+          <div className="hp-overline">Common Questions</div>
+          <h2
+            className="font-display text-3xl font-black text-center mb-10"
+            style={{ color: "oklch(22% 0.07 155)" }}
+          >
+            Frequently Asked
           </h2>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
               <button
                 key={i}
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full text-left p-5 rounded-xl border border-gray-200 hover:border-gold transition-colors bg-cream"
+                className="w-full text-left p-5 rounded-lg bg-white transition-all hover:shadow-md"
+                style={{
+                  border: `1px solid ${openFaq === i ? "oklch(65% 0.15 72)" : "oklch(85% 0.02 80)"}`,
+                }}
               >
                 <div className="flex justify-between items-start gap-3">
-                  <span className="font-semibold text-navy text-sm leading-snug">{faq.q}</span>
-                  <span className="text-gold font-bold flex-shrink-0">{openFaq === i ? "−" : "+"}</span>
+                  <span className="font-semibold text-sm leading-snug" style={{ color: "oklch(22% 0.07 155)" }}>
+                    {faq.q}
+                  </span>
+                  <span className="font-bold flex-shrink-0" style={{ color: "oklch(65% 0.15 72)" }}>
+                    {openFaq === i ? "−" : "+"}
+                  </span>
                 </div>
                 {openFaq === i && (
-                  <p className="mt-3 text-sm text-slate-700 leading-relaxed border-t border-gray-200 pt-3">
+                  <p
+                    className="mt-3 text-sm leading-relaxed pt-3"
+                    style={{
+                      borderTop: "1px solid oklch(85% 0.02 80)",
+                      color: "oklch(35% 0.03 255)",
+                    }}
+                  >
                     {faq.a}
                   </p>
                 )}
@@ -593,48 +799,59 @@ export default function FunnelPage({ onEnroll }: Props) {
         </div>
       </section>
 
-      {/* ── FINAL CTA ── */}
-      <section className="py-20 px-4 bg-cream">
+      {/* ── FINAL CTA — dark green ── */}
+      <section className="py-20 px-4 section-green">
         <div className="max-w-2xl mx-auto text-center">
           <div className="text-5xl mb-4">🏠</div>
-          <h2 className="font-display text-3xl sm:text-4xl font-black text-navy mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
             Your home is your biggest asset.<br />
-            <span className="text-gold">Protect it like one.</span>
+            <span style={{ color: "oklch(65% 0.15 72)" }}>Protect it like one.</span>
           </h2>
-          <p className="text-slate-600 mb-8 leading-relaxed">
+          <p className="mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
             The 360° Method is the only done-for-you proactive home maintenance system
             in the Portland metro. Starting at $49/mo — less than a dinner out.
           </p>
-          <a
-            href="#pricing"
-            className="inline-flex items-center gap-2 bg-navy hover:bg-navy/90 text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors"
-          >
+          <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
             Enroll Today →
           </a>
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
             Questions? Call us at{" "}
-            <a href="tel:3605449858" className="text-gold hover:underline">(360) 544-9858</a>
+            <a
+              href="tel:3605449858"
+              className="hover:underline"
+              style={{ color: "oklch(65% 0.15 72)" }}
+            >
+              (360) 544-9858
+            </a>
           </p>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="bg-navy text-white/60 py-8 px-4">
+      {/* ── FOOTER — darkest green ── */}
+      <footer className="py-8 px-4" style={{ background: "oklch(16% 0.06 155)", color: "oklch(100% 0 0 / 0.6)" }}>
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
           <div className="flex items-center gap-3">
             <span className="text-xl font-black text-white font-display">360°</span>
-            <span className="text-white/40">|</span>
+            <span style={{ color: "oklch(100% 0 0 / 0.3)" }}>|</span>
             <span>Delivered by Handy Pioneers</span>
           </div>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="mailto:help@handypioneers.com" className="hover:text-gold transition-colors">
+            <a
+              href="mailto:help@handypioneers.com"
+              className="transition-colors hover:text-white"
+              style={{ color: "oklch(100% 0 0 / 0.6)" }}
+            >
               help@handypioneers.com
             </a>
-            <a href="tel:3605449858" className="hover:text-gold transition-colors">
+            <a
+              href="tel:3605449858"
+              className="transition-colors hover:text-white"
+              style={{ color: "oklch(100% 0 0 / 0.6)" }}
+            >
               (360) 544-9858
             </a>
           </div>
-          <div className="text-xs text-white/30">
+          <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.3)" }}>
             © {new Date().getFullYear()} Handy Pioneers LLC
           </div>
         </div>
