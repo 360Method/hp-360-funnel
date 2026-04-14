@@ -2,12 +2,20 @@ import { useState, useEffect } from "react";
 import FunnelPage from "./pages/FunnelPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
+import MultifamilyPage from "./pages/MultifamilyPage";
+import PortfolioCheckoutPage from "./pages/PortfolioCheckoutPage";
 import type { MemberTier, BillingCadence } from "./tiers";
+import type { PortfolioProperty } from "./pages/MultifamilyPage";
 
-type Page = "funnel" | "checkout" | "confirmation";
+type Page = "funnel" | "checkout" | "confirmation" | "multifamily" | "portfolio-checkout";
 
 export interface CheckoutState {
   tier: MemberTier;
+  cadence: BillingCadence;
+}
+
+export interface PortfolioCheckoutState {
+  properties: PortfolioProperty[];
   cadence: BillingCadence;
 }
 
@@ -17,11 +25,16 @@ export default function App() {
     tier: "silver",
     cadence: "annual",
   });
+  const [portfolioCheckoutState, setPortfolioCheckoutState] = useState<PortfolioCheckoutState>({
+    properties: [],
+    cadence: "annual",
+  });
 
   // Parse URL on load for deep-linking
   useEffect(() => {
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
+
     if (path.startsWith("/confirmation") || path.startsWith("/360/confirmation")) {
       setPage("confirmation");
     } else if (path.startsWith("/checkout") || path.startsWith("/360/checkout")) {
@@ -29,6 +42,8 @@ export default function App() {
       const cadence = (params.get("cadence") ?? "annual") as BillingCadence;
       setCheckoutState({ tier, cadence });
       setPage("checkout");
+    } else if (path.startsWith("/multifamily")) {
+      setPage("multifamily");
     }
   }, []);
 
@@ -40,6 +55,19 @@ export default function App() {
 
   const goToFunnel = () => {
     setPage("funnel");
+    window.history.pushState({}, "", "/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToMultifamily = () => {
+    setPage("multifamily");
+    window.history.pushState({}, "", "/multifamily");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToPortfolioCheckout = (properties: PortfolioProperty[], cadence: BillingCadence) => {
+    setPortfolioCheckoutState({ properties, cadence });
+    setPage("portfolio-checkout");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -52,5 +80,20 @@ export default function App() {
         onBack={goToFunnel}
       />
     );
-  return <FunnelPage onEnroll={goToCheckout} />;
+  if (page === "multifamily")
+    return (
+      <MultifamilyPage
+        onEnrollPortfolio={goToPortfolioCheckout}
+        onGoHome={goToFunnel}
+      />
+    );
+  if (page === "portfolio-checkout")
+    return (
+      <PortfolioCheckoutPage
+        properties={portfolioCheckoutState.properties}
+        cadence={portfolioCheckoutState.cadence}
+        onBack={goToMultifamily}
+      />
+    );
+  return <FunnelPage onEnroll={goToCheckout} onGoToMultifamily={goToMultifamily} />;
 }

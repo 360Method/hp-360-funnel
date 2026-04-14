@@ -165,9 +165,10 @@ const MEMBER_TIMELINE = [
 
 interface Props {
   onEnroll: (tier: MemberTier, cadence: BillingCadence) => void;
+  onGoToMultifamily?: () => void;
 }
 
-export default function FunnelPage({ onEnroll }: Props) {
+export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
   const [cadence, setCadence] = useState<BillingCadence>("annual");
   const [openBubble, setOpenBubble] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -203,6 +204,15 @@ export default function FunnelPage({ onEnroll }: Props) {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {onGoToMultifamily && (
+              <button
+                onClick={onGoToMultifamily}
+                className="hidden sm:block text-sm font-medium transition-colors"
+                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(35% 0.03 255)" }}
+              >
+                Property Managers
+              </button>
+            )}
             <a
               href="tel:3605449858"
               className="hidden sm:block text-sm font-medium transition-colors"
