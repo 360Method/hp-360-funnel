@@ -37,24 +37,31 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${PRO_API}/api/trpc/threeSixty.createCheckoutSession`, {
+      const res = await fetch(`${PRO_API}/api/trpc/threeSixty.checkout.createSession`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           json: {
-            tier, cadence,
+            tier,
+            cadence,
             customerName: `${form.firstName} ${form.lastName}`,
-            customerEmail: form.email, customerPhone: form.phone,
-            address: form.address, city: form.city, state: form.state, zip: form.zip,
+            customerEmail: form.email,
             origin: window.location.origin,
           },
         }),
       });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Server error ${res.status}: ${errText.slice(0, 200)}`);
+      }
       const data = await res.json();
-      if (data?.result?.data?.json?.url) {
-        window.location.href = data.result.data.json.url;
+      const url = data?.result?.data?.json?.url;
+      if (url) {
+        window.location.href = url;
       } else {
-        throw new Error(data?.error?.message ?? "Failed to create checkout session");
+        const msg = data?.error?.json?.message ?? data?.error?.message ?? "Failed to create checkout session";
+        throw new Error(msg);
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
