@@ -191,7 +191,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
       </nav>
 
       {/* CONTENT */}
-      <div style={{ maxWidth: "960px", margin: "0 auto", padding: "3rem 1.5rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
+      <div style={{ maxWidth: "960px", margin: "0 auto", padding: "2rem 1rem" }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
         {/* Left: form */}
         <div>
