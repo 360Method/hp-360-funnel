@@ -206,10 +206,18 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             {onGoToMultifamily && (
               <button
                 onClick={onGoToMultifamily}
-                className="hidden sm:block text-sm font-medium transition-colors"
-                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(35% 0.03 255)" }}
+                className="hidden sm:block text-sm font-semibold transition-all"
+                style={{
+                  background: "none",
+                  border: "2px solid oklch(65% 0.15 72)",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  color: "oklch(65% 0.15 72)",
+                  padding: "6px 14px",
+                  letterSpacing: "0.03em",
+                }}
               >
-                Property Managers
+                🏢 Property Managers
               </button>
             )}
             <a
@@ -261,6 +269,20 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
             No contracts. Cancel anytime. PNW-specific service.
           </p>
+
+          {/* Landlord/PM redirect prompt */}
+          {onGoToMultifamily && (
+            <div className="mt-8 inline-flex items-center gap-3 rounded-lg px-5 py-3" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
+              <span className="text-sm" style={{ color: "oklch(100% 0 0 / 0.65)" }}>Own rental properties or a portfolio?</span>
+              <button
+                onClick={onGoToMultifamily}
+                className="text-sm font-bold transition-colors"
+                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline", padding: 0 }}
+              >
+                See the Portfolio Plan →
+              </button>
+            </div>
+          )}
 
           {/* Trust badges row */}
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
@@ -652,6 +674,24 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <p className="text-center text-xs mt-6" style={{ color: "oklch(60% 0.02 60)" }}>
             All plans include the Annual 360° Home Scan. No long-term contracts. Cancel anytime.
           </p>
+          {/* Landlord prompt below pricing */}
+          {onGoToMultifamily && (
+            <div className="mt-6 rounded-xl p-5 text-center max-w-xl mx-auto" style={{ background: "oklch(96% 0.015 80)", border: "1px solid oklch(85% 0.02 80)" }}>
+              <p className="text-sm font-semibold mb-1" style={{ color: "oklch(22% 0.07 155)" }}>
+                🏢 Own rental properties or a multifamily building?
+              </p>
+              <p className="text-xs mb-3" style={{ color: "oklch(50% 0.02 60)" }}>
+                The 360° Portfolio Plan is built for landlords — priced per property, not per unit, with bulk discounts and a separate interior add-on.
+              </p>
+              <button
+                onClick={onGoToMultifamily}
+                className="text-sm font-bold px-5 py-2 rounded-md transition-colors"
+                style={{ background: "oklch(22% 0.07 155)", color: "#fff", border: "none", cursor: "pointer" }}
+              >
+                View the Portfolio Plan →
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -800,6 +840,17 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
             Enroll Today →
           </a>
+          {onGoToMultifamily && (
+            <div className="mt-6">
+              <button
+                onClick={onGoToMultifamily}
+                className="text-sm font-semibold transition-colors"
+                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline" }}
+              >
+                🏢 Landlord or property manager? See the Portfolio Plan →
+              </button>
+            </div>
+          )}
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
             Questions? Call us at{" "}
             <a
