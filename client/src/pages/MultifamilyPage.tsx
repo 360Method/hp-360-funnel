@@ -555,14 +555,14 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
       {/* ── STAT BUBBLES ── */}
       <section className="py-16 px-4 section-cream">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="hp-overline">The Cost of Reactive Management</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {PM_STATS.map((s, i) => (
               <button
                 key={i}
                 onClick={() => setOpenStat(openStat === i ? null : i)}
-                className="hp-card text-left group"
+                className="hp-card text-center group"
                 style={{ cursor: "pointer" }}
               >
                 <div className="text-4xl mb-3">{s.icon}</div>
@@ -597,7 +597,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             The 360° Portfolio Plan is built around the three things that matter most to a small landlord:
             keeping your properties in rentable condition, staying legally protected, and keeping good tenants longer.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
                 phase: "PROTECT",
@@ -653,8 +653,8 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {PM_SEASONS.map((s, i) => (
-              <div key={i} className="hp-card">
-                <div className="flex items-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
+              <div key={i} className="hp-card text-center">
+                <div className="flex items-center justify-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
                   <span className="text-2xl">{s.emoji}</span>
                   <div>
                     <div className="font-bold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>{s.season} Visit</div>
@@ -665,7 +665,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
                   Exterior &amp; Common Area
                 </p>
-                <ul className="space-y-2 mb-4">
+                <ul className="space-y-2 mb-4 text-left">
                   {s.exterior.map((task, j) => (
                     <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>
                       <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0, marginTop: "2px" }}>✓</span>
@@ -677,7 +677,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(60% 0.15 250)" }}>
                   + Interior Add-On (per door)
                 </p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 text-left">
                   {s.interior.map((task, j) => (
                     <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(45% 0.03 255)" }}>
                       <span style={{ color: "oklch(60% 0.15 250)", flexShrink: 0, marginTop: "2px" }}>+</span>

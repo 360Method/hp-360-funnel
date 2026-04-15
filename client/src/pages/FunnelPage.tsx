@@ -297,14 +297,14 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
 
       {/* ── STAT BUBBLES — cream bg, HP card style ── */}
       <section className="py-16 px-4 section-cream">
-        <div className="max-w-5xl mx-auto text-center sm:text-left">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="hp-overline">The Cost of Doing Nothing</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {STAT_BUBBLES.map((bubble, i) => (
               <button
                 key={i}
                 onClick={() => setOpenBubble(openBubble === i ? null : i)}
-                className="hp-card text-center sm:text-left group"
+                className="hp-card text-center group"
                 style={{ cursor: "pointer" }}
               >
                 <div className="text-4xl mb-3">{bubble.icon}</div>
@@ -356,7 +356,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             The 360° Method is a complete proactive home maintenance system built on three phases.
             We deliver the done-for-you version — you get the results without lifting a finger.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
                 phase: "AWARE",
@@ -419,7 +419,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 key={i}
                 className="hp-card"
               >
-                <div className="flex items-center justify-center sm:justify-start gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
+                <div className="flex items-center justify-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
                   <span className="text-2xl">{s.emoji}</span>
                   <div>
                     <div className="font-bold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>
@@ -430,7 +430,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                     </div>
                   </div>
                 </div>
-                <ul className="space-y-2.5">
+                <ul className="space-y-2.5 text-left">
                   {s.tasks.map((task, j) => (
                     <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>
                       <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0, marginTop: "2px" }}>✓</span>
