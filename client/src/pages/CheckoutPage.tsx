@@ -121,10 +121,16 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
             ← Back
           </button>
           <span style={{ color: B }}>|</span>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-xs flex-shrink-0" style={{ background: G }}>
-            360°
-          </div>
-          <span className="text-sm font-bold" style={{ color: G }}>Handy Pioneers</span>
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+            alt="360°"
+            className="w-8 h-8 flex-shrink-0 object-contain"
+          />
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
+            alt="Handy Pioneers"
+            className="h-8 w-auto object-contain hidden sm:block"
+          />
           <span className="text-xs ml-1" style={{ color: M }}>· Secure Checkout</span>
         </div>
       </nav>

@@ -174,12 +174,17 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
             onClick={onBack}
             style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}
           >
-            <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#1a3a2a", display: "flex", alignItems: "center", justifyContent: "center", color: "#c8922a", fontWeight: 900, fontSize: "0.75rem" }}>
-              HP
-            </div>
-            <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1rem", color: "#1a3a2a", fontWeight: 700 }}>
-              Handy Pioneers
-            </span>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+              alt="360°"
+              style={{ width: "36px", height: "36px", objectFit: "contain", flexShrink: 0 }}
+            />
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
+              alt="Handy Pioneers"
+              style={{ height: "34px", width: "auto", objectFit: "contain" }}
+              className="hidden sm:block"
+            />
           </button>
           <button
             onClick={onBack}

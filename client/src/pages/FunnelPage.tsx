@@ -190,17 +190,18 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       <nav className="sticky top-0 z-50 bg-white border-b shadow-sm" style={{ borderColor: "oklch(88% 0.01 80)" }}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            {/* HP-style seal placeholder */}
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
-              style={{ background: "oklch(22% 0.07 155)" }}
-            >
-              360°
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-xs leading-tight" style={{ color: "oklch(50% 0.02 60)" }}>Delivered by</div>
-              <div className="text-sm font-bold leading-tight" style={{ color: "oklch(22% 0.07 155)" }}>Handy Pioneers</div>
-            </div>
+            {/* 360° logo mark */}
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+              alt="360° Home Method"
+              className="w-10 h-10 flex-shrink-0 object-contain"
+            />
+            {/* HP full logo — hidden on mobile */}
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
+              alt="Handy Pioneers"
+              className="hidden sm:block h-9 w-auto object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
             {onGoToMultifamily && (
@@ -242,10 +243,14 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge pill */}
           <div
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium mb-6"
             style={{ background: "oklch(100% 0 0 / 0.1)", color: "oklch(78% 0.13 78)" }}
           >
-            <span>🏠</span>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+              alt="360°"
+              className="w-5 h-5 object-contain"
+            />
             <span>The 360° Method — Delivered by Handy Pioneers</span>
           </div>
 

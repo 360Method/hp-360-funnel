@@ -481,16 +481,16 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             className="flex items-center gap-3 min-w-0"
             style={{ background: "none", border: "none", cursor: "pointer" }}
           >
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
-              style={{ background: "oklch(22% 0.07 155)" }}
-            >
-              360°
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-xs leading-tight" style={{ color: "oklch(50% 0.02 60)" }}>Delivered by</div>
-              <div className="text-sm font-bold leading-tight" style={{ color: "oklch(22% 0.07 155)" }}>Handy Pioneers</div>
-            </div>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+              alt="360° Home Method"
+              className="w-10 h-10 flex-shrink-0 object-contain"
+            />
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
+              alt="Handy Pioneers"
+              className="hidden sm:block h-9 w-auto object-contain"
+            />
           </button>
           <div className="flex items-center gap-3">
             <button
@@ -520,7 +520,11 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-6"
             style={{ background: "oklch(100% 0 0 / 0.1)", color: "oklch(78% 0.13 78)" }}
           >
-            <span>🏢</span>
+            <img
+              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+              alt="360°"
+              className="w-5 h-5 object-contain"
+            />
             <span>360° Portfolio Plan — For Property Managers &amp; Small Landlords</span>
           </div>
 
