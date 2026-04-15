@@ -221,13 +221,6 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 🏢 Property Managers
               </button>
             )}
-            <a
-              href="tel:3605449858"
-              className="hidden sm:block text-sm font-medium transition-colors"
-              style={{ color: "oklch(35% 0.03 255)" }}
-            >
-              (360) 544-9858
-            </a>
             <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
               Enroll Now
             </a>

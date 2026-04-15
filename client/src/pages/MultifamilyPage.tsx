@@ -500,9 +500,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             >
               Homeowners
             </button>
-            <a href="tel:3605449858" className="hidden sm:block text-sm font-medium" style={{ color: "oklch(35% 0.03 255)" }}>
-              (360) 544-9858
-            </a>
+
             <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
               Get a Quote
             </a>
