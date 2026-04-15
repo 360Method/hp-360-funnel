@@ -543,6 +543,18 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             No contracts. Cancel anytime. Portland &amp; SW Washington.
           </p>
 
+          {/* Homeowner redirect prompt — visible on all screen sizes */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 rounded-lg px-5 py-3 mx-auto max-w-sm sm:max-w-none" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
+            <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>🏠 Own your home personally, not as a rental?</span>
+            <button
+              onClick={onGoHome}
+              className="text-sm font-bold transition-colors"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline", padding: 0, whiteSpace: "nowrap" }}
+            >
+              See the Homeowner Plan →
+            </button>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
             {["Licensed & Insured", "Habitability-Compliant Documentation", "1-Year Labor Guarantee", "Priority Scheduling Available"].map((b) => (
               <span key={b} className="flex items-center gap-1.5">
@@ -1153,16 +1165,19 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           <h2 className="font-display text-3xl font-black text-white mb-4">
             Turnover &amp; Make-Ready Packages
           </h2>
-          <p className="text-lg mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            When a tenant moves out, you need the unit rent-ready fast. Portfolio members get priority scheduling
-            and member-discounted rates on make-ready packages — cleaning, paint touch-up, minor repairs,
-            and a documented condition report for the next tenant.
+          <p className="text-lg mb-4 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            When a tenant moves out, you need the unit rent-ready fast. HP coordinates the full make-ready —
+            we schedule and manage the cleaning crew, handle paint touch-up and minor repairs, and deliver
+            a documented move-out condition report for your records and the next tenant.
+          </p>
+          <p className="text-sm mb-8" style={{ color: "oklch(100% 0 0 / 0.55)" }}>
+            Pricing reflects HP coordination, cleaning crew cost, and all labor. Portfolio members receive priority scheduling.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              { label: "Studio / 1BR", price: "$349", note: "Cleaning + condition report" },
-              { label: "2BR / 3BR", price: "$499", note: "Cleaning + touch-up + report" },
-              { label: "Custom Scope", price: "Quote", note: "Larger units or full repaint" },
+              { label: "Studio / 1BR", price: "$549", note: "Cleaning crew + condition report" },
+              { label: "2BR / 3BR", price: "$749", note: "Cleaning crew + touch-up + report" },
+              { label: "Custom Scope", price: "Quote", note: "Larger units, full repaint, or carpet" },
             ].map((pkg, i) => (
               <div key={i} className="rounded-lg p-5 text-center" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
                 <div className="font-display text-2xl font-black text-white mb-1">{pkg.price}</div>
@@ -1172,7 +1187,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             ))}
           </div>
           <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
-            Member pricing. Non-member rates are 20% higher. Request a make-ready by calling (360) 544-9858.
+            Portfolio member pricing. Non-member rates are 25% higher. Request a make-ready by calling (360) 544-9858.
           </p>
         </div>
       </section>

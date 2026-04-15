@@ -270,14 +270,14 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             No contracts. Cancel anytime. PNW-specific service.
           </p>
 
-          {/* Landlord/PM redirect prompt */}
+          {/* Landlord/PM redirect prompt — visible on all screen sizes */}
           {onGoToMultifamily && (
-            <div className="mt-8 inline-flex items-center gap-3 rounded-lg px-5 py-3" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
-              <span className="text-sm" style={{ color: "oklch(100% 0 0 / 0.65)" }}>Own rental properties or a portfolio?</span>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 rounded-lg px-5 py-3 mx-auto max-w-sm sm:max-w-none" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
+              <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>🏢 Own rental properties or a portfolio?</span>
               <button
                 onClick={onGoToMultifamily}
                 className="text-sm font-bold transition-colors"
-                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline", padding: 0 }}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline", padding: 0, whiteSpace: "nowrap" }}
               >
                 See the Portfolio Plan →
               </button>

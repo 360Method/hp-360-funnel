@@ -13,22 +13,61 @@ const PROPERTY_TYPE_LABELS: Record<string, string> = {
   duplex:   "Duplex",
   triplex:  "Triplex",
   fourplex: "Fourplex",
+  custom:   "Custom (5+ Units)",
 };
 
-const CADENCE_PRICES: Record<string, Record<BillingCadence, number>> = {
-  sfh:      { monthly: 49,  quarterly: 139,  annual: 499  },
-  duplex:   { monthly: 99,  quarterly: 279,  annual: 949  },
-  triplex:  { monthly: 119, quarterly: 339,  annual: 1149 },
-  fourplex: { monthly: 149, quarterly: 419,  annual: 1429 },
+const TIER_LABELS: Record<string, string> = {
+  essential: "Exterior Shield",
+  full:      "Full Coverage",
+  maximum:   "Portfolio Max",
 };
 
-const INTERIOR_ADDON_ANNUAL = 58;
+// Tier monthly prices mirror MultifamilyPage TIER_MONTHLY
+const TIER_MONTHLY_PRICES: Record<string, number> = {
+  essential: 59,
+  full:      99,
+  maximum:   149,
+};
+
+// Base monthly prices (fallback when no tier is set)
+const BASE_MONTHLY_PRICES: Record<string, number> = {
+  sfh:      59,
+  duplex:   79,
+  triplex:  89,
+  fourplex: 99,
+  custom:   0,
+};
+
+const INTERIOR_PER_DOOR_ANNUAL = 49;
+
+const PROPERTY_DOORS: Record<string, number> = {
+  sfh: 1, duplex: 2, triplex: 3, fourplex: 4, custom: 0,
+};
+
+function getPropertyMonthly(p: PortfolioProperty): number {
+  return p.tier && TIER_MONTHLY_PRICES[p.tier]
+    ? TIER_MONTHLY_PRICES[p.tier]
+    : BASE_MONTHLY_PRICES[p.type] ?? 59;
+}
+
+function getPropertyPrice(p: PortfolioProperty, cadence: BillingCadence): number {
+  const mo = getPropertyMonthly(p);
+  if (cadence === "monthly")   return mo;
+  if (cadence === "quarterly") return Math.round(mo * 2.8);
+  return mo * 10; // annual
+}
+
+function getInteriorPrice(p: PortfolioProperty, cadence: BillingCadence): number {
+  if (!p.interiorAddon) return 0;
+  const doors = PROPERTY_DOORS[p.type] ?? 1;
+  const annual = doors * INTERIOR_PER_DOOR_ANNUAL;
+  if (cadence === "annual")    return annual;
+  if (cadence === "quarterly") return Math.round(annual / 4);
+  return Math.round(annual / 12);
+}
 
 function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCadence): number {
-  const base = properties.reduce((sum, p) => sum + CADENCE_PRICES[p.type][cadence], 0);
-  const interiorDoors = properties.filter((p) => p.interiorAddon).length;
-  const interiorCost = cadence === "annual" ? interiorDoors * INTERIOR_ADDON_ANNUAL : 0;
-  return base + interiorCost;
+  return properties.reduce((sum, p) => sum + getPropertyPrice(p, cadence) + getInteriorPrice(p, cadence), 0);
 }
 
 interface PortfolioCheckoutPageProps {
@@ -249,32 +288,35 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
               </p>
             </div>
             <div style={{ padding: "1.25rem 1.5rem" }}>
-              {properties.map((prop, idx) => (
-                <div key={prop.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "0.6rem 0", borderBottom: "1px solid #f0ebe0" }}>
-                  <div>
-                    <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a" }}>
-                      {prop.address || `Property ${idx + 1}`}
-                    </p>
-                    <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>
-                      {PROPERTY_TYPE_LABELS[prop.type]}
-                      {prop.interiorAddon ? " · +Interior" : ""}
-                    </p>
+              {properties.map((prop, idx) => {
+                const propPrice = getPropertyPrice(prop, cadence);
+                const intPrice  = getInteriorPrice(prop, cadence);
+                const tierLabel = prop.tier ? TIER_LABELS[prop.tier] : null;
+                return (
+                  <div key={prop.id} style={{ padding: "0.6rem 0", borderBottom: "1px solid #f0ebe0" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <div>
+                        <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a" }}>
+                          {prop.address || `Property ${idx + 1}`}
+                        </p>
+                        <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>
+                          {PROPERTY_TYPE_LABELS[prop.type]}
+                          {tierLabel ? ` · ${tierLabel}` : ""}
+                        </p>
+                      </div>
+                      <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a", marginLeft: "1rem", whiteSpace: "nowrap" }}>
+                        ${propPrice.toLocaleString()}
+                      </span>
+                    </div>
+                    {intPrice > 0 && (
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.25rem" }}>
+                        <p style={{ fontSize: "0.72rem", color: "#c8922a" }}>+ Interior add-on</p>
+                        <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#c8922a" }}>+${intPrice.toLocaleString()}</span>
+                      </div>
+                    )}
                   </div>
-                  <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a" }}>
-                    ${CADENCE_PRICES[prop.type][cadence].toLocaleString()}
-                  </span>
-                </div>
-              ))}
-              {interiorDoors > 0 && cadence === "annual" && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid #f0ebe0" }}>
-                  <p style={{ fontSize: "0.875rem", color: "#c8922a", fontWeight: 600 }}>
-                    Interior Add-On ({interiorDoors} door{interiorDoors > 1 ? "s" : ""})
-                  </p>
-                  <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#c8922a" }}>
-                    +${(interiorDoors * INTERIOR_ADDON_ANNUAL).toLocaleString()}
-                  </span>
-                </div>
-              )}
+                );
+              })}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "1rem", marginTop: "0.25rem" }}>
                 <span style={{ fontWeight: 700, color: "#1a3a2a", fontSize: "1rem" }}>Total</span>
                 <div style={{ textAlign: "right" }}>
