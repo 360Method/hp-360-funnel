@@ -583,20 +583,20 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                       className="text-4xl font-black font-display"
                       style={{ color: "oklch(22% 0.07 155)" }}
                     >
-                      ${price}
+                      ${cadence === "annual" ? tier.annualMonthly : cadence === "quarterly" ? Math.round(price * 4 / 12) : price}
                     </span>
-                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>
-                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                    </span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>/mo</span>
                   </div>
                   {cadence !== "monthly" && (
                     <div className="text-xs mb-1" style={{ color: "oklch(50% 0.02 60)" }}>
-                      ${tier.annualMonthly}/mo when billed annually
+                      billed ${price}/{cadence === "quarterly" ? "qtr" : "yr"}
                     </div>
                   )}
                   {savings > 0 && (
-                    <div className="text-xs font-semibold mb-3" style={{ color: "oklch(40% 0.12 145)" }}>
-                      Save ${savings}/yr vs. monthly
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded mb-3" style={{ background: "oklch(40% 0.12 145 / 0.1)", border: "1px solid oklch(40% 0.12 145 / 0.25)" }}>
+                      <span className="text-xs font-bold" style={{ color: "oklch(35% 0.12 145)" }}>
+                        Save ${savings}/yr · {cadence === "quarterly" ? "5" : "17"}% off
+                      </span>
                     </div>
                   )}
 
