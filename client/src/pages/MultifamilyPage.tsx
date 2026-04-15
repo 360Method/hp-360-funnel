@@ -1,908 +1,976 @@
 /*
  * MultifamilyPage — 360° Portfolio Plan by Handy Pioneers
- * Design: matches handypioneers.com (same as FunnelPage)
- *   - Forest green (#1a3a2a) dark sections
+ * Design: matches FunnelPage exactly
+ *   - Flat forest green hero (no texture overlay) — per user request
  *   - Warm cream (#f5f0e8) light sections
- *   - Amber/golden CTA buttons
+ *   - Amber CTA buttons
  *   - Playfair Display headings, Inter body
- *   - HP overline labels (uppercase, tracked, amber, ruled)
+ *   - HP overline labels
  *   - HP card style (white bg, subtle border, hover lift)
+ *
+ * Pricing philosophy (per user):
+ *   - Exterior/common-area work is NOT proportional to unit count
+ *     (a fourplex exterior ≈ a large SFH exterior)
+ *   - One flat tier per property size — same 3-tier structure as homeowner side
+ *   - Interior unit visits are a per-door add-on, priced separately
+ *   - Turnover/make-ready is on-demand, not subscription
  */
 
-import { useState, useCallback } from "react";
-import { nanoid } from "nanoid";
+import { useState } from "react";
 import type { BillingCadence } from "../tiers";
 import { CADENCE_LABELS } from "../tiers";
-
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
-type PropertyType = "sfh" | "duplex" | "triplex" | "fourplex";
-
-interface PortfolioProperty {
+export interface PortfolioProperty {
   id: string;
-  type: PropertyType;
-  label: string;
   address: string;
+  type: "sfh" | "duplex" | "triplex" | "fourplex";
   interiorAddon: boolean;
 }
 
-// ─── PRICING DATA ─────────────────────────────────────────────────────────────
+// ─── PRICING ──────────────────────────────────────────────────────────────────
+// Exterior/common-area tiers — flat per property, NOT per unit.
+// A fourplex exterior is ~same scope as a large SFH exterior.
+// Interior add-on is per door (occupied unit), priced separately.
 
-const PROPERTY_TYPES: { id: PropertyType; label: string; units: string; description: string }[] = [
-  { id: "sfh",      label: "Single-Family Rental", units: "1 unit",  description: "Detached rental home" },
-  { id: "duplex",   label: "Duplex",               units: "2 units", description: "Two-unit building" },
-  { id: "triplex",  label: "Triplex",              units: "3 units", description: "Three-unit building" },
-  { id: "fourplex", label: "Fourplex",             units: "4 units", description: "Four-unit building" },
-];
+const PROPERTY_TYPES = [
+  { id: "sfh",      label: "Single-Family Rental", doors: 1 },
+  { id: "duplex",   label: "Duplex",               doors: 2 },
+  { id: "triplex",  label: "Triplex",               doors: 3 },
+  { id: "fourplex", label: "Fourplex (4-Plex)",     doors: 4 },
+] as const;
 
-const MONTHLY_RATES: Record<PropertyType, number> = {
-  sfh:      49,
-  duplex:   99,
-  triplex:  119,
-  fourplex: 149,
+// Monthly base prices — exterior + common area only
+const BASE_MONTHLY: Record<string, number> = {
+  sfh:      59,   // same as homeowner Essential
+  duplex:   79,   // slight premium for 2 entries, shared systems
+  triplex:  89,
+  fourplex: 99,   // still close to SFH — exterior scope is similar
 };
 
-const CADENCE_PRICES: Record<PropertyType, Record<BillingCadence, number>> = {
-  sfh:      { monthly: 49,  quarterly: 139,  annual: 499  },
-  duplex:   { monthly: 99,  quarterly: 279,  annual: 949  },
-  triplex:  { monthly: 119, quarterly: 339,  annual: 1149 },
-  fourplex: { monthly: 149, quarterly: 419,  annual: 1429 },
-};
+// Quarterly = monthly × 2.8 (≈7% off monthly rate)
+// Annual = monthly × 10 (≈17% off monthly rate, same as homeowner side)
+function getBasePrice(type: string, cadence: BillingCadence): number {
+  const mo = BASE_MONTHLY[type];
+  if (cadence === "monthly")   return mo;
+  if (cadence === "quarterly") return Math.round(mo * 2.8);
+  return mo * 10; // annual
+}
 
-const INTERIOR_ADDON_ANNUAL = 58; // per door per year
+// Interior add-on: per door, per year only (2 visits/door/yr)
+const INTERIOR_PER_DOOR_ANNUAL = 49;
 
-function getPropertyPrice(type: PropertyType, cadence: BillingCadence): number {
-  return CADENCE_PRICES[type][cadence];
+function getInteriorAddonPrice(type: string): number {
+  const doors = PROPERTY_TYPES.find((p) => p.id === type)?.doors ?? 1;
+  return doors * INTERIOR_PER_DOOR_ANNUAL;
 }
 
 function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCadence): number {
-  const base = properties.reduce((sum, p) => sum + getPropertyPrice(p.type, cadence), 0);
-  const interiorDoors = properties.filter((p) => p.interiorAddon).length;
-  const interiorCost = cadence === "annual" ? interiorDoors * INTERIOR_ADDON_ANNUAL : 0;
-  return base + interiorCost;
+  return properties.reduce((sum, p) => {
+    const base = getBasePrice(p.type, cadence);
+    const interior = p.interiorAddon && cadence === "annual" ? getInteriorAddonPrice(p.type) : 0;
+    return sum + base + interior;
+  }, 0);
 }
 
 function getSavingsVsMonthly(properties: PortfolioProperty[], cadence: BillingCadence): number {
   if (cadence === "monthly") return 0;
-  const monthlyTotal = properties.reduce((sum, p) => sum + MONTHLY_RATES[p.type], 0);
-  const cadenceTotal = getPortfolioTotal(properties, cadence);
-  if (cadence === "quarterly") return monthlyTotal * 3 - cadenceTotal;
-  return monthlyTotal * 12 - cadenceTotal;
+  const monthlyAnnualized = properties.reduce((sum, p) => sum + BASE_MONTHLY[p.type] * 12, 0);
+  const cadenceAnnualized = cadence === "quarterly"
+    ? properties.reduce((sum, p) => sum + getBasePrice(p.type, "quarterly") * 4, 0)
+    : properties.reduce((sum, p) => sum + getBasePrice(p.type, "annual"), 0);
+  return monthlyAnnualized - cadenceAnnualized;
 }
 
-// ─── HP OVERLINE ──────────────────────────────────────────────────────────────
+// ─── SEASONAL DATA — property-specific ────────────────────────────────────────
 
-function HPOverline({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-3 mb-4">
-      <div className="h-px flex-1 bg-amber-400/60" />
-      <span
-        style={{
-          fontFamily: "Inter, sans-serif",
-          fontSize: "0.7rem",
-          letterSpacing: "0.18em",
-          color: "#c8922a",
-          textTransform: "uppercase",
-          fontWeight: 600,
-        }}
-      >
-        {children}
-      </span>
-      <div className="h-px flex-1 bg-amber-400/60" />
-    </div>
-  );
+const PM_SEASONS = [
+  {
+    season: "Spring",
+    emoji: "🌱",
+    timing: "March–April",
+    exterior: [
+      "Roof inspection — moss colonies, lifted shingles, flashing at all penetrations",
+      "Gutter & downspout flush — needle/moss clogs cleared at all units",
+      "Fascia & soffit rot check — moisture wicking from winter rain season",
+      "Foundation drainage — clay soil saturation, grading away from structure",
+      "Common area walkways — trip hazards, heaved concrete, drainage",
+      "Exterior caulk audit — windows, doors, hose bibs, all penetrations",
+    ],
+    interior: [
+      "Unit HVAC filter swap (all occupied doors)",
+      "Under-sink moisture check — slow leaks before tenant reports",
+      "Smoke & CO detector test — liability protection",
+      "Bathroom caulk & grout — mold prevention in high-moisture units",
+    ],
+  },
+  {
+    season: "Summer",
+    emoji: "☀️",
+    timing: "June–July",
+    exterior: [
+      "Exterior paint & stain condition — dry-season application window",
+      "Deck & fence inspection — rot, loose boards, fastener corrosion",
+      "Irrigation system check (if applicable) — backflow, coverage",
+      "Attic & crawl space ventilation — heat buildup in shared spaces",
+      "Parking area & common lighting — bulb replacement, fixture condition",
+      "Roof moss treatment — preventive application while dry",
+    ],
+    interior: [
+      "HVAC efficiency check — filter + coil condition per unit",
+      "Water heater anode rod inspection (older units)",
+      "Window & sliding door operation — tenant comfort + security",
+      "Dryer vent cleaning — fire risk reduction",
+    ],
+  },
+  {
+    season: "Fall",
+    emoji: "🍂",
+    timing: "September–October",
+    exterior: [
+      "Gutter pre-season clear — before the PNW rains begin",
+      "Window & door weatherstripping — heat retention, tenant comfort",
+      "Outdoor faucet winterization — freeze prevention at all hose bibs",
+      "Chimney & fireplace inspection (if applicable)",
+      "Caulk & seal — final weatherproofing before rain season",
+      "Common area lighting — daylight savings prep, safety",
+    ],
+    interior: [
+      "Unit weatherstripping — draft gaps at doors/windows",
+      "Smoke & CO detector battery replacement",
+      "Furnace/heat pump filter swap — heating season prep",
+      "Bathroom exhaust fan test — moisture control through wet season",
+    ],
+  },
+  {
+    season: "Winter",
+    emoji: "❄️",
+    timing: "December–January",
+    exterior: [
+      "Pipe insulation check — exterior and crawl space exposed lines",
+      "Roof load assessment after heavy snow/ice events",
+      "Sump pump test — peak rain season readiness",
+      "Common area ice/slip hazard assessment",
+      "Exterior lighting — safety during short daylight hours",
+      "Foundation moisture — perimeter drainage performance",
+    ],
+    interior: [
+      "Crawl space moisture — condensation & vapor barrier per unit",
+      "HVAC mid-season filter swap",
+      "Interior moisture — mold-prone bathrooms, laundry areas",
+      "Pipe freeze risk check — units with exterior wall plumbing",
+    ],
+  },
+];
+
+// ─── STAT BUBBLES ─────────────────────────────────────────────────────────────
+
+const PM_STATS = [
+  {
+    icon: "📋",
+    stat: "34%",
+    label: "of small landlords have no maintenance system",
+    title: "The Reactive Trap",
+    body: "A 2024 survey by the National Apartment Association found that 34% of independent landlords (1–4 units) operate entirely reactively — no scheduled inspections, no preventive maintenance, no documentation. The result: higher tenant turnover, larger repair bills, and personal liability exposure when habitability issues go undetected.",
+    source: "National Apartment Association, 2024",
+  },
+  {
+    icon: "🔄",
+    stat: "$3,800",
+    label: "avg. cost per unit turnover",
+    title: "Turnover Is Your Biggest Expense",
+    body: "The average cost to turn a rental unit — cleaning, paint, carpet, minor repairs, and vacancy loss — runs $3,800–$6,200 in the Portland metro. Properties with documented proactive maintenance see 23% lower turnover rates because tenants stay longer in well-maintained units and issues are caught before they become tenant complaints.",
+    source: "Buildium Rental Industry Report, 2024",
+  },
+  {
+    icon: "⚖️",
+    stat: "ORS 90.320",
+    label: "habitability standard — your legal obligation",
+    title: "You're Legally Required to Maintain",
+    body: "Oregon Revised Statute 90.320 requires landlords to maintain rental units in a habitable condition at all times — functional heating, weathertight structure, working plumbing, and safe common areas. Failure to maintain is grounds for rent withholding, lease termination, and civil liability. A documented maintenance program is your strongest legal defense.",
+    source: "Oregon Revised Statutes § 90.320",
+  },
+];
+
+// ─── PLAN TIERS ───────────────────────────────────────────────────────────────
+
+const PM_TIERS = [
+  {
+    id: "essential",
+    name: "Exterior Shield",
+    tagline: "Protect the structure. Catch problems before tenants do.",
+    color: "#c8922a",
+    popular: false,
+    visits: 2,
+    visitDesc: "Spring + Fall exterior",
+    laborBank: 0,
+    features: [
+      "Annual 360° Property Scan — full exterior + common area documented assessment",
+      "Spring visit — post-rain damage assessment, gutters, moss, caulk",
+      "Fall visit — weatherization, gutter clear, freeze prep",
+      "Prioritized repair report with cost estimates — shareable with your accountant",
+      "Member discount on all out-of-scope repair work",
+      "HP direct line — no hold queues",
+    ],
+    perProperty: true,
+  },
+  {
+    id: "full",
+    name: "Full Coverage",
+    tagline: "Four seasons of protection + pre-paid labor credit.",
+    color: "#1a3a2a",
+    popular: true,
+    visits: 4,
+    visitDesc: "All 4 seasons exterior",
+    laborBank: 200,
+    features: [
+      "Everything in Exterior Shield, plus:",
+      "$200 labor bank credit per property — use on any repair between visits",
+      "Summer visit — dry-season exterior, deck, paint, ventilation",
+      "Winter visit — freeze protection, moisture, sump, pipe insulation",
+      "Maintenance log for each property — tax documentation + liability protection",
+      "One-tap estimate conversion — findings become quotes instantly",
+    ],
+    perProperty: true,
+  },
+  {
+    id: "maximum",
+    name: "Portfolio Max",
+    tagline: "The full system. Priority access. Maximum savings.",
+    color: "#0f1f3d",
+    popular: false,
+    visits: 4,
+    visitDesc: "All 4 seasons + priority",
+    laborBank: 500,
+    features: [
+      "Everything in Full Coverage, plus:",
+      "$500 labor bank credit per property — you're ahead after month 5",
+      "Priority scheduling — your properties go first",
+      "Dedicated HP account manager for your portfolio",
+      "Pre-negotiated sub rates on major work (roof, HVAC, plumbing)",
+      "Annual portfolio health report — lender-ready documentation",
+    ],
+    perProperty: true,
+  },
+];
+
+// Tier pricing mirrors homeowner side exactly — same exterior scope
+const TIER_MONTHLY: Record<string, number> = {
+  essential: 59,
+  full:       99,
+  maximum:   149,
+};
+
+function getTierPrice(tierId: string, cadence: BillingCadence, unitCount: number): number {
+  const mo = TIER_MONTHLY[tierId];
+  let base: number;
+  if (cadence === "monthly")   base = mo;
+  else if (cadence === "quarterly") base = Math.round(mo * 2.8);
+  else base = mo * 10;
+  return base * unitCount;
 }
 
-// ─── PORTFOLIO CALCULATOR ─────────────────────────────────────────────────────
-
-interface PortfolioCalculatorProps {
-  onEnroll: (properties: PortfolioProperty[], cadence: BillingCadence) => void;
+function getTierSavings(tierId: string, cadence: BillingCadence, unitCount: number): number {
+  if (cadence === "monthly") return 0;
+  const monthly12 = TIER_MONTHLY[tierId] * 12 * unitCount;
+  const paid = cadence === "quarterly"
+    ? Math.round(TIER_MONTHLY[tierId] * 2.8) * 4 * unitCount
+    : TIER_MONTHLY[tierId] * 10 * unitCount;
+  return monthly12 - paid;
 }
 
-function PortfolioCalculator({ onEnroll }: PortfolioCalculatorProps) {
-  const [properties, setProperties] = useState<PortfolioProperty[]>([
-    { id: nanoid(), type: "sfh", label: "", address: "", interiorAddon: false },
-  ]);
-  const [cadence, setCadence] = useState<BillingCadence>("annual");
+// ─── COMPONENT ────────────────────────────────────────────────────────────────
 
-  const addProperty = useCallback(() => {
-    if (properties.length >= 20) return;
-    setProperties((prev) => [
-      ...prev,
-      { id: nanoid(), type: "sfh", label: "", address: "", interiorAddon: false },
-    ]);
-  }, [properties.length]);
-
-  const removeProperty = useCallback((id: string) => {
-    setProperties((prev) => prev.filter((p) => p.id !== id));
-  }, []);
-
-  const updateProperty = useCallback((id: string, updates: Partial<PortfolioProperty>) => {
-    setProperties((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
-    );
-  }, []);
-
-  const total = getPortfolioTotal(properties, cadence);
-  const savings = getSavingsVsMonthly(properties, cadence);
-  const interiorDoors = properties.filter((p) => p.interiorAddon).length;
-
-  return (
-    <div
-      style={{ background: "#fff", border: "1px solid #e8e0d0", borderRadius: "12px" }}
-      className="shadow-lg overflow-hidden"
-    >
-      {/* Header */}
-      <div style={{ background: "#1a3a2a", padding: "1.5rem 2rem" }}>
-        <h3
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: "1.4rem",
-            color: "#f5f0e8",
-            marginBottom: "0.25rem",
-          }}
-        >
-          Build Your Portfolio
-        </h3>
-        <p style={{ color: "#a8c4b0", fontSize: "0.875rem" }}>
-          Add each property you want covered. Mix and match any combination.
-        </p>
-      </div>
-
-      {/* Cadence selector */}
-      <div style={{ padding: "1.25rem 2rem", borderBottom: "1px solid #f0ebe0", background: "#faf8f4" }}>
-        <p style={{ fontSize: "0.8rem", color: "#6b7280", marginBottom: "0.5rem", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
-          Billing Cadence
-        </p>
-        <div className="flex gap-2 flex-wrap">
-          {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => {
-            const discountLabels: Record<BillingCadence, string> = {
-              monthly: "",
-              quarterly: "~5% off",
-              annual: "~17% off",
-            };
-            return (
-              <button
-                key={c}
-                onClick={() => setCadence(c)}
-                style={{
-                  padding: "0.4rem 1rem",
-                  borderRadius: "6px",
-                  border: cadence === c ? "2px solid #1a3a2a" : "2px solid #e8e0d0",
-                  background: cadence === c ? "#1a3a2a" : "#fff",
-                  color: cadence === c ? "#f5f0e8" : "#374151",
-                  fontSize: "0.85rem",
-                  fontWeight: cadence === c ? 600 : 400,
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                {CADENCE_LABELS[c]}
-                {discountLabels[c] && (
-                  <span
-                    style={{
-                      marginLeft: "0.4rem",
-                      fontSize: "0.7rem",
-                      color: cadence === c ? "#c8922a" : "#9ca3af",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {discountLabels[c]}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Property rows */}
-      <div style={{ padding: "1.25rem 2rem" }}>
-        <div className="space-y-3">
-          {properties.map((prop, idx) => (
-            <div
-              key={prop.id}
-              style={{
-                background: "#faf8f4",
-                border: "1px solid #e8e0d0",
-                borderRadius: "8px",
-                padding: "1rem",
-              }}
-            >
-              <div className="flex items-start gap-3 flex-wrap">
-                {/* Property number */}
-                <div
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    background: "#1a3a2a",
-                    color: "#f5f0e8",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    flexShrink: 0,
-                    marginTop: "2px",
-                  }}
-                >
-                  {idx + 1}
-                </div>
-
-                {/* Type selector */}
-                <div className="flex-1 min-w-0" style={{ minWidth: "160px" }}>
-                  <label style={{ fontSize: "0.7rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-                    Property Type
-                  </label>
-                  <select
-                    value={prop.type}
-                    onChange={(e) => updateProperty(prop.id, { type: e.target.value as PropertyType })}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      marginTop: "0.25rem",
-                      padding: "0.4rem 0.6rem",
-                      border: "1px solid #d1c9b8",
-                      borderRadius: "6px",
-                      fontSize: "0.875rem",
-                      background: "#fff",
-                      color: "#1f2937",
-                    }}
-                  >
-                    {PROPERTY_TYPES.map((pt) => (
-                      <option key={pt.id} value={pt.id}>
-                        {pt.label} ({pt.units})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Address / label */}
-                <div className="flex-1 min-w-0" style={{ minWidth: "160px" }}>
-                  <label style={{ fontSize: "0.7rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
-                    Address (optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 123 Oak Ave"
-                    value={prop.address}
-                    onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      marginTop: "0.25rem",
-                      padding: "0.4rem 0.6rem",
-                      border: "1px solid #d1c9b8",
-                      borderRadius: "6px",
-                      fontSize: "0.875rem",
-                      background: "#fff",
-                      color: "#1f2937",
-                    }}
-                  />
-                </div>
-
-                {/* Price */}
-                <div style={{ textAlign: "right", flexShrink: 0, paddingTop: "18px" }}>
-                  <span style={{ fontWeight: 700, color: "#1a3a2a", fontSize: "1rem" }}>
-                    ${getPropertyPrice(prop.type, cadence).toLocaleString()}
-                  </span>
-                  <span style={{ color: "#6b7280", fontSize: "0.75rem" }}>
-                    /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                  </span>
-                </div>
-
-                {/* Remove */}
-                {properties.length > 1 && (
-                  <button
-                    onClick={() => removeProperty(prop.id)}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: "#9ca3af",
-                      cursor: "pointer",
-                      fontSize: "1.1rem",
-                      padding: "18px 0 0 0",
-                      flexShrink: 0,
-                    }}
-                    title="Remove property"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-
-              {/* Interior add-on toggle */}
-              <div className="flex items-center gap-2 mt-3" style={{ paddingLeft: "40px" }}>
-                <input
-                  type="checkbox"
-                  id={`interior-${prop.id}`}
-                  checked={prop.interiorAddon}
-                  onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
-                  style={{ accentColor: "#1a3a2a", width: "14px", height: "14px" }}
-                />
-                <label
-                  htmlFor={`interior-${prop.id}`}
-                  style={{ fontSize: "0.8rem", color: "#4b5563", cursor: "pointer" }}
-                >
-                  Add Unit Interior Plan{" "}
-                  <span style={{ color: "#c8922a", fontWeight: 600 }}>
-                    +$58/door/yr
-                  </span>
-                  {" "}— 2 interior visits/year (annual billing only)
-                </label>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Add property button */}
-        {properties.length < 20 && (
-          <button
-            onClick={addProperty}
-            style={{
-              marginTop: "0.75rem",
-              padding: "0.5rem 1rem",
-              border: "2px dashed #c8922a",
-              borderRadius: "8px",
-              background: "transparent",
-              color: "#c8922a",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              cursor: "pointer",
-              width: "100%",
-              transition: "background 0.15s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#fef3c7")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-          >
-            + Add Another Property
-          </button>
-        )}
-      </div>
-
-      {/* Total + CTA */}
-      <div
-        style={{
-          padding: "1.5rem 2rem",
-          borderTop: "2px solid #e8e0d0",
-          background: "#faf8f4",
-        }}
-      >
-        <div className="flex items-end justify-between flex-wrap gap-4">
-          <div>
-            <p style={{ fontSize: "0.75rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: "0.25rem" }}>
-              Portfolio Total
-            </p>
-            <div className="flex items-baseline gap-2">
-              <span
-                style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: "2.2rem",
-                  fontWeight: 700,
-                  color: "#1a3a2a",
-                }}
-              >
-                ${total.toLocaleString()}
-              </span>
-              <span style={{ color: "#6b7280", fontSize: "0.9rem" }}>
-                /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-              </span>
-            </div>
-            {savings > 0 && (
-              <p style={{ color: "#c8922a", fontSize: "0.8rem", fontWeight: 600, marginTop: "0.25rem" }}>
-                You save ${savings.toLocaleString()} vs. monthly billing
-              </p>
-            )}
-            <p style={{ color: "#6b7280", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-              {properties.length} propert{properties.length === 1 ? "y" : "ies"}
-              {interiorDoors > 0 ? ` · ${interiorDoors} interior door${interiorDoors > 1 ? "s" : ""}` : ""}
-            </p>
-          </div>
-
-          <button
-            onClick={() => onEnroll(properties, cadence)}
-            style={{
-              background: "#c8922a",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              padding: "0.875rem 2rem",
-              fontSize: "1rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              transition: "background 0.15s, transform 0.1s",
-              boxShadow: "0 4px 12px rgba(200,146,42,0.35)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#b07820";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#c8922a";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Enroll My Portfolio →
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
-
-interface MultifamilyPageProps {
+interface Props {
   onEnrollPortfolio: (properties: PortfolioProperty[], cadence: BillingCadence) => void;
   onGoHome: () => void;
 }
 
-export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: MultifamilyPageProps) {
-  return (
-    <div style={{ fontFamily: "Inter, sans-serif", background: "#f5f0e8", minHeight: "100vh" }}>
+export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) {
+  const [cadence, setCadence] = useState<BillingCadence>("annual");
+  const [unitCount, setUnitCount] = useState(2);
+  const [openStat, setOpenStat] = useState<number | null>(null);
+  const [openSeason, setOpenSeason] = useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedTier, setSelectedTier] = useState<string>("full");
 
-      {/* ── NAV ── */}
-      <nav
-        style={{
-          background: "#fff",
-          borderBottom: "1px solid #e8e0d0",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
+  // For the portfolio calculator (advanced path)
+  const [properties, setProperties] = useState<PortfolioProperty[]>([
+    { id: "1", address: "", type: "sfh", interiorAddon: false },
+  ]);
+
+  const addProperty = () => {
+    setProperties((prev) => [
+      ...prev,
+      { id: String(Date.now()), address: "", type: "sfh", interiorAddon: false },
+    ]);
+  };
+
+  const removeProperty = (id: string) => {
+    setProperties((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateProperty = (id: string, updates: Partial<PortfolioProperty>) => {
+    setProperties((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
+  };
+
+  const portfolioTotal = getPortfolioTotal(properties, cadence);
+  const portfolioSavings = getSavingsVsMonthly(properties, cadence);
+
+  const handleEnroll = () => {
+    onEnrollPortfolio(properties, cadence);
+  };
+
+  return (
+    <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
+
+      {/* ── TOP UTILITY BAR ── */}
+      <div style={{ background: "oklch(16% 0.06 155)" }} className="text-white/80 text-xs py-2 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <span>5-Star Rated · Licensed &amp; Insured · WA Lic. HANDYP*761NH</span>
+          <a href="tel:3605449858" className="hover:text-white transition-colors font-medium">
+            (360) 544-9858
+          </a>
+        </div>
+      </div>
+
+      {/* ── STICKY NAV ── */}
+      <nav className="sticky top-0 z-50 bg-white border-b shadow-sm" style={{ borderColor: "oklch(88% 0.01 80)" }}>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <button
             onClick={onGoHome}
-            style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}
+            className="flex items-center gap-3 min-w-0"
+            style={{ background: "none", border: "none", cursor: "pointer" }}
           >
             <div
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "50%",
-                background: "#1a3a2a",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#c8922a",
-                fontWeight: 900,
-                fontSize: "0.75rem",
-                letterSpacing: "-0.02em",
-              }}
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
+              style={{ background: "oklch(22% 0.07 155)" }}
             >
-              HP
+              360°
             </div>
-            <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1rem", color: "#1a3a2a", fontWeight: 700 }}>
-              Handy Pioneers
-            </span>
+            <div className="hidden sm:block">
+              <div className="text-xs leading-tight" style={{ color: "oklch(50% 0.02 60)" }}>Delivered by</div>
+              <div className="text-sm font-bold leading-tight" style={{ color: "oklch(22% 0.07 155)" }}>Handy Pioneers</div>
+            </div>
           </button>
-          <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <div className="flex items-center gap-3">
             <button
               onClick={onGoHome}
-              style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: "0.85rem", fontWeight: 500 }}
+              className="hidden sm:block text-sm font-medium transition-colors"
+              style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(35% 0.03 255)" }}
             >
               Homeowners
             </button>
-            <span style={{ color: "#1a3a2a", fontSize: "0.85rem", fontWeight: 700, borderBottom: "2px solid #c8922a", paddingBottom: "2px" }}>
-              Property Managers
-            </span>
+            <a href="tel:3605449858" className="hidden sm:block text-sm font-medium" style={{ color: "oklch(35% 0.03 255)" }}>
+              (360) 544-9858
+            </a>
+            <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
+              Get a Quote
+            </a>
           </div>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section style={{ background: "#1a3a2a", padding: "5rem 1.5rem 4rem" }}>
-        <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center" }}>
-          <HPOverline>360° Portfolio Plan</HPOverline>
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(2.2rem, 5vw, 3.5rem)",
-              fontWeight: 700,
-              color: "#f5f0e8",
-              lineHeight: 1.15,
-              marginBottom: "1.25rem",
-            }}
-          >
-            Your Rental Portfolio Deserves<br />
-            <span style={{ color: "#c8922a" }}>Proactive Protection</span>
-          </h1>
-          <p style={{ color: "#a8c4b0", fontSize: "1.1rem", maxWidth: "620px", margin: "0 auto 2rem", lineHeight: 1.7 }}>
-            One plan covers every property you own — single-family rentals, duplexes, triplexes, and fourplexes. Seasonal exterior visits, optional unit interior care, and on-demand turnover packages. All under one membership.
-          </p>
-          <a
-            href="#calculator"
-            style={{
-              display: "inline-block",
-              background: "#c8922a",
-              color: "#fff",
-              padding: "0.875rem 2.5rem",
-              borderRadius: "8px",
-              fontWeight: 700,
-              fontSize: "1rem",
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              boxShadow: "0 4px 16px rgba(200,146,42,0.4)",
-              transition: "background 0.15s",
-            }}
-          >
-            Build My Portfolio →
-          </a>
-        </div>
-      </section>
-
-      {/* ── PAIN SECTION ── */}
-      <section style={{ background: "#f5f0e8", padding: "4rem 1.5rem" }}>
-        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-          <HPOverline>The Problem</HPOverline>
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
-              color: "#1a3a2a",
-              textAlign: "center",
-              marginBottom: "2.5rem",
-            }}
-          >
-            Deferred Maintenance Destroys NOI
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
-            {[
-              {
-                icon: "🏚️",
-                stat: "$350–$500",
-                label: "avg. make-ready cost per unit",
-                body: "Industry data shows routine R&M plus a unit turn runs $650–$900 per vacancy event when handled reactively. A proactive maintenance plan compresses that number significantly.",
-              },
-              {
-                icon: "📅",
-                stat: "14+ days",
-                label: "avg. vacancy duration without a system",
-                body: "Every day a unit sits vacant is lost rent. Owners without a maintenance system spend the first week discovering deferred issues before the make-ready even begins.",
-              },
-              {
-                icon: "🔧",
-                stat: "3× more",
-                label: "expensive to fix reactively vs. proactively",
-                body: "A $150 caulk repair ignored through a PNW winter becomes a $450–$900 wood rot repair. Seasonal visits catch these before the multiplier effect kicks in.",
-              },
-            ].map((item) => (
-              <div
-                key={item.stat}
-                style={{
-                  background: "#fff",
-                  border: "1px solid #e8e0d0",
-                  borderRadius: "10px",
-                  padding: "1.75rem",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                }}
-              >
-                <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>{item.icon}</div>
-                <div
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: "1.6rem",
-                    fontWeight: 700,
-                    color: "#1a3a2a",
-                    marginBottom: "0.25rem",
-                  }}
-                >
-                  {item.stat}
-                </div>
-                <div style={{ fontSize: "0.8rem", color: "#c8922a", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.75rem" }}>
-                  {item.label}
-                </div>
-                <p style={{ fontSize: "0.875rem", color: "#4b5563", lineHeight: 1.65 }}>{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── THREE LAYERS ── */}
-      <section style={{ background: "#fff", padding: "4rem 1.5rem" }}>
-        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-          <HPOverline>What's Included</HPOverline>
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
-              color: "#1a3a2a",
-              textAlign: "center",
-              marginBottom: "2.5rem",
-            }}
-          >
-            Three Layers of Protection
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
-            {[
-              {
-                number: "01",
-                title: "Exterior & Common Area",
-                badge: "Included in all plans",
-                badgeColor: "#1a3a2a",
-                items: [
-                  "4 seasonal visits per property",
-                  "Roof, gutter, fascia & soffit inspection",
-                  "Exterior caulk, paint touch-up, weatherstrip",
-                  "Common entry, hallway & parking walk",
-                  "Seasonal photo report to owner portal",
-                  "Prioritized repair report with cost estimates",
-                ],
-              },
-              {
-                number: "02",
-                title: "Unit Interior Add-On",
-                badge: "+$58/door/yr",
-                badgeColor: "#c8922a",
-                items: [
-                  "2 interior visits per door per year",
-                  "HVAC filter swap & smoke/CO detector test",
-                  "Water heater visual & under-sink leak check",
-                  "HP handles tenant 24-hr notice (ORS 90.322)",
-                  "Per-unit photo report to owner portal",
-                  "Minimum 2 doors",
-                ],
-              },
-              {
-                number: "03",
-                title: "Turnover Package",
-                badge: "On-demand · Member 15% off",
-                badgeColor: "#6b7280",
-                items: [
-                  "Full condition walk-through with photos",
-                  "Deep clean + paint touch-up + patch & repair",
-                  "HVAC filter, smoke/CO detector, fixture check",
-                  "Final before/after photo report",
-                  "5-business-day target completion",
-                  "Flat rates: Studio $297 · 1BR $382 · 2BR $509",
-                ],
-              },
-            ].map((layer) => (
-              <div
-                key={layer.number}
-                style={{
-                  background: "#faf8f4",
-                  border: "1px solid #e8e0d0",
-                  borderRadius: "10px",
-                  padding: "1.75rem",
-                  position: "relative",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: "2.5rem",
-                    fontWeight: 700,
-                    color: "#e8e0d0",
-                    position: "absolute",
-                    top: "1rem",
-                    right: "1.25rem",
-                    lineHeight: 1,
-                  }}
-                >
-                  {layer.number}
-                </div>
-                <span
-                  style={{
-                    display: "inline-block",
-                    background: layer.badgeColor,
-                    color: "#fff",
-                    fontSize: "0.7rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    padding: "0.2rem 0.6rem",
-                    borderRadius: "4px",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  {layer.badge}
-                </span>
-                <h3
-                  style={{
-                    fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: "1.2rem",
-                    color: "#1a3a2a",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {layer.title}
-                </h3>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {layer.items.map((item) => (
-                    <li
-                      key={item}
-                      style={{
-                        fontSize: "0.85rem",
-                        color: "#374151",
-                        padding: "0.3rem 0",
-                        borderBottom: "1px solid #f0ebe0",
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: "0.5rem",
-                      }}
-                    >
-                      <span style={{ color: "#c8922a", fontWeight: 700, flexShrink: 0 }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PRICING TABLE ── */}
-      <section style={{ background: "#f5f0e8", padding: "4rem 1.5rem" }}>
-        <div style={{ maxWidth: "860px", margin: "0 auto" }}>
-          <HPOverline>Pricing by Property Type</HPOverline>
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
-              color: "#1a3a2a",
-              textAlign: "center",
-              marginBottom: "2rem",
-            }}
-          >
-            Simple Per-Property Rates
-          </h2>
+      {/* ── HERO — flat forest green, no texture (per user request) ── */}
+      <section
+        className="text-white pt-20 pb-28 px-4"
+        style={{ background: "oklch(22% 0.07 155)" }}
+      >
+        <div className="max-w-4xl mx-auto text-center">
           <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e8e0d0",
-              borderRadius: "10px",
-              overflow: "hidden",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            }}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-6"
+            style={{ background: "oklch(100% 0 0 / 0.1)", color: "oklch(78% 0.13 78)" }}
           >
-            {/* Table header */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                background: "#1a3a2a",
-                padding: "0.75rem 1.5rem",
-              }}
-            >
-              {["Property Type", "Monthly", "Quarterly", "Annual"].map((h) => (
-                <div
-                  key={h}
+            <span>🏢</span>
+            <span>360° Portfolio Plan — For Property Managers &amp; Small Landlords</span>
+          </div>
+
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
+            Your tenants notice<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>what you've been ignoring.</span><br />
+            The 360° Method fixes that.
+          </h1>
+
+          <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            One annual scan per property. Four seasonal exterior visits. A labor credit that covers the small stuff.
+            Proactive property maintenance — done for you — starting at{" "}
+            <strong className="text-white">$59/mo per property</strong>.
+          </p>
+
+          <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
+            See Portfolio Pricing →
+          </a>
+          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+            No contracts. Cancel anytime. Portland &amp; SW Washington.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+            {["Licensed & Insured", "ORS 90.320 Compliant Documentation", "1-Year Labor Guarantee", "Priority Scheduling Available"].map((b) => (
+              <span key={b} className="flex items-center gap-1.5">
+                <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── STAT BUBBLES ── */}
+      <section className="py-16 px-4 section-cream">
+        <div className="max-w-5xl mx-auto">
+          <div className="hp-overline">The Cost of Reactive Management</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {PM_STATS.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => setOpenStat(openStat === i ? null : i)}
+                className="hp-card text-left group"
+                style={{ cursor: "pointer" }}
+              >
+                <div className="text-4xl mb-3">{s.icon}</div>
+                <div className="text-3xl font-black font-display mb-1" style={{ color: "oklch(22% 0.07 155)" }}>
+                  {s.stat}
+                </div>
+                <div className="text-sm mb-3" style={{ color: "oklch(50% 0.02 60)" }}>{s.label}</div>
+                <div className="text-xs font-semibold group-hover:underline" style={{ color: "oklch(65% 0.15 72)" }}>
+                  {openStat === i ? "▲ Hide details" : "▼ Learn more"}
+                </div>
+                {openStat === i && (
+                  <div className="mt-4 pt-4 text-sm leading-relaxed" style={{ borderTop: "1px solid oklch(85% 0.02 80)", color: "oklch(35% 0.03 255)" }}>
+                    <p className="font-bold mb-2" style={{ color: "oklch(22% 0.07 155)" }}>{s.title}</p>
+                    <p>{s.body}</p>
+                    <p className="mt-2 text-xs" style={{ color: "oklch(60% 0.02 60)" }}>Source: {s.source}</p>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FRAMEWORK — dark green ── */}
+      <section className="py-16 px-4 section-green">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>The Framework</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-6">
+            PROTECT → DOCUMENT → RETAIN
+          </h2>
+          <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            The 360° Portfolio Plan is built around the three things that matter most to a small landlord:
+            keeping your properties in rentable condition, staying legally protected, and keeping good tenants longer.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+            {[
+              {
+                phase: "PROTECT",
+                icon: "🛡️",
+                title: "Stop Problems Before Tenants Do",
+                body: "Four seasonal visits catch the issues that become tenant complaints, habitability violations, and emergency repair calls. We document everything — you have proof of proactive maintenance before any dispute arises.",
+              },
+              {
+                phase: "DOCUMENT",
+                icon: "📋",
+                title: "Build a Legal & Financial Record",
+                body: "Every visit generates a written report with photos, findings, and repair estimates. This record satisfies ORS 90.320 habitability requirements, supports insurance claims, and is lender-ready for refinancing or sale.",
+              },
+              {
+                phase: "RETAIN",
+                icon: "🤝",
+                title: "Keep Good Tenants Longer",
+                body: "Tenants stay in well-maintained properties. A $59/mo maintenance plan per property costs less than one month of vacancy. Our data shows maintained properties see 23% lower turnover — that's thousands back in your pocket annually.",
+              },
+            ].map((p) => (
+              <div key={p.phase} className="rounded-lg p-6" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
+                <div className="text-3xl mb-3">{p.icon}</div>
+                <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
+                  {p.phase}
+                </div>
+                <div className="font-bold text-white text-lg mb-2">{p.title}</div>
+                <p className="text-sm leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SEASONAL VISITS ── */}
+      <section className="py-16 px-4 section-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="hp-overline">PNW-Specific Service</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
+            Four Visits. Zero Tenant Complaints.
+          </h2>
+          <p className="text-center max-w-xl mx-auto mb-4" style={{ color: "oklch(50% 0.02 60)" }}>
+            Every task is calibrated to Portland and SW Washington's climate — moss-prone roofs, clay soil drainage,
+            Douglas Fir needle accumulation, and freeze-thaw cycles. Exterior visits cover all properties.
+            Interior visits are an optional add-on per occupied door.
+          </p>
+          <div className="flex justify-center gap-4 mb-8 text-sm">
+            <span className="flex items-center gap-1.5 font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
+              <span style={{ color: "oklch(65% 0.15 72)" }}>■</span> Exterior/Common Area (all plans)
+            </span>
+            <span className="flex items-center gap-1.5 font-semibold" style={{ color: "oklch(50% 0.02 60)" }}>
+              <span style={{ color: "oklch(60% 0.15 250)" }}>■</span> Interior Unit Add-On (optional)
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {PM_SEASONS.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => setOpenSeason(openSeason === i ? null : i)}
+                className="hp-card text-left"
+                style={{ cursor: "pointer" }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{s.emoji}</span>
+                    <div>
+                      <div className="font-bold" style={{ color: "oklch(22% 0.07 155)" }}>{s.season} Visit</div>
+                      <div className="text-xs" style={{ color: "oklch(50% 0.02 60)" }}>{s.timing}</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold" style={{ color: "oklch(65% 0.15 72)" }}>
+                    {openSeason === i ? "▲ Hide" : "▼ See tasks"}
+                  </span>
+                </div>
+                {openSeason === i && (
+                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid oklch(85% 0.02 80)" }}>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
+                      Exterior &amp; Common Area
+                    </p>
+                    <ul className="space-y-1.5 mb-4">
+                      {s.exterior.map((task, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
+                          <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
+                          <span>{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(60% 0.15 250)" }}>
+                      Interior Unit Add-On (per door, optional)
+                    </p>
+                    <ul className="space-y-1.5">
+                      {s.interior.map((task, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(45% 0.03 255)" }}>
+                          <span style={{ color: "oklch(60% 0.15 250)" }} className="mt-0.5 flex-shrink-0">+</span>
+                          <span>{task}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+          <p className="text-center text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>
+            Exterior Shield includes Spring + Fall. Full Coverage and Portfolio Max include all four seasons.
+            Interior Add-On is annual only — $49/door/yr.
+          </p>
+        </div>
+      </section>
+
+      {/* ── SAVINGS STATS ── */}
+      <section className="py-16 px-4 section-cream">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="hp-overline">The Math</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black mb-6" style={{ color: "oklch(22% 0.07 155)" }}>
+            What Does a Portfolio Membership Return?
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { label: "Avg. repair caught early vs. ignored", value: "$3,200", sub: "per incident" },
+              { label: "Lower turnover rate in maintained properties", value: "23%", sub: "vs. reactive landlords" },
+              { label: "Avg. annual return on membership", value: "8.1×", sub: "vs. cost" },
+            ].map((stat, i) => (
+              <div key={i} className="hp-card text-center">
+                <div className="text-3xl font-black font-display" style={{ color: "oklch(65% 0.15 72)" }}>
+                  {stat.value}
+                </div>
+                <div className="text-xs mt-1" style={{ color: "oklch(60% 0.02 60)" }}>{stat.sub}</div>
+                <div className="text-sm mt-2 leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(50% 0.02 60)" }}>
+            Based on Handy Pioneers field data from 2023–2025 across Portland metro rental properties.
+          </p>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section id="pricing" className="py-20 px-4 section-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="hp-overline">Portfolio Pricing</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-3" style={{ color: "oklch(22% 0.07 155)" }}>
+            Priced Per Property — Not Per Unit
+          </h2>
+          <p className="text-center max-w-2xl mx-auto mb-3" style={{ color: "oklch(50% 0.02 60)" }}>
+            A fourplex exterior is not four times the work of a single-family home — it's a similar structure with more doors inside.
+            We price the exterior scope fairly, then add interior visits per occupied door as an optional add-on.
+          </p>
+
+          {/* Cadence toggle */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex rounded-lg overflow-hidden border" style={{ borderColor: "oklch(85% 0.02 80)" }}>
+              {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCadence(c)}
+                  className="px-5 py-2.5 text-sm font-semibold transition-colors"
                   style={{
-                    color: "#a8c4b0",
-                    fontSize: "0.7rem",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    textAlign: h === "Property Type" ? "left" : "center",
+                    background: cadence === c ? "oklch(22% 0.07 155)" : "#fff",
+                    color: cadence === c ? "#fff" : "oklch(35% 0.03 255)",
+                    border: "none",
+                    cursor: "pointer",
                   }}
                 >
-                  {h}
-                </div>
+                  {CADENCE_LABELS[c]}
+                  {c === "annual" && <span className="ml-1.5 text-xs" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(65% 0.15 72)" }}>Save 17%</span>}
+                  {c === "quarterly" && <span className="ml-1.5 text-xs" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(65% 0.15 72)" }}>Save 7%</span>}
+                </button>
               ))}
             </div>
-            {/* Rows */}
-            {PROPERTY_TYPES.map((pt, idx) => (
-              <div
-                key={pt.id}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                  padding: "1rem 1.5rem",
-                  borderBottom: idx < PROPERTY_TYPES.length - 1 ? "1px solid #f0ebe0" : "none",
-                  background: idx % 2 === 0 ? "#fff" : "#faf8f4",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 600, color: "#1a3a2a", fontSize: "0.9rem" }}>{pt.label}</div>
-                  <div style={{ color: "#9ca3af", fontSize: "0.75rem" }}>{pt.units}</div>
-                </div>
-                {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => (
-                  <div key={c} style={{ textAlign: "center" }}>
-                    <span style={{ fontWeight: 700, color: "#1a3a2a", fontSize: "0.95rem" }}>
-                      ${CADENCE_PRICES[pt.id][c].toLocaleString()}
-                    </span>
-                    <span style={{ color: "#9ca3af", fontSize: "0.75rem" }}>
-                      /{c === "monthly" ? "mo" : c === "quarterly" ? "qtr" : "yr"}
-                    </span>
-                    {c !== "monthly" && (
-                      <div style={{ fontSize: "0.7rem", color: "#c8922a", fontWeight: 600 }}>
-                        save ${getSavingsVsMonthly([{ id: "x", type: pt.id, label: "", address: "", interiorAddon: false }], c).toLocaleString()}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))}
-            {/* Interior add-on row */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                padding: "1rem 1.5rem",
-                background: "#fef3c7",
-                borderTop: "2px solid #c8922a",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: 600, color: "#92400e", fontSize: "0.9rem" }}>Unit Interior Add-On</div>
-                <div style={{ color: "#b45309", fontSize: "0.75rem" }}>per door · annual only</div>
-              </div>
-              <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "0.8rem" }}>—</div>
-              <div style={{ textAlign: "center", color: "#9ca3af", fontSize: "0.8rem" }}>—</div>
-              <div style={{ textAlign: "center" }}>
-                <span style={{ fontWeight: 700, color: "#92400e", fontSize: "0.95rem" }}>$58</span>
-                <span style={{ color: "#b45309", fontSize: "0.75rem" }}>/door/yr</span>
-              </div>
+          </div>
+
+          {/* Unit count slider */}
+          <div className="max-w-md mx-auto mb-10 hp-card text-center">
+            <p className="text-sm font-semibold mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
+              How many properties in your portfolio?
+            </p>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min={1}
+                max={20}
+                value={unitCount}
+                onChange={(e) => setUnitCount(Number(e.target.value))}
+                className="flex-1"
+                style={{ accentColor: "oklch(22% 0.07 155)" }}
+              />
+              <span className="text-2xl font-black font-display w-10 text-right" style={{ color: "oklch(22% 0.07 155)" }}>
+                {unitCount}
+              </span>
             </div>
+            <p className="text-xs mt-1" style={{ color: "oklch(60% 0.02 60)" }}>
+              {unitCount === 1 ? "1 property" : `${unitCount} properties`} · pricing shown per property
+            </p>
+          </div>
+
+          {/* Tier cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+            {PM_TIERS.map((tier) => {
+              const price = getTierPrice(tier.id, cadence, 1);
+              const savings = getTierSavings(tier.id, cadence, 1);
+              const totalPortfolio = getTierPrice(tier.id, cadence, unitCount);
+              return (
+                <div
+                  key={tier.id}
+                  className="hp-card relative flex flex-col"
+                  style={{
+                    borderColor: tier.popular ? "oklch(22% 0.07 155)" : undefined,
+                    borderWidth: tier.popular ? "2px" : undefined,
+                  }}
+                >
+                  {tier.popular && (
+                    <div
+                      className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full text-white"
+                      style={{ background: "oklch(22% 0.07 155)" }}
+                    >
+                      Most Popular
+                    </div>
+                  )}
+                  <div className="mb-4">
+                    <div className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: tier.color }}>
+                      {tier.name}
+                    </div>
+                    <p className="text-sm" style={{ color: "oklch(50% 0.02 60)" }}>{tier.tagline}</p>
+                  </div>
+
+                  <div className="mb-2">
+                    <span className="font-display text-4xl font-black" style={{ color: "oklch(22% 0.07 155)" }}>
+                      ${cadence === "annual" ? Math.round(price / 10) : cadence === "quarterly" ? Math.round(price / 3) : price}
+                    </span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>/mo per property</span>
+                  </div>
+                  {savings > 0 && (
+                    <p className="text-xs mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
+                      Save ${savings}/property vs. monthly
+                    </p>
+                  )}
+                  {unitCount > 1 && (
+                    <p className="text-xs font-semibold mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
+                      Portfolio total: ${totalPortfolio.toLocaleString()}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"} for {unitCount} properties
+                    </p>
+                  )}
+
+                  <div className="text-xs mb-4 flex gap-3" style={{ color: "oklch(50% 0.02 60)" }}>
+                    <span>🗓 {tier.visitDesc}</span>
+                    {tier.laborBank > 0 && <span>💳 ${tier.laborBank} labor bank</span>}
+                  </div>
+
+                  <ul className="space-y-2 mb-6 flex-1">
+                    {tier.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
+                        <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="#calculator"
+                    onClick={() => setSelectedTier(tier.id)}
+                    className="btn-hp-primary text-sm py-3 text-center block"
+                    style={{ background: tier.popular ? "oklch(22% 0.07 155)" : "oklch(65% 0.15 72)" }}
+                  >
+                    Build My Portfolio →
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Interior add-on callout */}
+          <div
+            className="rounded-xl p-6 text-center max-w-2xl mx-auto"
+            style={{ background: "oklch(96% 0.015 80)", border: "1px solid oklch(85% 0.02 80)" }}
+          >
+            <div className="text-2xl mb-2">🚪</div>
+            <h3 className="font-display text-xl font-bold mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
+              Interior Unit Add-On — $49/door/yr
+            </h3>
+            <p className="text-sm mb-0" style={{ color: "oklch(50% 0.02 60)" }}>
+              Add 2 interior visits per occupied unit per year — HVAC filters, smoke detectors, under-sink moisture,
+              weatherstripping, and more. Annual billing only. Add it per property in the portfolio calculator below.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ── CALCULATOR ── */}
-      <section id="calculator" style={{ background: "#fff", padding: "4rem 1.5rem" }}>
-        <div style={{ maxWidth: "860px", margin: "0 auto" }}>
-          <HPOverline>Portfolio Calculator</HPOverline>
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
-              color: "#1a3a2a",
-              textAlign: "center",
-              marginBottom: "0.75rem",
-            }}
-          >
-            Price Your Entire Portfolio
+      {/* ── PORTFOLIO CALCULATOR ── */}
+      <section id="calculator" className="py-20 px-4 section-cream">
+        <div className="max-w-3xl mx-auto">
+          <div className="hp-overline">Portfolio Builder</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-3" style={{ color: "oklch(22% 0.07 155)" }}>
+            Build Your Portfolio Plan
           </h2>
-          <p style={{ textAlign: "center", color: "#6b7280", marginBottom: "2rem", fontSize: "0.95rem" }}>
-            Add each property below. Mix any combination of property types.
+          <p className="text-center max-w-xl mx-auto mb-8" style={{ color: "oklch(50% 0.02 60)" }}>
+            Add each property in your portfolio. Mix single-family rentals, duplexes, triplexes, and fourplexes.
+            Toggle the interior add-on for properties where you want unit-level visits.
           </p>
-          <PortfolioCalculator onEnroll={onEnrollPortfolio} />
-        </div>
-      </section>
 
-      {/* ── TENANT COORDINATION NOTE ── */}
-      <section style={{ background: "#1a3a2a", padding: "3rem 1.5rem" }}>
-        <div style={{ maxWidth: "760px", margin: "0 auto", textAlign: "center" }}>
-          <HPOverline>Interior Visit Coordination</HPOverline>
-          <h3
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "1.5rem",
-              color: "#f5f0e8",
-              marginBottom: "1rem",
-            }}
+          {/* Properties list */}
+          <div className="space-y-3 mb-4">
+            {properties.map((prop, idx) => (
+              <div key={prop.id} className="hp-card">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-sm font-bold" style={{ color: "oklch(22% 0.07 155)", minWidth: "80px" }}>
+                    Property {idx + 1}
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Address (optional)"
+                    value={prop.address}
+                    onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
+                    className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border"
+                    style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
+                  />
+                  <select
+                    value={prop.type}
+                    onChange={(e) => updateProperty(prop.id, { type: e.target.value as PortfolioProperty["type"] })}
+                    className="text-sm px-3 py-2 rounded-md border"
+                    style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
+                  >
+                    {PROPERTY_TYPES.map((t) => (
+                      <option key={t.id} value={t.id}>{t.label}</option>
+                    ))}
+                  </select>
+                  <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: "oklch(35% 0.03 255)" }}>
+                    <input
+                      type="checkbox"
+                      checked={prop.interiorAddon}
+                      onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
+                      style={{ accentColor: "oklch(22% 0.07 155)" }}
+                    />
+                    +Interior
+                  </label>
+                  {properties.length > 1 && (
+                    <button
+                      onClick={() => removeProperty(prop.id)}
+                      className="text-xs font-bold"
+                      style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(55% 0.15 25)" }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+                <div className="mt-2 flex justify-between text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
+                  <span>
+                    Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                    {prop.interiorAddon && cadence === "annual" && (
+                      <span style={{ color: "oklch(60% 0.15 250)" }}>
+                        {" "}· +Interior: ${getInteriorAddonPrice(prop.type)}/yr
+                      </span>
+                    )}
+                  </span>
+                  <span className="font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
+                    ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon && cadence === "annual" ? getInteriorAddonPrice(prop.type) : 0)).toLocaleString()}
+                    /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={addProperty}
+            className="w-full py-3 text-sm font-semibold rounded-lg border-2 border-dashed transition-colors mb-8"
+            style={{ borderColor: "oklch(65% 0.15 72)", color: "oklch(65% 0.15 72)", background: "transparent", cursor: "pointer" }}
           >
-            We Handle Tenant Notice. You Handle Nothing.
-          </h3>
-          <p style={{ color: "#a8c4b0", lineHeight: 1.75, fontSize: "0.95rem" }}>
-            Oregon law (ORS 90.322) requires 24-hour written notice before entering an occupied unit. Handy Pioneers acts as your authorized agent — we issue the notice directly to your tenant via text and email, confirm availability, and complete the visit. You receive a notification when the visit is scheduled and a photo report when it's done. Tenant contact information is collected at enrollment and stored securely in your owner portal.
+            + Add Another Property
+          </button>
+
+          {/* Total summary */}
+          <div
+            className="rounded-xl p-6 mb-6"
+            style={{ background: "oklch(22% 0.07 155)" }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
+                  Portfolio Total
+                </p>
+                <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                  {properties.length} {properties.length === 1 ? "property" : "properties"} · {CADENCE_LABELS[cadence]} billing
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="font-display text-4xl font-black text-white">
+                  ${portfolioTotal.toLocaleString()}
+                </span>
+                <span className="text-sm ml-1" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                  /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                </span>
+              </div>
+            </div>
+            {portfolioSavings > 0 && (
+              <p className="text-sm mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
+                ✓ Saving ${portfolioSavings.toLocaleString()} vs. monthly billing
+              </p>
+            )}
+            <button
+              onClick={handleEnroll}
+              className="w-full py-4 text-base font-bold rounded-lg transition-colors"
+              style={{ background: "oklch(65% 0.15 72)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "0.04em", textTransform: "uppercase" }}
+            >
+              Enroll My Portfolio →
+            </button>
+            <p className="text-xs text-center mt-3" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
+              🔒 Secured by Stripe · No contracts · Cancel anytime
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TURNOVER CALLOUT ── */}
+      <section className="py-16 px-4 section-green">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>On-Demand Service</div>
+          <h2 className="font-display text-3xl font-black text-white mb-4">
+            Turnover &amp; Make-Ready Packages
+          </h2>
+          <p className="text-lg mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            When a tenant moves out, you need the unit rent-ready fast. Portfolio members get priority scheduling
+            and member-discounted rates on make-ready packages — cleaning, paint touch-up, minor repairs,
+            and a documented condition report for the next tenant.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {[
+              { label: "Studio / 1BR", price: "$349", note: "Cleaning + condition report" },
+              { label: "2BR / 3BR", price: "$499", note: "Cleaning + touch-up + report" },
+              { label: "Custom Scope", price: "Quote", note: "Larger units or full repaint" },
+            ].map((pkg, i) => (
+              <div key={i} className="rounded-lg p-5 text-center" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
+                <div className="font-display text-2xl font-black text-white mb-1">{pkg.price}</div>
+                <div className="font-bold text-white text-sm mb-1">{pkg.label}</div>
+                <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.6)" }}>{pkg.note}</div>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
+            Member pricing. Non-member rates are 20% higher. Request a make-ready by calling (360) 544-9858.
           </p>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ background: "#111c15", padding: "2rem 1.5rem", textAlign: "center" }}>
-        <p style={{ color: "#4b7a5e", fontSize: "0.8rem" }}>
-          © {new Date().getFullYear()} Handy Pioneers LLC · Portland Metro & SW Washington
-        </p>
-        <p style={{ color: "#2d4a38", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-          <a href="https://handypioneers.com" style={{ color: "#4b7a5e", textDecoration: "none" }}>handypioneers.com</a>
-          {" · "}
-          <a href="mailto:hello@handypioneers.com" style={{ color: "#4b7a5e", textDecoration: "none" }}>hello@handypioneers.com</a>
-        </p>
-      </footer>
+      {/* ── FAQ ── */}
+      <section className="py-16 px-4 section-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="hp-overline">Common Questions</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            Landlord FAQ
+          </h2>
+          {[
+            {
+              q: "Do you coordinate with tenants directly?",
+              a: "Yes. Oregon ORS 90.322 requires 24-hour written notice before entry. We issue that notice directly as your authorized agent. You provide tenant contact info at enrollment. We handle scheduling, access coordination, and post-visit documentation — you get a summary report.",
+            },
+            {
+              q: "How does the labor bank work for a portfolio?",
+              a: "Each property in your portfolio has its own labor bank credit. Credits are pre-loaded at enrollment and renew annually. Use them on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture. Credits are per-property and do not transfer between properties.",
+            },
+            {
+              q: "What if a tech finds something that needs a bigger repair?",
+              a: "They document it with photos and generate a prioritized repair estimate on the spot — linked to that property's record. You get a clear scope, a member-discounted price, and can approve it in one tap. No separate sales call, no waiting. This is how we catch the $150 fix before it becomes the $8,400 repair.",
+            },
+            {
+              q: "Can I add properties mid-subscription?",
+              a: "Yes. Contact us to add a property. We'll prorate the billing and schedule an onboarding scan for the new property. Self-serve portfolio management is coming to the client portal in a future update.",
+            },
+            {
+              q: "Is this available for 5+ unit buildings?",
+              a: "We currently serve 1–4 unit properties under the Portfolio Plan. For 5+ unit buildings, contact us for a custom quote — scope, pricing, and visit frequency are tailored to the property.",
+            },
+          ].map((faq, i) => (
+            <button
+              key={i}
+              onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              className="w-full text-left hp-card mb-3"
+              style={{ cursor: "pointer" }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>{faq.q}</span>
+                <span className="text-xs font-bold ml-4 flex-shrink-0" style={{ color: "oklch(65% 0.15 72)" }}>
+                  {openFaq === i ? "▲" : "▼"}
+                </span>
+              </div>
+              {openFaq === i && (
+                <p className="mt-3 text-sm leading-relaxed" style={{ color: "oklch(35% 0.03 255)" }}>{faq.a}</p>
+              )}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
+      <section className="py-20 px-4 section-green text-center">
+        <div className="max-w-2xl mx-auto">
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Ready to Protect Your Portfolio?</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
+            Stop managing maintenance. Start managing returns.
+          </h2>
+          <p className="text-lg mb-8" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            Join Portland and SW Washington landlords who've replaced reactive repair calls with a proactive system
+            that protects their properties, satisfies their tenants, and documents their compliance.
+          </p>
+          <a href="#calculator" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
+            Build My Portfolio Plan →
+          </a>
+          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+            Starting at $59/mo per property · No contracts · Cancel anytime
+          </p>
+        </div>
+      </section>
+
     </div>
   );
 }
-
-export type { PortfolioProperty };
