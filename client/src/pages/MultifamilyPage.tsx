@@ -337,7 +337,7 @@ interface Props {
 }
 
 export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) {
-  const [cadence, setCadence] = useState<BillingCadence>("annual");
+  const [cadence, setCadence] = useState<BillingCadence>("monthly");
   const [unitCount, setUnitCount] = useState(2);
   const [openStat, setOpenStat] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -767,8 +767,8 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   }}
                 >
                   {CADENCE_LABELS[c]}
-                  {c === "annual" && <span className="ml-1.5 text-xs" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(65% 0.15 72)" }}>Save 17%</span>}
-                  {c === "quarterly" && <span className="ml-1.5 text-xs" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(65% 0.15 72)" }}>Save 7%</span>}
+                  {c === "quarterly" && <span className="block text-xs font-bold" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(55% 0.12 145)" }}>Save ~7%</span>}
+                  {c === "annual" && <span className="block text-xs font-bold" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(55% 0.12 145)" }}>Save ~17%</span>}
                 </button>
               ))}
             </div>
@@ -830,10 +830,17 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
                   <div className="mb-2">
                     <span className="font-display text-4xl font-black" style={{ color: "oklch(22% 0.07 155)" }}>
-                      ${cadence === "annual" ? Math.round(price / 10) : cadence === "quarterly" ? Math.round(price / 3) : price}
+                      ${price}
                     </span>
-                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>/mo per property</span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>
+                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"} per property
+                    </span>
                   </div>
+                  {cadence !== "monthly" && (
+                    <p className="text-xs mb-1" style={{ color: "oklch(50% 0.02 60)" }}>
+                      ${cadence === "annual" ? Math.round(price / 10) : Math.round(price / 3)}/mo equivalent
+                    </p>
+                  )}
                   {savings > 0 && (
                     <p className="text-xs mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
                       Save ${savings}/property vs. monthly
