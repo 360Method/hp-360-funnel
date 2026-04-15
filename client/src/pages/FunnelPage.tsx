@@ -304,7 +304,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               <button
                 key={i}
                 onClick={() => setOpenBubble(openBubble === i ? null : i)}
-                className="hp-card text-left group"
+                className="hp-card text-center sm:text-left group"
                 style={{ cursor: "pointer" }}
               >
                 <div className="text-4xl mb-3">{bubble.icon}</div>
