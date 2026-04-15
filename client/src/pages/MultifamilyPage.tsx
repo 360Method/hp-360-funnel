@@ -16,7 +16,7 @@
  *   - Turnover/make-ready is on-demand, not subscription
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BillingCadence } from "../tiers";
 import { CADENCE_LABELS } from "../tiers";
 // ─── TYPES ────────────────────────────────────────────────────────────────────
@@ -58,28 +58,57 @@ function getBasePrice(type: string, cadence: BillingCadence): number {
 }
 
 // Interior add-on: per door, per year only (2 visits/door/yr)
+// Available on ALL cadences — shown as annual equivalent for monthly/quarterly
 const INTERIOR_PER_DOOR_ANNUAL = 49;
 
-function getInteriorAddonPrice(type: string): number {
+function getInteriorAddonPrice(type: string, cadence: BillingCadence): number {
   const doors = PROPERTY_TYPES.find((p) => p.id === type)?.doors ?? 1;
-  return doors * INTERIOR_PER_DOOR_ANNUAL;
+  const annualCost = doors * INTERIOR_PER_DOOR_ANNUAL;
+  if (cadence === "annual")   return annualCost;
+  if (cadence === "quarterly") return Math.round(annualCost / 4);
+  return Math.round(annualCost / 12);
 }
 
 function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCadence): number {
   return properties.reduce((sum, p) => {
     const base = getBasePrice(p.type, cadence);
-    const interior = p.interiorAddon && cadence === "annual" ? getInteriorAddonPrice(p.type) : 0;
+    const interior = p.interiorAddon ? getInteriorAddonPrice(p.type, cadence) : 0;
     return sum + base + interior;
   }, 0);
 }
 
 function getSavingsVsMonthly(properties: PortfolioProperty[], cadence: BillingCadence): number {
   if (cadence === "monthly") return 0;
-  const monthlyAnnualized = properties.reduce((sum, p) => sum + BASE_MONTHLY[p.type] * 12, 0);
+  const monthlyAnnualized = properties.reduce((sum, p) => {
+    const interiorMo = p.interiorAddon ? getInteriorAddonPrice(p.type, "monthly") : 0;
+    return sum + (BASE_MONTHLY[p.type] + interiorMo) * 12;
+  }, 0);
   const cadenceAnnualized = cadence === "quarterly"
-    ? properties.reduce((sum, p) => sum + getBasePrice(p.type, "quarterly") * 4, 0)
-    : properties.reduce((sum, p) => sum + getBasePrice(p.type, "annual"), 0);
+    ? properties.reduce((sum, p) => {
+        const interiorQ = p.interiorAddon ? getInteriorAddonPrice(p.type, "quarterly") : 0;
+        return sum + (getBasePrice(p.type, "quarterly") + interiorQ) * 4;
+      }, 0)
+    : properties.reduce((sum, p) => {
+        const interiorA = p.interiorAddon ? getInteriorAddonPrice(p.type, "annual") : 0;
+        return sum + getBasePrice(p.type, "annual") + interiorA;
+      }, 0);
   return monthlyAnnualized - cadenceAnnualized;
+}
+
+// ─── MEMBER DISCOUNTS ────────────────────────────────────────────────────────
+const MEMBER_DISCOUNTS = [
+  { threshold: 1, label: "1 property",   discount: 0 },
+  { threshold: 2, label: "2–3 properties", discount: 5 },
+  { threshold: 4, label: "4–6 properties", discount: 10 },
+  { threshold: 7, label: "7+ properties",  discount: 15 },
+];
+
+function getMemberDiscount(count: number): number {
+  let rate = 0;
+  for (const tier of MEMBER_DISCOUNTS) {
+    if (count >= tier.threshold) rate = tier.discount;
+  }
+  return rate;
 }
 
 // ─── SEASONAL DATA — property-specific ────────────────────────────────────────
@@ -299,6 +328,48 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
     { id: "1", address: "", type: "sfh", interiorAddon: false },
   ]);
 
+  // Google Maps autocomplete refs — one per property row
+  const autocompleteRefs = useRef<Record<string, google.maps.places.Autocomplete | null>>({});
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  // Load Google Maps Places API via Manus proxy
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_FRONTEND_FORGE_API_KEY as string;
+    const apiUrl = import.meta.env.VITE_FRONTEND_FORGE_API_URL as string;
+    if (!apiKey || !apiUrl) return;
+    if (document.getElementById("gm-places-script")) return;
+    const script = document.createElement("script");
+    script.id = "gm-places-script";
+    script.src = `${apiUrl}/maps/api/js?key=${apiKey}&libraries=places`;
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
+  // Attach autocomplete to a newly rendered address input
+  const attachAutocomplete = (id: string, el: HTMLInputElement | null) => {
+    inputRefs.current[id] = el;
+    if (!el || autocompleteRefs.current[id]) return;
+    const tryAttach = () => {
+      if (!(window as unknown as { google?: { maps?: { places?: unknown } } }).google?.maps?.places) {
+        setTimeout(tryAttach, 300);
+        return;
+      }
+      const ac = new google.maps.places.Autocomplete(el, {
+        types: ["address"],
+        componentRestrictions: { country: "us" },
+        fields: ["formatted_address"],
+      });
+      ac.addListener("place_changed", () => {
+        const place = ac.getPlace();
+        if (place.formatted_address) {
+          updateProperty(id, { address: place.formatted_address });
+        }
+      });
+      autocompleteRefs.current[id] = ac;
+    };
+    tryAttach();
+  };
+
   const addProperty = () => {
     setProperties((prev) => [
       ...prev,
@@ -317,7 +388,27 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
   const portfolioTotal = getPortfolioTotal(properties, cadence);
   const portfolioSavings = getSavingsVsMonthly(properties, cadence);
 
+  const discountRate = getMemberDiscount(properties.length);
+  const rawTotal = getPortfolioTotal(properties, cadence);
+  const discountAmount = Math.round(rawTotal * discountRate / 100);
+  const finalTotal = rawTotal - discountAmount;
+
   const handleEnroll = () => {
+    // Save lead data immediately before Stripe redirect (cart abandonment capture)
+    const API = "https://pro.handypioneers.com/api/trpc";
+    fetch(`${API}/threeSixty.portfolioAbandonedLead.capture`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        json: {
+          properties,
+          cadence,
+          portfolioTotal: finalTotal,
+          source: "360-multifamily-calculator",
+        },
+      }),
+      credentials: "include",
+    }).catch(() => { /* fire-and-forget */ });
     onEnrollPortfolio(properties, cadence);
   };
 
@@ -768,11 +859,13 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   </span>
                   <input
                     type="text"
-                    placeholder="Address (optional)"
+                    placeholder="Property address (start typing…)"
                     value={prop.address}
                     onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
+                    ref={(el) => attachAutocomplete(prop.id, el)}
                     className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border"
                     style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
+                    autoComplete="off"
                   />
                   <select
                     value={prop.type}
@@ -805,15 +898,15 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 </div>
                 <div className="mt-2 flex justify-between text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
                   <span>
-                    Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                    {prop.interiorAddon && cadence === "annual" && (
+                    Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}
+                    {prop.interiorAddon && (
                       <span style={{ color: "oklch(60% 0.15 250)" }}>
-                        {" "}· +Interior: ${getInteriorAddonPrice(prop.type)}/yr
+                        {" "}· +Interior: ${getInteriorAddonPrice(prop.type, cadence).toLocaleString()}
                       </span>
                     )}
                   </span>
                   <span className="font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
-                    ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon && cadence === "annual" ? getInteriorAddonPrice(prop.type) : 0)).toLocaleString()}
+                    ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon ? getInteriorAddonPrice(prop.type, cadence) : 0)).toLocaleString()}
                     /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                   </span>
                 </div>
@@ -852,10 +945,22 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 </span>
               </div>
             </div>
+            {discountRate > 0 && (
+              <div className="flex items-center justify-between text-sm mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
+                <span>Portfolio discount ({properties.length} properties)</span>
+                <span>−${discountAmount.toLocaleString()} ({discountRate}% off)</span>
+              </div>
+            )}
             {portfolioSavings > 0 && (
               <p className="text-sm mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
                 ✓ Saving ${portfolioSavings.toLocaleString()} vs. monthly billing
               </p>
+            )}
+            {discountRate > 0 && (
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>Total after discount</span>
+                <span className="font-display text-2xl font-black text-white">${finalTotal.toLocaleString()}</span>
+              </div>
             )}
             <button
               onClick={handleEnroll}
@@ -910,9 +1015,8 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Landlord FAQ
           </h2>
           {[
-            {
-              q: "Do you coordinate with tenants directly?",
-              a: "Yes. Oregon ORS 90.322 requires 24-hour written notice before entry. We issue that notice directly as your authorized agent. You provide tenant contact info at enrollment. We handle scheduling, access coordination, and post-visit documentation — you get a summary report.",
+            {q: "Do you coordinate with tenants directly?",
+              a: "Yes. Washington RCW 59.18.150 requires at least two days' written notice before entry for non-emergency maintenance. Vancouver, WA also enacted a Rental Registration Program (effective January 2026) requiring annual property registration and documented maintenance. We issue the required notice directly as your authorized agent, handle scheduling and access coordination, and provide a post-visit documentation report for your records.",
             },
             {
               q: "How does the labor bank work for a portfolio?",
