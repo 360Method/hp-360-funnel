@@ -939,8 +939,12 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               (360) 544-9858
             </a>
           </div>
-          <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.3)" }}>
-            © {new Date().getFullYear()} Handy Pioneers LLC
+          <div className="flex flex-wrap justify-center gap-3 text-xs" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
+            <span>© {new Date().getFullYear()} Handy Pioneers LLC</span>
+            <span style={{ color: "oklch(100% 0 0 / 0.2)" }}>·</span>
+            <button onClick={() => { window.history.pushState({}, "", "/terms"); window.location.reload(); }} className="hover:text-white transition-colors underline underline-offset-2" style={{ color: "oklch(100% 0 0 / 0.4)" }}>Terms &amp; Conditions</button>
+            <span style={{ color: "oklch(100% 0 0 / 0.2)" }}>·</span>
+            <button onClick={() => { window.history.pushState({}, "", "/privacy"); window.location.reload(); }} className="hover:text-white transition-colors underline underline-offset-2" style={{ color: "oklch(100% 0 0 / 0.4)" }}>Privacy Policy</button>
           </div>
         </div>
       </footer>

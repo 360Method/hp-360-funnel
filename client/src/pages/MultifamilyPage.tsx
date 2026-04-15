@@ -1367,12 +1367,33 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           <a href="#calculator" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
             Build My Portfolio Plan →
           </a>
-          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
             Starting at $59/mo per property · No contracts · Cancel anytime
           </p>
         </div>
       </section>
 
+      {/* Footer */}
+      <footer className="py-8 px-4" style={{ background: "oklch(16% 0.06 155)", color: "oklch(100% 0 0 / 0.6)" }}>
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-3">
+            <span className="text-xl font-black text-white font-display">360°</span>
+            <span style={{ color: "oklch(100% 0 0 / 0.3)" }}>|</span>
+            <span>Delivered by Handy Pioneers</span>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a href="mailto:help@handypioneers.com" className="transition-colors hover:text-white" style={{ color: "oklch(100% 0 0 / 0.6)" }}>help@handypioneers.com</a>
+            <a href="tel:3605449858" className="transition-colors hover:text-white" style={{ color: "oklch(100% 0 0 / 0.6)" }}>(360) 544-9858</a>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3 text-xs" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
+            <span>© {new Date().getFullYear()} Handy Pioneers LLC</span>
+            <span style={{ color: "oklch(100% 0 0 / 0.2)" }}>·</span>
+            <button onClick={() => { window.history.pushState({}, "", "/terms"); window.location.reload(); }} className="hover:text-white transition-colors underline underline-offset-2" style={{ color: "oklch(100% 0 0 / 0.4)" }}>Terms &amp; Conditions</button>
+            <span style={{ color: "oklch(100% 0 0 / 0.2)" }}>·</span>
+            <button onClick={() => { window.history.pushState({}, "", "/privacy"); window.location.reload(); }} className="hover:text-white transition-colors underline underline-offset-2" style={{ color: "oklch(100% 0 0 / 0.4)" }}>Privacy Policy</button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

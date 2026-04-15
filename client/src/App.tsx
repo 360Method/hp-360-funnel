@@ -4,10 +4,12 @@ import CheckoutPage from "./pages/CheckoutPage";
 import ConfirmationPage from "./pages/ConfirmationPage";
 import MultifamilyPage from "./pages/MultifamilyPage";
 import PortfolioCheckoutPage from "./pages/PortfolioCheckoutPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 import type { MemberTier, BillingCadence } from "./tiers";
 import type { PortfolioProperty } from "./pages/MultifamilyPage";
 
-type Page = "funnel" | "checkout" | "confirmation" | "multifamily" | "portfolio-checkout";
+type Page = "funnel" | "checkout" | "confirmation" | "multifamily" | "portfolio-checkout" | "terms" | "privacy";
 
 export interface CheckoutState {
   tier: MemberTier;
@@ -44,6 +46,10 @@ export default function App() {
       setPage("checkout");
     } else if (path.startsWith("/multifamily")) {
       setPage("multifamily");
+    } else if (path.startsWith("/terms")) {
+      setPage("terms");
+    } else if (path.startsWith("/privacy")) {
+      setPage("privacy");
     }
   }, []);
 
@@ -71,6 +77,8 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  if (page === "terms") return <TermsPage />;
+  if (page === "privacy") return <PrivacyPage />;
   if (page === "confirmation") return <ConfirmationPage />;
   if (page === "checkout")
     return (
