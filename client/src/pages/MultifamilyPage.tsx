@@ -935,6 +935,24 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
         </div>
       </section>
 
+      {/* ── BRYCE PULL-QUOTE — anchored below pricing tiers ── */}
+      <section className="py-10 px-4" style={{ background: "oklch(96% 0.015 80)" }}>
+        <div className="max-w-2xl mx-auto">
+          <blockquote className="rounded-2xl p-7 text-center" style={{ background: "#fff", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 2px 16px oklch(0% 0 0 / 0.06)" }}>
+            <div className="flex justify-center mb-3">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="text-lg" style={{ color: "oklch(65% 0.15 72)" }}>★</span>
+              ))}
+            </div>
+            <p className="text-base font-medium leading-relaxed mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
+              &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10&rdquo;
+            </p>
+            <div className="text-sm font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
+            <div className="text-xs mt-1" style={{ color: "oklch(55% 0.02 60)" }}>Rental property owner · Verified Google Review</div>
+          </blockquote>
+        </div>
+      </section>
+
       {/* ── PORTFOLIO CALCULATOR ── */}
       <section id="calculator" className="py-20 px-4 section-cream">
         <div className="max-w-3xl mx-auto">
