@@ -830,7 +830,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
                   <div className="mb-1">
                     <span className="font-display text-4xl font-black" style={{ color: "oklch(22% 0.07 155)" }}>
-                      ${cadence === "annual" ? Math.round(price / 10) : cadence === "quarterly" ? Math.round(price / 3) : price}
+                      ${cadence === "annual" ? Math.round(price / 12) : cadence === "quarterly" ? Math.round(price / 3) : price}
                     </span>
                     <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>/mo per property</span>
                   </div>
