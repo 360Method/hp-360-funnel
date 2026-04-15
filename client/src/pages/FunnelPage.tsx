@@ -69,12 +69,12 @@ const SEASONS: SeasonData[] = [
     emoji: "🌱",
     timing: "March–April",
     tasks: [
-      "Roof inspection — moss colonies, lifted shingles, flashing",
-      "Gutter & downspout flush — needle/moss clogs cleared",
-      "Fascia & soffit rot check — moisture wicking from winter",
-      "Foundation drainage — clay soil saturation assessment",
-      "Deck & fence — winter damage, loose boards, rot",
-      "Caulk audit — windows, doors, exterior penetrations",
+      "Scrub and treat moss colonies on walkable roof surfaces; flag lifted shingles and failed flashing for repair",
+      "Flush gutters and downspouts; clear Douglas Fir needle and moss buildup at all outlets",
+      "Probe fascia and soffit for rot; mark moisture-wicking sections for replacement quote",
+      "Clear foundation drains; regrade soil away from structure where clay saturation is found",
+      "Tighten loose deck boards and fence fasteners; flag rot and structural damage for repair quote",
+      "Cut out failed caulk at windows, doors, and exterior penetrations; apply new weatherproof bead",
     ],
   },
   {
@@ -82,12 +82,12 @@ const SEASONS: SeasonData[] = [
     emoji: "☀️",
     timing: "June–July",
     tasks: [
-      "HVAC filter swap + heat pump efficiency check",
-      "Exterior paint & stain — dry-season application window",
-      "Irrigation system startup + backflow test",
-      "Crawl space moisture barrier inspection",
-      "Attic ventilation — heat buildup assessment",
-      "Deck sealing — optimal dry-weather application",
+      "Swap HVAC filters; test heat pump output and flag any efficiency drop for service",
+      "Document paint and stain condition; apply touch-up coat or scope full repaint for quote",
+      "Start irrigation system; test backflow preventer and adjust coverage zones",
+      "Inspect crawl space vapor barrier; resecure lifted sections and flag standing moisture",
+      "Clear blocked attic vents; measure temperature differential and flag insulation gaps",
+      "Clean deck surface and apply sealant during optimal dry-season application window",
     ],
   },
   {
@@ -95,12 +95,12 @@ const SEASONS: SeasonData[] = [
     emoji: "🍂",
     timing: "September–October",
     tasks: [
-      "Gutter pre-season clear — before the rains hit",
-      "Window & door weatherstripping — heat retention",
-      "Roof moss treatment — preventive application",
-      "Chimney & fireplace inspection before first use",
-      "Outdoor faucet winterization — freeze prevention",
-      "Caulk & seal — final weatherproofing before rain season",
+      "Clear gutters and downspouts before PNW rain season; flush to confirm full drainage",
+      "Replace worn weatherstripping at all exterior doors and windows; test for drafts",
+      "Apply zinc-sulfate moss inhibitor to walkable roof surfaces before wet season",
+      "Replace worn door sweeps and thresholds; seal gaps at all exterior door bottoms",
+      "Shut off and drain all exterior hose bibs; install foam insulating covers",
+      "Inspect and reapply caulk at all exterior penetrations before first rains",
     ],
   },
   {
@@ -108,12 +108,12 @@ const SEASONS: SeasonData[] = [
     emoji: "❄️",
     timing: "December–January",
     tasks: [
-      "Pipe insulation check — PNW freeze event prep",
-      "Crawl space moisture — condensation & vapor barrier",
-      "Roof load assessment after heavy snow/ice events",
-      "Sump pump test — peak rain season readiness",
-      "HVAC filter mid-season swap",
-      "Interior moisture — mold-prone areas inspection",
+      "Wrap exposed pipes in crawl space and exterior walls; flag uninsulated runs for repair",
+      "Check vapor barrier condition in crawl space; remove standing water and resecure barrier",
+      "Test sump pump operation; clear intake screen and confirm discharge line is unobstructed",
+      "Swap HVAC filter at mid-season; log replacement date in member record",
+      "Check mold-prone bathrooms and laundry areas; treat surface mold and flag moisture source",
+      "Audit exterior lighting; replace failed bulbs and test motion sensors for winter safety",
     ],
   },
 ];
@@ -172,7 +172,6 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
   const [cadence, setCadence] = useState<BillingCadence>("annual");
   const [openBubble, setOpenBubble] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [openSeason, setOpenSeason] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
@@ -392,47 +391,32 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             Every task is calibrated to Portland and SW Washington's climate — moss-prone roofs,
             clay soil drainage, Douglas Fir needle accumulation, and freeze-thaw cycles.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SEASONS.map((s, i) => (
-              <button
+              <div
                 key={i}
-                onClick={() => setOpenSeason(openSeason === i ? null : i)}
-                className="hp-card text-left"
-                style={{ cursor: "pointer" }}
+                className="hp-card"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{s.emoji}</span>
-                    <div>
-                      <div className="font-bold" style={{ color: "oklch(22% 0.07 155)" }}>
-                        {s.season} Visit
-                      </div>
-                      <div className="text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
-                        {s.timing}
-                      </div>
+                <div className="flex items-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
+                  <span className="text-2xl">{s.emoji}</span>
+                  <div>
+                    <div className="font-bold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>
+                      {s.season} Visit
+                    </div>
+                    <div className="text-xs" style={{ color: "oklch(65% 0.15 72)" }}>
+                      {s.timing}
                     </div>
                   </div>
-                  <span
-                    className="text-xs font-semibold"
-                    style={{ color: "oklch(65% 0.15 72)" }}
-                  >
-                    {openSeason === i ? "▲ Hide" : "▼ See tasks"}
-                  </span>
                 </div>
-                {openSeason === i && (
-                  <ul
-                    className="mt-3 space-y-1.5 pt-3"
-                    style={{ borderTop: "1px solid oklch(85% 0.02 80)" }}
-                  >
-                    {s.tasks.map((task, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
-                        <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
-                        <span>{task}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </button>
+                <ul className="space-y-2.5">
+                  {s.tasks.map((task, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>
+                      <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0, marginTop: "2px" }}>✓</span>
+                      <span>{task}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
           <p className="text-center text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>

@@ -140,18 +140,18 @@ const PM_SEASONS = [
     emoji: "🌱",
     timing: "March–April",
     exterior: [
-      "Roof inspection — moss colonies, lifted shingles, flashing at all penetrations",
-      "Gutter & downspout flush — needle/moss clogs cleared at all units",
-      "Fascia & soffit rot check — moisture wicking from winter rain season",
-      "Foundation drainage — clay soil saturation, grading away from structure",
-      "Common area walkways — trip hazards, heaved concrete, drainage",
-      "Exterior caulk audit — windows, doors, hose bibs, all penetrations",
+      "Scrub and treat moss colonies on walkable roof surfaces; flag lifted shingles and failed flashing for repair",
+      "Flush gutters and downspouts at all units; clear Douglas Fir needle and moss buildup at every outlet",
+      "Probe fascia and soffit for rot across all structures; mark moisture-wicking sections for replacement quote",
+      "Clear foundation drains; regrade soil away from structure where clay saturation is found",
+      "Walk all common area pathways; reset heaved concrete sections and clear drainage channels",
+      "Cut out failed caulk at windows, doors, hose bibs, and exterior penetrations; apply new weatherproof bead",
     ],
     interior: [
-      "Unit HVAC filter swap (all occupied doors)",
-      "Under-sink moisture check — slow leaks before tenant reports",
-      "Smoke & CO detector test — liability protection",
-      "Bathroom caulk & grout — mold prevention in high-moisture units",
+      "Swap HVAC filters in all occupied units; log replacement date per door",
+      "Check under-sink supply lines and drain connections in every unit; tighten fittings and flag slow leaks",
+      "Test smoke and CO detectors in all units; replace batteries and document pass/fail per door",
+      "Reapply caulk and grout at tub/shower surrounds in high-moisture units; prevent mold before it starts",
     ],
   },
   {
@@ -159,18 +159,18 @@ const PM_SEASONS = [
     emoji: "☀️",
     timing: "June–July",
     exterior: [
-      "Exterior paint & stain condition — dry-season application window",
-      "Deck & fence inspection — rot, loose boards, fastener corrosion",
-      "Irrigation system check (if applicable) — backflow, coverage",
-      "Attic & crawl space ventilation — heat buildup in shared spaces",
-      "Parking area & common lighting — bulb replacement, fixture condition",
-      "Roof moss treatment — preventive application while dry",
+      "Document paint and stain condition across all structures; apply touch-up coat or scope full repaint for quote",
+      "Tighten loose deck boards and fence fasteners; probe for rot and flag structural damage for repair quote",
+      "Start irrigation system; test backflow preventer and adjust coverage zones per property",
+      "Clear blocked attic and crawl space vents; flag heat buildup or insulation gaps in shared spaces",
+      "Replace failed bulbs in parking areas and common lighting; test all fixture connections",
+      "Apply zinc-sulfate moss inhibitor to walkable roof surfaces during dry-season window",
     ],
     interior: [
-      "HVAC efficiency check — filter + coil condition per unit",
-      "Water heater anode rod inspection (older units)",
-      "Window & sliding door operation — tenant comfort + security",
-      "Dryer vent cleaning — fire risk reduction",
+      "Swap HVAC filters and test heat pump output per unit; flag efficiency drops for service",
+      "Inspect water heater anode rods in older units; flag units due for replacement",
+      "Test window and sliding door operation in all units; adjust tracks and replace worn hardware",
+      "Clean dryer vent ducts in all units; remove lint buildup and confirm airflow at exterior termination",
     ],
   },
   {
@@ -178,18 +178,18 @@ const PM_SEASONS = [
     emoji: "🍂",
     timing: "September–October",
     exterior: [
-      "Gutter pre-season clear — before the PNW rains begin",
-      "Window & door weatherstripping — heat retention, tenant comfort",
-      "Outdoor faucet winterization — freeze prevention at all hose bibs",
-      "Chimney & fireplace inspection (if applicable)",
-      "Caulk & seal — final weatherproofing before rain season",
-      "Common area lighting — daylight savings prep, safety",
+      "Clear gutters and downspouts at all units before PNW rain season; flush to confirm full drainage",
+      "Replace worn weatherstripping at all exterior doors and windows across all units; test for drafts",
+      "Apply zinc-sulfate moss inhibitor to walkable roof surfaces before wet season",
+      "Replace worn door sweeps and thresholds at all unit entries; seal gaps at exterior door bottoms",
+      "Shut off and drain all exterior hose bibs; install foam insulating covers at every bib",
+      "Inspect and reapply caulk at all exterior penetrations before first rains; update common area lighting",
     ],
     interior: [
-      "Unit weatherstripping — draft gaps at doors/windows",
-      "Smoke & CO detector battery replacement",
-      "Furnace/heat pump filter swap — heating season prep",
-      "Bathroom exhaust fan test — moisture control through wet season",
+      "Replace weatherstripping at interior unit doors and windows; test for draft gaps per door",
+      "Replace smoke and CO detector batteries in all units; document replacement per door",
+      "Swap furnace and heat pump filters in all units ahead of heating season",
+      "Test bathroom exhaust fans in all units; clean covers and confirm airflow for wet-season moisture control",
     ],
   },
   {
@@ -197,18 +197,18 @@ const PM_SEASONS = [
     emoji: "❄️",
     timing: "December–January",
     exterior: [
-      "Pipe insulation check — exterior and crawl space exposed lines",
-      "Roof load assessment after heavy snow/ice events",
-      "Sump pump test — peak rain season readiness",
-      "Common area ice/slip hazard assessment",
-      "Exterior lighting — safety during short daylight hours",
-      "Foundation moisture — perimeter drainage performance",
+      "Wrap exposed pipes in crawl space and exterior walls across all structures; flag uninsulated runs for repair",
+      "Test sump pump operation; clear intake screen and confirm discharge line is unobstructed",
+      "Walk common areas for slip hazards; flag drainage issues and uneven surfaces for repair",
+      "Audit exterior and common area lighting; replace failed bulbs and test motion sensors for winter safety",
+      "Inspect perimeter foundation drainage; clear debris from drain inlets and flag standing water",
+      "Document any exterior damage from fall storms; photograph and queue repair estimates",
     ],
     interior: [
-      "Crawl space moisture — condensation & vapor barrier per unit",
-      "HVAC mid-season filter swap",
-      "Interior moisture — mold-prone bathrooms, laundry areas",
-      "Pipe freeze risk check — units with exterior wall plumbing",
+      "Inspect crawl space vapor barrier in all units; remove standing water and resecure barrier",
+      "Swap HVAC filters at mid-season in all units; log replacement date per door",
+      "Check mold-prone bathrooms and laundry areas in all units; treat surface mold and flag moisture source",
+      "Check pipe freeze risk in units with exterior wall plumbing; wrap exposed runs and flag gaps",
     ],
   },
 ];
@@ -340,7 +340,6 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
   const [cadence, setCadence] = useState<BillingCadence>("annual");
   const [unitCount, setUnitCount] = useState(2);
   const [openStat, setOpenStat] = useState<number | null>(null);
-  const [openSeason, setOpenSeason] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedTier, setSelectedTier] = useState<string>("full");
 
@@ -652,53 +651,41 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               <span style={{ color: "oklch(60% 0.15 250)" }}>■</span> Interior Unit Add-On (optional)
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {PM_SEASONS.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => setOpenSeason(openSeason === i ? null : i)}
-                className="hp-card text-left"
-                style={{ cursor: "pointer" }}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{s.emoji}</span>
-                    <div>
-                      <div className="font-bold" style={{ color: "oklch(22% 0.07 155)" }}>{s.season} Visit</div>
-                      <div className="text-xs" style={{ color: "oklch(50% 0.02 60)" }}>{s.timing}</div>
-                    </div>
+              <div key={i} className="hp-card">
+                <div className="flex items-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
+                  <span className="text-2xl">{s.emoji}</span>
+                  <div>
+                    <div className="font-bold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>{s.season} Visit</div>
+                    <div className="text-xs" style={{ color: "oklch(65% 0.15 72)" }}>{s.timing}</div>
                   </div>
-                  <span className="text-xs font-semibold" style={{ color: "oklch(65% 0.15 72)" }}>
-                    {openSeason === i ? "▲ Hide" : "▼ See tasks"}
-                  </span>
                 </div>
-                {openSeason === i && (
-                  <div className="mt-3 pt-3" style={{ borderTop: "1px solid oklch(85% 0.02 80)" }}>
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
-                      Exterior &amp; Common Area
-                    </p>
-                    <ul className="space-y-1.5 mb-4">
-                      {s.exterior.map((task, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
-                          <span style={{ color: "oklch(65% 0.15 72)" }} className="mt-0.5 flex-shrink-0">✓</span>
-                          <span>{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(60% 0.15 250)" }}>
-                      Interior Unit Add-On (per door, optional)
-                    </p>
-                    <ul className="space-y-1.5">
-                      {s.interior.map((task, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm" style={{ color: "oklch(45% 0.03 255)" }}>
-                          <span style={{ color: "oklch(60% 0.15 250)" }} className="mt-0.5 flex-shrink-0">+</span>
-                          <span>{task}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </button>
+                {/* Exterior tasks */}
+                <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
+                  Exterior &amp; Common Area
+                </p>
+                <ul className="space-y-2 mb-4">
+                  {s.exterior.map((task, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(35% 0.03 255)" }}>
+                      <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0, marginTop: "2px" }}>✓</span>
+                      <span>{task}</span>
+                    </li>
+                  ))}
+                </ul>
+                {/* Interior add-on tasks */}
+                <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "oklch(60% 0.15 250)" }}>
+                  + Interior Add-On (per door)
+                </p>
+                <ul className="space-y-2">
+                  {s.interior.map((task, j) => (
+                    <li key={j} className="flex items-start gap-2 text-xs leading-snug" style={{ color: "oklch(45% 0.03 255)" }}>
+                      <span style={{ color: "oklch(60% 0.15 250)", flexShrink: 0, marginTop: "2px" }}>+</span>
+                      <span>{task}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
           <p className="text-center text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>
