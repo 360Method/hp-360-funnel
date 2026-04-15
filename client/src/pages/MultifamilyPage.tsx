@@ -101,11 +101,35 @@ function getSavingsVsMonthly(properties: PortfolioProperty[], cadence: BillingCa
 }
 
 // ─── MEMBER REPAIR DISCOUNTS ─────────────────────────────────────────────────
-// Applied to out-of-scope repair work (not the subscription fee itself)
-const MEMBER_REPAIR_DISCOUNTS = [
-  { label: "Jobs under $1,000",    rate: 12 },
-  { label: "Jobs $1,000–$5,000",   rate: 8 },
-  { label: "Jobs over $5,000",     rate: 4 },
+// Tier-based — matches homeowner FunnelPage discountBrackets exactly
+const TIER_REPAIR_DISCOUNTS = [
+  {
+    tier: "Exterior Shield",
+    accentColor: "oklch(65% 0.15 72)",
+    brackets: [
+      { label: "Jobs under $1,000",  pct: "5% off" },
+      { label: "Jobs $1,000–$5,000", pct: "3% off" },
+      { label: "Jobs over $5,000",   pct: "1.5% off" },
+    ],
+  },
+  {
+    tier: "Full Coverage",
+    accentColor: "oklch(68% 0.04 220)",
+    brackets: [
+      { label: "Jobs under $1,000",  pct: "8% off" },
+      { label: "Jobs $1,000–$5,000", pct: "5% off" },
+      { label: "Jobs over $5,000",   pct: "2.5% off" },
+    ],
+  },
+  {
+    tier: "Portfolio Max",
+    accentColor: "oklch(85% 0.04 80)",
+    brackets: [
+      { label: "Jobs under $1,000",  pct: "12% off" },
+      { label: "Jobs $1,000–$5,000", pct: "8% off" },
+      { label: "Jobs over $5,000",   pct: "4% off" },
+    ],
+  },
 ];
 
 // ─── SEASONAL DATA — property-specific ────────────────────────────────────────
@@ -845,18 +869,24 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             })}
           </div>
 
-          {/* Member Repair Discounts */}
-          <div className="rounded-xl p-6 max-w-2xl mx-auto mb-6" style={{ background: "oklch(22% 0.07 155)" }}>
-            <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts</div>
-            <p className="text-sm text-center mb-4" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
-              All 360° Portfolio members receive automatic discounts on out-of-scope repair work — the bigger the job, the more you save.
+          {/* Member Repair Discounts — tier-based */}
+          <div className="rounded-xl p-6 max-w-3xl mx-auto mb-6" style={{ background: "oklch(22% 0.07 155)" }}>
+            <div className="hp-overline text-center mb-2" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts</div>
+            <p className="text-sm text-center mb-5" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
+              Discounts scale with your tier — and stack with the bigger the job, the more you save.
             </p>
             <div className="grid grid-cols-3 gap-3">
-              {MEMBER_REPAIR_DISCOUNTS.map((d) => (
-                <div key={d.label} className="rounded-lg p-3 text-center" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
-                  <div className="font-display text-2xl font-black mb-1" style={{ color: "oklch(65% 0.15 72)" }}>{d.rate}%</div>
-                  <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.7)" }}>off</div>
-                  <div className="text-xs mt-1 font-semibold" style={{ color: "oklch(100% 0 0 / 0.55)" }}>{d.label}</div>
+              {TIER_REPAIR_DISCOUNTS.map((t) => (
+                <div key={t.tier} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
+                  <div className="text-xs font-bold uppercase tracking-widest mb-3 text-center" style={{ color: t.accentColor }}>{t.tier}</div>
+                  <div className="space-y-2">
+                    {t.brackets.map((b) => (
+                      <div key={b.label} className="text-center">
+                        <div className="font-display text-lg font-black" style={{ color: t.accentColor }}>{b.pct}</div>
+                        <div className="text-xs mt-0.5" style={{ color: "oklch(100% 0 0 / 0.5)" }}>{b.label}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -1028,14 +1058,19 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   ✓ Saving ${portfolioSavings.toLocaleString()} vs. monthly billing
                 </p>
               )}
-              {/* Member repair discount callout */}
+              {/* Member repair discount callout — tier-based */}
               <div className="rounded-lg p-3 mb-4" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts Included</p>
-                <div className="space-y-1">
-                  {MEMBER_REPAIR_DISCOUNTS.map((d) => (
-                    <div key={d.label} className="flex justify-between text-xs" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-                      <span>{d.label}</span>
-                      <span className="font-bold" style={{ color: "oklch(65% 0.15 72)" }}>{d.rate}% off</span>
+                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts</p>
+                <div className="grid grid-cols-3 gap-1 mb-1">
+                  {TIER_REPAIR_DISCOUNTS.map((t) => (
+                    <div key={t.tier} className="text-center">
+                      <div className="text-xs font-bold mb-1" style={{ color: t.accentColor }}>{t.tier}</div>
+                      {t.brackets.map((b) => (
+                        <div key={b.label} className="text-xs" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                          <span className="font-bold" style={{ color: t.accentColor }}>{b.pct}</span>
+                          <span className="block" style={{ fontSize: "0.6rem", color: "oklch(100% 0 0 / 0.4)" }}>{b.label}</span>
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
