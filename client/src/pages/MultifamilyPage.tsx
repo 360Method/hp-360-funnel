@@ -1281,13 +1281,19 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           {/* PM Testimonial */}
           <div className="hp-card mb-8 max-w-2xl mx-auto">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-xl" style={{ background: "oklch(22% 0.07 155 / 0.1)" }}>🏢</div>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 font-black text-lg" style={{ background: "oklch(22% 0.07 155)", color: "#fff" }}>B</div>
               <div>
+                <div className="flex items-center gap-1 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} style={{ color: "oklch(65% 0.15 72)" }}>★</span>
+                  ))}
+                  <span className="text-xs ml-1" style={{ color: "oklch(55% 0.02 60)" }}>Google Review</span>
+                </div>
                 <p className="text-sm leading-relaxed mb-3" style={{ color: "oklch(35% 0.03 255)" }}>
-                  &ldquo;I manage 14 units across Vancouver and Portland. Before HP, I was getting 2–3 emergency calls a month. Since enrolling in the Portfolio Plan, I've had one in eight months — a sump pump that failed between visits. Everything else has been caught and documented before it became a tenant issue. The compliance records alone are worth it.”
+                  &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10”
                 </p>
-                <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>D.M. — Vancouver, WA</div>
-                <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>14 units · Portfolio Max member since 2024</div>
+                <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
+                <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>Rental property owner · Verified Google review</div>
               </div>
             </div>
           </div>
