@@ -836,8 +836,10 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                     </p>
                   )}
                   {unitCount > 1 && (
-                    <p className="text-xs font-semibold mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
-                      Portfolio total: ${totalPortfolio.toLocaleString()}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"} for {unitCount} properties
+                    <p className="text-xs font-semibold mb-4 break-words" style={{ color: "oklch(22% 0.07 155)" }}>
+                      Portfolio total: ${totalPortfolio.toLocaleString()}
+                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                      {" "}&nbsp;({unitCount} properties)
                     </p>
                   )}
 
@@ -874,7 +876,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             <p className="text-sm text-center mb-5" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
               Discounts scale with your tier — and stack with the bigger the job, the more you save.
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {TIER_REPAIR_DISCOUNTS.map((t) => (
                 <div key={t.tier} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
                   <div className="text-xs font-bold uppercase tracking-widest mb-3 text-center" style={{ color: t.accentColor }}>{t.tier}</div>
@@ -1160,34 +1162,86 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
       {/* ── TURNOVER CALLOUT ── */}
       <section className="py-16 px-4 section-green">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>On-Demand Service</div>
-          <h2 className="font-display text-3xl font-black text-white mb-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>On-Demand Service</div>
+          <h2 className="font-display text-3xl font-black text-white text-center mb-4">
             Turnover &amp; Make-Ready Packages
           </h2>
-          <p className="text-lg mb-4 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            When a tenant moves out, you need the unit rent-ready fast. HP coordinates the full make-ready —
-            we schedule and manage the cleaning crew, handle paint touch-up and minor repairs, and deliver
-            a documented move-out condition report for your records and the next tenant.
+          <p className="text-lg text-center max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+            When a tenant moves out, HP coordinates the full make-ready — we schedule and manage the cleaning crew,
+            handle repairs and touch-up, and deliver a documented move-out condition report.
+            Materials that remain in the unit (paint, blinds, hardware, filters) are billed at cost.
           </p>
-          <p className="text-sm mb-8" style={{ color: "oklch(100% 0 0 / 0.55)" }}>
-            Pricing reflects HP coordination, cleaning crew cost, and all labor. Portfolio members receive priority scheduling.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {[
-              { label: "Studio / 1BR", price: "$549", note: "Cleaning crew + condition report" },
-              { label: "2BR / 3BR", price: "$749", note: "Cleaning crew + touch-up + report" },
-              { label: "Custom Scope", price: "Quote", note: "Larger units, full repaint, or carpet" },
-            ].map((pkg, i) => (
-              <div key={i} className="rounded-lg p-5 text-center" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
-                <div className="font-display text-2xl font-black text-white mb-1">{pkg.price}</div>
-                <div className="font-bold text-white text-sm mb-1">{pkg.label}</div>
-                <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.6)" }}>{pkg.note}</div>
+
+          {/* Two-column layout: tasks + pricing */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
+
+            {/* Standard tasks included */}
+            <div className="rounded-xl p-6" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
+              <div className="text-xs font-bold uppercase tracking-widest mb-4 text-center" style={{ color: "oklch(65% 0.15 72)" }}>Standard Make-Ready Tasks</div>
+              <ul className="space-y-2.5">
+                {[
+                  "Schedule and manage professional cleaning crew",
+                  "Clean all interior surfaces, appliances, and fixtures",
+                  "Replace HVAC filter and test smoke/CO detectors",
+                  "Patch nail holes and touch up paint (labor only — paint billed at cost)",
+                  "Inspect and tighten all door hardware and cabinet hinges",
+                  "Test all outlets, switches, and light fixtures; replace bulbs",
+                  "Check and reseal caulk at tub, shower, and sink penetrations",
+                  "Inspect under-sink areas for moisture or active leaks",
+                  "Photograph every room and document unit condition",
+                  "Deliver written move-out condition report for your records",
+                ].map((task, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "oklch(100% 0 0 / 0.8)" }}>
+                    <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0, marginTop: "2px" }}>✓</span>
+                    <span>{task}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs mt-4 pt-3" style={{ borderTop: "1px solid oklch(100% 0 0 / 0.12)", color: "oklch(100% 0 0 / 0.45)" }}>
+                Materials that stay in the unit (paint, blinds, hardware, filters, bulbs) are billed at cost + 15% handling. Carpet replacement, full repaints, and appliance work quoted separately.
+              </p>
+            </div>
+
+            {/* Pricing bubbles */}
+            <div>
+              <div className="text-xs font-bold uppercase tracking-widest mb-4 text-center" style={{ color: "oklch(65% 0.15 72)" }}>Standard Make-Ready Pricing</div>
+              <div className="space-y-3">
+                {[
+                  { size: "Studio / 1 BD · 1 BA",  member: "$549",  nonMember: "$689" },
+                  { size: "2 BD · 1 BA",            member: "$649",  nonMember: "$819" },
+                  { size: "2 BD · 2 BA",            member: "$749",  nonMember: "$939" },
+                  { size: "3 BD · 2 BA",            member: "$899",  nonMember: "$1,124" },
+                  { size: "4 BD · 2+ BA",           member: "$1,099", nonMember: "$1,374" },
+                ].map((pkg, i) => (
+                  <div key={i} className="rounded-lg px-4 py-3 flex items-center justify-between gap-3" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
+                    <span className="text-sm font-semibold text-white">{pkg.size}</span>
+                    <div className="text-right flex-shrink-0">
+                      <div className="font-display text-xl font-black" style={{ color: "oklch(65% 0.15 72)" }}>{pkg.member}</div>
+                      <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.4)" }}>member</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+              <div className="rounded-lg px-4 py-3 mt-3 text-center" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
+                <div className="font-display text-xl font-black text-white mb-0.5">Custom Quote</div>
+                <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.55)" }}>Unit upgrade turnover — full repaint, carpet, appliances, or 5+ unit buildings</div>
+              </div>
+
+              {/* Member discount callout */}
+              <div className="rounded-lg px-4 py-3 mt-4" style={{ background: "oklch(65% 0.15 72 / 0.15)", border: "1px solid oklch(65% 0.15 72 / 0.4)" }}>
+                <p className="text-sm font-semibold text-center" style={{ color: "oklch(78% 0.13 78)" }}>
+                  🏠 Portfolio members save 20% vs. non-member rates
+                </p>
+                <p className="text-xs text-center mt-1" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
+                  Priority scheduling — your unit goes first in the queue
+                </p>
+              </div>
+            </div>
           </div>
-          <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
-            Portfolio member pricing. Non-member rates are 25% higher. Request a make-ready by calling (360) 544-9858.
+
+          <p className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+            Request a make-ready by calling (360) 544-9858. Non-member rates available on request.
           </p>
         </div>
       </section>
