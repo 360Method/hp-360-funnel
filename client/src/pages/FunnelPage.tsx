@@ -708,21 +708,14 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         </div>
       </section>
 
-      {/* ── PULL-QUOTE — anchored below pricing ── */}
-      <section className="py-10 px-4" style={{ background: "oklch(96% 0.015 80)" }}>
-        <div className="max-w-2xl mx-auto">
-          <blockquote className="rounded-2xl p-7 text-center" style={{ background: "#fff", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 2px 16px oklch(0% 0 0 / 0.06)" }}>
-            <div className="flex justify-center mb-3">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className="text-lg" style={{ color: "oklch(65% 0.15 72)" }}>★</span>
-              ))}
-            </div>
-            <p className="text-base font-medium leading-relaxed mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
-              &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10&rdquo;
-            </p>
-            <div className="text-sm font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
-            <div className="text-xs mt-1" style={{ color: "oklch(55% 0.02 60)" }}>Verified Google Review</div>
-          </blockquote>
+      {/* ── GOOGLE REVIEWS — anchored below pricing ── */}
+      <section className="py-14 px-4 section-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            What Homeowners Say
+          </h2>
+          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
         </div>
       </section>
 
@@ -811,16 +804,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         </div>
       </section>
 
-      {/* ── GOOGLE REVIEWS — white bg ── */}
-      <section className="py-16 px-4 section-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
-          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Homeowners Say
-          </h2>
-          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
-        </div>
-      </section>
+
 
       {/* ── WORK PHOTOS — cream bg ── */}
       <section className="py-14 px-4 section-cream">
