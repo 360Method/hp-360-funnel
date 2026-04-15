@@ -169,7 +169,7 @@ interface Props {
 }
 
 export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
-  const [cadence, setCadence] = useState<BillingCadence>("annual");
+  const [cadence, setCadence] = useState<BillingCadence>("monthly");
   const [openBubble, setOpenBubble] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -515,7 +515,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 <button
                   key={c}
                   onClick={() => setCadence(c)}
-                  className="px-4 py-2 rounded-md text-sm font-semibold transition-all"
+                  className="px-4 py-2 rounded-md text-sm font-semibold transition-all flex flex-col items-center leading-tight"
                   style={
                     cadence === c
                       ? {
@@ -526,16 +526,13 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                       : { color: "oklch(50% 0.02 60)" }
                   }
                 >
-                  {CADENCE_LABELS[c]}
-                  {c === "annual" && (
-                    <span
-                      className="ml-1.5 text-xs font-bold"
-                      style={{ color: "oklch(65% 0.15 72)" }}
-                    >
-                      Best Value
-                    </span>
+                  <span>{CADENCE_LABELS[c]}</span>
+                  {c === "quarterly" && (
+                    <span className="text-xs font-bold" style={{ color: cadence === c ? "oklch(40% 0.12 145)" : "oklch(55% 0.12 145)" }}>Save ~5%</span>
                   )}
-                </button>
+                  {c === "annual" && (
+                    <span className="text-xs font-bold" style={{ color: cadence === c ? "oklch(40% 0.12 145)" : "oklch(55% 0.12 145)" }}>Save ~17%</span>
+                  )}                </button>
               ))}
             </div>
           </div>
