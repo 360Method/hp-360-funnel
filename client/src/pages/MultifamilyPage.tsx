@@ -24,7 +24,7 @@ import { CADENCE_LABELS } from "../tiers";
 export interface PortfolioProperty {
   id: string;
   address: string;
-  type: "sfh" | "duplex" | "triplex" | "fourplex";
+  type: "sfh" | "duplex" | "triplex" | "fourplex" | "custom";
   interiorAddon: boolean;
 }
 
@@ -38,6 +38,7 @@ const PROPERTY_TYPES = [
   { id: "duplex",   label: "Duplex",               doors: 2 },
   { id: "triplex",  label: "Triplex",               doors: 3 },
   { id: "fourplex", label: "Fourplex (4-Plex)",     doors: 4 },
+  { id: "custom",   label: "5+ Units — Custom Quote", doors: 0 },
 ] as const;
 
 // Monthly base prices — exterior + common area only
@@ -95,21 +96,13 @@ function getSavingsVsMonthly(properties: PortfolioProperty[], cadence: BillingCa
   return monthlyAnnualized - cadenceAnnualized;
 }
 
-// ─── MEMBER DISCOUNTS ────────────────────────────────────────────────────────
-const MEMBER_DISCOUNTS = [
-  { threshold: 1, label: "1 property",   discount: 0 },
-  { threshold: 2, label: "2–3 properties", discount: 5 },
-  { threshold: 4, label: "4–6 properties", discount: 10 },
-  { threshold: 7, label: "7+ properties",  discount: 15 },
+// ─── MEMBER REPAIR DISCOUNTS ─────────────────────────────────────────────────
+// Applied to out-of-scope repair work (not the subscription fee itself)
+const MEMBER_REPAIR_DISCOUNTS = [
+  { label: "Jobs under $1,000",    rate: 12 },
+  { label: "Jobs $1,000–$5,000",   rate: 8 },
+  { label: "Jobs over $5,000",     rate: 4 },
 ];
-
-function getMemberDiscount(count: number): number {
-  let rate = 0;
-  for (const tier of MEMBER_DISCOUNTS) {
-    if (count >= tier.threshold) rate = tier.discount;
-  }
-  return rate;
-}
 
 // ─── SEASONAL DATA — property-specific ────────────────────────────────────────
 
@@ -385,15 +378,21 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
     setProperties((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)));
   };
 
-  const portfolioTotal = getPortfolioTotal(properties, cadence);
   const portfolioSavings = getSavingsVsMonthly(properties, cadence);
+  const finalTotal = getPortfolioTotal(properties, cadence);
+  const hasCustom = properties.some((p) => p.type === "custom");
 
-  const discountRate = getMemberDiscount(properties.length);
-  const rawTotal = getPortfolioTotal(properties, cadence);
-  const discountAmount = Math.round(rawTotal * discountRate / 100);
-  const finalTotal = rawTotal - discountAmount;
+  const [showCustomQuoteForm, setShowCustomQuoteForm] = useState(false);
+  const [customQuoteName, setCustomQuoteName] = useState("");
+  const [customQuoteEmail, setCustomQuoteEmail] = useState("");
+  const [customQuotePhone, setCustomQuotePhone] = useState("");
+  const [customQuoteSubmitted, setCustomQuoteSubmitted] = useState(false);
 
   const handleEnroll = () => {
+    if (hasCustom) {
+      setShowCustomQuoteForm(true);
+      return;
+    }
     // Save lead data immediately before Stripe redirect (cart abandonment capture)
     const API = "https://pro.handypioneers.com/api/trpc";
     fetch(`${API}/threeSixty.portfolioAbandonedLead.capture`, {
@@ -410,6 +409,28 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       credentials: "include",
     }).catch(() => { /* fire-and-forget */ });
     onEnrollPortfolio(properties, cadence);
+  };
+
+  const handleCustomQuoteSubmit = () => {
+    if (!customQuoteName || !customQuoteEmail) return;
+    const API = "https://pro.handypioneers.com/api/trpc";
+    fetch(`${API}/threeSixty.portfolioAbandonedLead.capture`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        json: {
+          customerName: customQuoteName,
+          customerEmail: customQuoteEmail,
+          customerPhone: customQuotePhone,
+          properties,
+          cadence,
+          portfolioTotal: 0,
+          source: "360-multifamily-custom-quote",
+        },
+      }),
+      credentials: "include",
+    }).catch(() => {});
+    setCustomQuoteSubmitted(true);
   };
 
   return (
@@ -857,16 +878,23 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   <span className="text-sm font-bold" style={{ color: "oklch(22% 0.07 155)", minWidth: "80px" }}>
                     Property {idx + 1}
                   </span>
-                  <input
-                    type="text"
-                    placeholder="Property address (start typing…)"
-                    value={prop.address}
-                    onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
-                    ref={(el) => attachAutocomplete(prop.id, el)}
-                    className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border"
-                    style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
-                    autoComplete="off"
-                  />
+                  {prop.type !== "custom" && (
+                    <input
+                      type="text"
+                      placeholder="Property address (start typing…)"
+                      value={prop.address}
+                      onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
+                      ref={(el) => attachAutocomplete(prop.id, el)}
+                      className="flex-1 min-w-0 text-sm px-3 py-2 rounded-md border"
+                      style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
+                      autoComplete="off"
+                    />
+                  )}
+                  {prop.type === "custom" && (
+                    <span className="flex-1 text-sm italic" style={{ color: "oklch(50% 0.02 60)" }}>
+                      Custom quote — we'll contact you
+                    </span>
+                  )}
                   <select
                     value={prop.type}
                     onChange={(e) => updateProperty(prop.id, { type: e.target.value as PortfolioProperty["type"] })}
@@ -877,15 +905,17 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                       <option key={t.id} value={t.id}>{t.label}</option>
                     ))}
                   </select>
-                  <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: "oklch(35% 0.03 255)" }}>
-                    <input
-                      type="checkbox"
-                      checked={prop.interiorAddon}
-                      onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
-                      style={{ accentColor: "oklch(22% 0.07 155)" }}
-                    />
-                    +Interior
-                  </label>
+                  {prop.type !== "custom" && (
+                    <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: "oklch(35% 0.03 255)" }}>
+                      <input
+                        type="checkbox"
+                        checked={prop.interiorAddon}
+                        onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
+                        style={{ accentColor: "oklch(22% 0.07 155)" }}
+                      />
+                      +Interior
+                    </label>
+                  )}
                   {properties.length > 1 && (
                     <button
                       onClick={() => removeProperty(prop.id)}
@@ -896,20 +926,27 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                     </button>
                   )}
                 </div>
-                <div className="mt-2 flex justify-between text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
-                  <span>
-                    Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}
-                    {prop.interiorAddon && (
-                      <span style={{ color: "oklch(60% 0.15 250)" }}>
-                        {" "}· +Interior: ${getInteriorAddonPrice(prop.type, cadence).toLocaleString()}
-                      </span>
-                    )}
-                  </span>
-                  <span className="font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
-                    ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon ? getInteriorAddonPrice(prop.type, cadence) : 0)).toLocaleString()}
-                    /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                  </span>
-                </div>
+                {prop.type !== "custom" && (
+                  <div className="mt-2 flex justify-between text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
+                    <span>
+                      Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}
+                      {prop.interiorAddon && (
+                        <span style={{ color: "oklch(60% 0.15 250)" }}>
+                          {" "}· +Interior: ${getInteriorAddonPrice(prop.type, cadence).toLocaleString()}
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
+                      ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon ? getInteriorAddonPrice(prop.type, cadence) : 0)).toLocaleString()}
+                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                    </span>
+                  </div>
+                )}
+                {prop.type === "custom" && (
+                  <p className="mt-2 text-xs" style={{ color: "oklch(60% 0.15 72)" }}>
+                    Pricing for 5+ unit buildings is tailored to scope. We'll reach out within 1 business day.
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -923,56 +960,133 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           </button>
 
           {/* Total summary */}
-          <div
-            className="rounded-xl p-6 mb-6"
-            style={{ background: "oklch(22% 0.07 155)" }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
-                  Portfolio Total
+          {!showCustomQuoteForm ? (
+            <div className="rounded-xl p-6 mb-6" style={{ background: "oklch(22% 0.07 155)" }}>
+              {!hasCustom ? (
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
+                      Portfolio Total
+                    </p>
+                    <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                      {properties.filter(p => p.type !== "custom").length} {properties.filter(p => p.type !== "custom").length === 1 ? "property" : "properties"} · {CADENCE_LABELS[cadence]} billing
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-display text-4xl font-black text-white">
+                      ${finalTotal.toLocaleString()}
+                    </span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "oklch(65% 0.15 72)" }}>Your Portfolio</p>
+                  <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                    Includes {properties.filter(p => p.type === "custom").length} property requiring a custom quote — we'll reach out within 1 business day.
+                  </p>
+                </div>
+              )}
+              {portfolioSavings > 0 && !hasCustom && (
+                <p className="text-sm mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
+                  ✓ Saving ${portfolioSavings.toLocaleString()} vs. monthly billing
                 </p>
-                <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
-                  {properties.length} {properties.length === 1 ? "property" : "properties"} · {CADENCE_LABELS[cadence]} billing
-                </p>
+              )}
+              {/* Member repair discount callout */}
+              <div className="rounded-lg p-3 mb-4" style={{ background: "oklch(100% 0 0 / 0.07)" }}>
+                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts Included</p>
+                <div className="space-y-1">
+                  {MEMBER_REPAIR_DISCOUNTS.map((d) => (
+                    <div key={d.label} className="flex justify-between text-xs" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
+                      <span>{d.label}</span>
+                      <span className="font-bold" style={{ color: "oklch(65% 0.15 72)" }}>{d.rate}% off</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="text-right">
-                <span className="font-display text-4xl font-black text-white">
-                  ${portfolioTotal.toLocaleString()}
-                </span>
-                <span className="text-sm ml-1" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
-                  /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                </span>
-              </div>
-            </div>
-            {discountRate > 0 && (
-              <div className="flex items-center justify-between text-sm mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
-                <span>Portfolio discount ({properties.length} properties)</span>
-                <span>−${discountAmount.toLocaleString()} ({discountRate}% off)</span>
-              </div>
-            )}
-            {portfolioSavings > 0 && (
-              <p className="text-sm mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
-                ✓ Saving ${portfolioSavings.toLocaleString()} vs. monthly billing
+              <button
+                onClick={handleEnroll}
+                className="w-full py-4 text-base font-bold rounded-lg transition-colors"
+                style={{ background: "oklch(65% 0.15 72)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "0.04em", textTransform: "uppercase" }}
+              >
+                {hasCustom ? "Request My Custom Quote →" : "Enroll My Portfolio →"}
+              </button>
+              <p className="text-xs text-center mt-3" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
+                {hasCustom ? "No commitment required · We'll build a custom plan for you" : "🔒 Secured by Stripe · No contracts · Cancel anytime"}
               </p>
-            )}
-            {discountRate > 0 && (
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>Total after discount</span>
-                <span className="font-display text-2xl font-black text-white">${finalTotal.toLocaleString()}</span>
-              </div>
-            )}
-            <button
-              onClick={handleEnroll}
-              className="w-full py-4 text-base font-bold rounded-lg transition-colors"
-              style={{ background: "oklch(65% 0.15 72)", color: "#fff", border: "none", cursor: "pointer", letterSpacing: "0.04em", textTransform: "uppercase" }}
-            >
-              Enroll My Portfolio →
-            </button>
-            <p className="text-xs text-center mt-3" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
-              🔒 Secured by Stripe · No contracts · Cancel anytime
-            </p>
-          </div>
+            </div>
+          ) : (
+            /* Custom quote contact form */
+            <div className="rounded-xl p-6 mb-6" style={{ background: "oklch(22% 0.07 155)" }}>
+              {customQuoteSubmitted ? (
+                <div className="text-center py-4">
+                  <div className="text-3xl mb-3">✓</div>
+                  <h3 className="font-display text-xl font-bold text-white mb-2">Request Received</h3>
+                  <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
+                    We'll review your portfolio and reach out within 1 business day with a custom plan and pricing.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "oklch(65% 0.15 72)" }}>Get Your Custom Quote</p>
+                  <div className="space-y-3 mb-4">
+                    <input
+                      type="text"
+                      placeholder="Your name *"
+                      value={customQuoteName}
+                      onChange={(e) => setCustomQuoteName(e.target.value)}
+                      className="w-full text-sm px-3 py-2.5 rounded-md"
+                      style={{ background: "oklch(100% 0 0 / 0.1)", border: "1px solid oklch(100% 0 0 / 0.2)", color: "#fff" }}
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email address *"
+                      value={customQuoteEmail}
+                      onChange={(e) => setCustomQuoteEmail(e.target.value)}
+                      className="w-full text-sm px-3 py-2.5 rounded-md"
+                      style={{ background: "oklch(100% 0 0 / 0.1)", border: "1px solid oklch(100% 0 0 / 0.2)", color: "#fff" }}
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone number"
+                      value={customQuotePhone}
+                      onChange={(e) => setCustomQuotePhone(e.target.value)}
+                      className="w-full text-sm px-3 py-2.5 rounded-md"
+                      style={{ background: "oklch(100% 0 0 / 0.1)", border: "1px solid oklch(100% 0 0 / 0.2)", color: "#fff" }}
+                    />
+                    <div className="text-xs rounded-md p-3" style={{ background: "oklch(100% 0 0 / 0.07)", color: "oklch(100% 0 0 / 0.6)" }}>
+                      <strong className="text-white">Your portfolio:</strong>{" "}
+                      {properties.map((p, i) => (
+                        <span key={p.id}>{i > 0 ? ", " : ""}{PROPERTY_TYPES.find(t => t.id === p.type)?.label ?? p.type}{p.address ? ` (${p.address})` : ""}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleCustomQuoteSubmit}
+                    disabled={!customQuoteName || !customQuoteEmail}
+                    className="w-full py-4 text-base font-bold rounded-lg transition-colors"
+                    style={{
+                      background: customQuoteName && customQuoteEmail ? "oklch(65% 0.15 72)" : "oklch(100% 0 0 / 0.2)",
+                      color: "#fff", border: "none",
+                      cursor: customQuoteName && customQuoteEmail ? "pointer" : "not-allowed",
+                      letterSpacing: "0.04em", textTransform: "uppercase",
+                    }}
+                  >
+                    Send My Quote Request →
+                  </button>
+                  <button
+                    onClick={() => setShowCustomQuoteForm(false)}
+                    className="w-full text-xs mt-2"
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(100% 0 0 / 0.4)" }}
+                  >
+                    ← Back to portfolio
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
