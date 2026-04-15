@@ -297,7 +297,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
 
       {/* ── STAT BUBBLES — cream bg, HP card style ── */}
       <section className="py-16 px-4 section-cream">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto text-center sm:text-left">
           <div className="hp-overline">The Cost of Doing Nothing</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {STAT_BUBBLES.map((bubble, i) => (
@@ -356,7 +356,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             The 360° Method is a complete proactive home maintenance system built on three phases.
             We deliver the done-for-you version — you get the results without lifting a finger.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
             {[
               {
                 phase: "AWARE",
@@ -419,7 +419,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 key={i}
                 className="hp-card"
               >
-                <div className="flex items-center gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
+                <div className="flex items-center justify-center sm:justify-start gap-3 mb-4 pb-3" style={{ borderBottom: "1px solid oklch(88% 0.02 80)" }}>
                   <span className="text-2xl">{s.emoji}</span>
                   <div>
                     <div className="font-bold text-sm" style={{ color: "oklch(22% 0.07 155)" }}>
