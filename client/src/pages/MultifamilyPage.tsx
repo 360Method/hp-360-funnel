@@ -42,7 +42,7 @@ const PROPERTY_TYPES = [
   { id: "custom",   label: "5+ Units — Custom Quote", doors: 0 },
 ] as const;
 
-// Monthly base prices — exterior + common area only
+// Monthly base prices — exterior + common area only (used when no tier is selected)
 const BASE_MONTHLY: Record<string, number> = {
   sfh:      59,   // same as homeowner Essential
   duplex:   79,   // slight premium for 2 entries, shared systems
@@ -52,8 +52,10 @@ const BASE_MONTHLY: Record<string, number> = {
 
 // Quarterly = monthly × 2.8 (≈7% off monthly rate)
 // Annual = monthly × 10 (≈17% off monthly rate, same as homeowner side)
-function getBasePrice(type: string, cadence: BillingCadence): number {
-  const mo = BASE_MONTHLY[type];
+// If a tier is selected, tier pricing overrides property-type base pricing.
+function getBasePrice(type: string, cadence: BillingCadence, tier?: string): number {
+  // Use tier pricing if a tier is set, otherwise fall back to property-type base
+  const mo = tier && TIER_MONTHLY[tier] ? TIER_MONTHLY[tier] : BASE_MONTHLY[type];
   if (cadence === "monthly")   return mo;
   if (cadence === "quarterly") return Math.round(mo * 2.8);
   return mo * 10; // annual
@@ -73,7 +75,7 @@ function getInteriorAddonPrice(type: string, cadence: BillingCadence): number {
 
 function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCadence): number {
   return properties.reduce((sum, p) => {
-    const base = getBasePrice(p.type, cadence);
+    const base = getBasePrice(p.type, cadence, p.tier);
     const interior = p.interiorAddon ? getInteriorAddonPrice(p.type, cadence) : 0;
     return sum + base + interior;
   }, 0);
@@ -82,17 +84,18 @@ function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCade
 function getSavingsVsMonthly(properties: PortfolioProperty[], cadence: BillingCadence): number {
   if (cadence === "monthly") return 0;
   const monthlyAnnualized = properties.reduce((sum, p) => {
+    const moBase = p.tier && TIER_MONTHLY[p.tier] ? TIER_MONTHLY[p.tier] : BASE_MONTHLY[p.type];
     const interiorMo = p.interiorAddon ? getInteriorAddonPrice(p.type, "monthly") : 0;
-    return sum + (BASE_MONTHLY[p.type] + interiorMo) * 12;
+    return sum + (moBase + interiorMo) * 12;
   }, 0);
   const cadenceAnnualized = cadence === "quarterly"
     ? properties.reduce((sum, p) => {
         const interiorQ = p.interiorAddon ? getInteriorAddonPrice(p.type, "quarterly") : 0;
-        return sum + (getBasePrice(p.type, "quarterly") + interiorQ) * 4;
+        return sum + (getBasePrice(p.type, "quarterly", p.tier) + interiorQ) * 4;
       }, 0)
     : properties.reduce((sum, p) => {
         const interiorA = p.interiorAddon ? getInteriorAddonPrice(p.type, "annual") : 0;
-        return sum + getBasePrice(p.type, "annual") + interiorA;
+        return sum + getBasePrice(p.type, "annual", p.tier) + interiorA;
       }, 0);
   return monthlyAnnualized - cadenceAnnualized;
 }
@@ -960,7 +963,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 {prop.type !== "custom" && (
                   <div className="mt-2 flex justify-between text-xs" style={{ color: "oklch(50% 0.02 60)" }}>
                     <span>
-                      Exterior: ${getBasePrice(prop.type, cadence).toLocaleString()}
+                      Exterior: ${getBasePrice(prop.type, cadence, prop.tier).toLocaleString()}
                       {prop.interiorAddon && (
                         <span style={{ color: "oklch(60% 0.15 250)" }}>
                           {" "}· +Interior: ${getInteriorAddonPrice(prop.type, cadence).toLocaleString()}
@@ -968,7 +971,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                       )}
                     </span>
                     <span className="font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
-                      ${(getBasePrice(prop.type, cadence) + (prop.interiorAddon ? getInteriorAddonPrice(prop.type, cadence) : 0)).toLocaleString()}
+                      ${(getBasePrice(prop.type, cadence, prop.tier) + (prop.interiorAddon ? getInteriorAddonPrice(prop.type, cadence) : 0)).toLocaleString()}
                       /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                     </span>
                   </div>
