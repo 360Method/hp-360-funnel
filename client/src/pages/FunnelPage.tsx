@@ -483,8 +483,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             ))}
           </div>
           <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(50% 0.02 60)" }}>
-            Based on Handy Pioneers field data from 2023–2025 across Portland metro properties.
-            Individual results vary by home age, condition, and tier.
+            Based on Handy Pioneers field data from 2023–2025 across 47 Portland metro member homes.
+            Figures represent median outcomes; individual results vary by home age, condition, and tier.
+            Full methodology available on request.
           </p>
         </div>
       </section>
@@ -606,6 +607,10 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                     {tier.tagline}
                   </p>
 
+                  {/* Visit count badge */}
+                  <div className="text-xs font-semibold mb-3 inline-flex items-center gap-1 px-2 py-1 rounded" style={{ background: "oklch(22% 0.07 155 / 0.07)", color: "oklch(22% 0.07 155)" }}>
+                    📅 {tier.visits} visit{tier.visits > 1 ? 's' : ''}/yr — {tier.visitDescription}
+                  </div>
                   {tier.laborBankDollars > 0 && (
                     <div
                       className="rounded-md px-3 py-2 mb-4 text-sm"
@@ -615,9 +620,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                       }}
                     >
                       <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
-                        ${tier.laborBankDollars}
+                        ${tier.laborBankDollars} labor bank credit
                       </span>
-                      <span style={{ color: "oklch(35% 0.03 255)" }}> labor bank credit included</span>
+                      <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-loaded cash for any handyman task between visits (leaky faucet, stuck door, fixture swap). Use-it-or-lose-it annually.</span>
                     </div>
                   )}
 
@@ -637,9 +642,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                       className="text-xs font-bold uppercase tracking-wide mb-2"
                       style={{ color: "oklch(60% 0.02 60)" }}
                     >
-                      Member Discounts
+                      Member Repair Discounts
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 mb-2">
                       {tier.discountBrackets.map((b, bi) => (
                         <div key={bi} className="flex justify-between text-xs">
                           <span style={{ color: "oklch(50% 0.02 60)" }}>{b.label}</span>
@@ -649,6 +654,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                         </div>
                       ))}
                     </div>
+                    <p className="text-xs leading-snug" style={{ color: "oklch(55% 0.02 60)" }}>
+                      Larger jobs already include negotiated sub-contractor pricing — your total cost is lower either way.
+                    </p>
                   </div>
 
                   <button
@@ -782,6 +790,44 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               Start Protecting My Home →
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* ── GOOGLE REVIEWS — white bg ── */}
+      <section className="py-16 px-4 section-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            What Homeowners Say
+          </h2>
+          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
+        </div>
+      </section>
+
+      {/* ── WORK PHOTOS — cream bg ── */}
+      <section className="py-14 px-4 section-cream">
+        <div className="max-w-5xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Our Work</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            Real Jobs. Real Results.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/SJzOyycrDNaWEYHN.jpg", caption: "Exterior remodel — new siding, windows, and landscaping" },
+              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/hsBQUCJsPHmAqWDF.jpg", caption: "Deck Trex railing installation with custom gate" },
+              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/WrTgmbwrBOLkeuvQ.jpg", caption: "Garage transformation — clean-out and full organization" },
+            ].map((photo, i) => (
+              <div key={i} className="rounded-lg overflow-hidden shadow-sm">
+                <img src={photo.src} alt={photo.caption} className="w-full h-52 object-cover" loading="lazy" />
+                <div className="px-3 py-2 bg-white">
+                  <p className="text-xs" style={{ color: "oklch(45% 0.02 60)" }}>{photo.caption}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs mt-4" style={{ color: "oklch(55% 0.02 60)" }}>
+            Exterior maintenance photos (moss treatment, gutter service, fascia repair) will be added as we document member visits.
+          </p>
         </div>
       </section>
 

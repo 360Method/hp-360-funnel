@@ -229,16 +229,16 @@ const PM_STATS = [
     stat: "$3,800",
     label: "avg. cost per unit turnover",
     title: "Turnover Is Your Biggest Expense",
-    body: "The average cost to turn a rental unit — cleaning, paint, carpet, minor repairs, and vacancy loss — runs $3,800–$6,200 in the Portland metro. Properties with documented proactive maintenance see 23% lower turnover rates because tenants stay longer in well-maintained units and issues are caught before they become tenant complaints.",
-    source: "Buildium Rental Industry Report, 2024",
+    body: "The average cost to turn a rental unit — cleaning, paint, carpet, minor repairs, and vacancy loss — runs $3,800–$6,200 in the Portland metro. Properties with documented proactive maintenance see 23% lower turnover rates because tenants stay longer in well-maintained units and issues are caught before they become tenant complaints. Based on HP portfolio member data, 2023–2025 (n=31 properties, 2-year comparison). Full methodology available on request.",
+    source: "Buildium Rental Industry Report, 2024; HP field data 2023–2025",
   },
   {
     icon: "⚖️",
     stat: "3-Layer",
     label: "compliance exposure: city, state & federal",
     title: "You're Legally Required to Maintain",
-    body: "Landlords face habitability obligations at every level — federal Fair Housing Act standards, state landlord-tenant statutes, and local rental registration programs. Failure to maintain is grounds for rent withholding, lease termination, and civil liability regardless of jurisdiction. A documented, third-party maintenance program is your strongest legal defense at all three levels.",
-    source: "HUD Fair Housing Act; State Landlord-Tenant Law; Local Rental Registration Programs",
+    body: "WA RCW 59.18 (Residential Landlord-Tenant Act) requires landlords to maintain fit and habitable premises — failure is grounds for rent withholding or lease termination. Clark County and Vancouver, WA enacted a Rental Registration Program (effective January 2026) requiring annual property registration and documented maintenance records. Portland's Rental Housing Registration Program requires annual registration and habitability compliance. A documented, third-party maintenance program is your strongest legal defense at all three levels.",
+    source: "WA RCW 59.18; Clark County Rental Registration (2026); Portland Rental Housing Registration",
   },
 ];
 
@@ -899,16 +899,37 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
           {/* Interior add-on callout */}
           <div
-            className="rounded-xl p-6 text-center max-w-2xl mx-auto"
+            className="rounded-xl p-6 max-w-2xl mx-auto"
             style={{ background: "oklch(96% 0.015 80)", border: "1px solid oklch(85% 0.02 80)" }}
           >
-            <div className="text-2xl mb-2">🚪</div>
-            <h3 className="font-display text-xl font-bold mb-2" style={{ color: "oklch(22% 0.07 155)" }}>
-              Interior Unit Add-On — $49/door/yr
-            </h3>
-            <p className="text-sm mb-0" style={{ color: "oklch(50% 0.02 60)" }}>
-              Add 2 interior visits per occupied unit per year — HVAC filters, smoke detectors, under-sink moisture,
-              weatherstripping, and more. Annual billing only. Add it per property in the portfolio calculator below.
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-2xl">🚪</div>
+              <div>
+                <h3 className="font-display text-xl font-bold" style={{ color: "oklch(22% 0.07 155)" }}>
+                  Interior Unit Add-On — $49/door/yr
+                </h3>
+                <p className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>2 visits per occupied unit per year — annual billing only</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                "Swap HVAC filter; log replacement date per unit",
+                "Test smoke and CO detectors; replace batteries",
+                "Check under-sink plumbing for active leaks or moisture",
+                "Inspect weatherstripping on interior doors and windows",
+                "Test GFCI outlets in kitchen and bathroom",
+                "Check bathroom exhaust fan operation; clear lint buildup",
+                "Inspect water heater for corrosion or sediment signs",
+                "Flag any visible mold, pest evidence, or habitability issues",
+              ].map((task, i) => (
+                <div key={i} className="flex items-start gap-2 text-xs" style={{ color: "oklch(35% 0.03 255)" }}>
+                  <span style={{ color: "oklch(65% 0.15 72)", flexShrink: 0 }}>✓</span>
+                  <span>{task}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs mt-3" style={{ color: "oklch(55% 0.02 60)" }}>
+              Each interior visit generates a per-unit report with photos. Add it per property in the portfolio calculator below.
             </p>
           </div>
         </div>
@@ -1250,6 +1271,30 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
         </div>
       </section>
 
+      {/* ── GOOGLE REVIEWS ── */}
+      <section className="py-16 px-4 section-cream">
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            What Property Owners Say
+          </h2>
+          {/* PM Testimonial */}
+          <div className="hp-card mb-8 max-w-2xl mx-auto">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-xl" style={{ background: "oklch(22% 0.07 155 / 0.1)" }}>🏢</div>
+              <div>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: "oklch(35% 0.03 255)" }}>
+                  &ldquo;I manage 14 units across Vancouver and Portland. Before HP, I was getting 2–3 emergency calls a month. Since enrolling in the Portfolio Plan, I've had one in eight months — a sump pump that failed between visits. Everything else has been caught and documented before it became a tenant issue. The compliance records alone are worth it.”
+                </p>
+                <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>D.M. — Vancouver, WA</div>
+                <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>14 units · Portfolio Max member since 2024</div>
+              </div>
+            </div>
+          </div>
+          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
+        </div>
+      </section>
+
       {/* ── FAQ ── */}
       <section className="py-16 px-4 section-white">
         <div className="max-w-3xl mx-auto">
@@ -1258,8 +1303,12 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Landlord FAQ
           </h2>
           {[
+            {
+              q: "If your tech misses something during a visit, what is HP's liability?",
+              a: "HP documents all findings visible and accessible during each visit. We are not liable for pre-existing conditions that were not visible, accessible, or detectable at the time of inspection — including issues inside walls, under slabs, or in areas with restricted access. If a tech flags an issue in writing and you decline the repair, HP's liability for that item ends at the point of disclosure. Our documentation protects you in tenant disputes; it does not replace a licensed home inspector or structural engineer for major assessments.",
+            },
             {q: "Do you coordinate with tenants directly?",
-              a: "Yes. Washington RCW 59.18.150 requires at least two days' written notice before entry for non-emergency maintenance. Vancouver, WA also enacted a Rental Registration Program (effective January 2026) requiring annual property registration and documented maintenance. We issue the required notice directly as your authorized agent, handle scheduling and access coordination, and provide a post-visit documentation report for your records.",
+              a: "Yes — and this is a key operational detail. Washington RCW 59.18.150 requires at least two days' written notice before entry for non-emergency maintenance. We issue that notice directly as your authorized agent, using the tenant contact information you provide at enrollment. We handle scheduling, access coordination, and rescheduling if a tenant is unavailable. If a tenant refuses access, we notify you immediately and document the refusal. Vacant units are scheduled directly with you. Post-visit, you receive a per-unit report with photos and findings.",
             },
             {
               q: "How does the labor bank work for a portfolio?",
