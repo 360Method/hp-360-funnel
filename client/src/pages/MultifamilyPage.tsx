@@ -26,6 +26,7 @@ export interface PortfolioProperty {
   address: string;
   type: "sfh" | "duplex" | "triplex" | "fourplex" | "custom";
   interiorAddon: boolean;
+  tier?: string;
 }
 
 // ─── PRICING ──────────────────────────────────────────────────────────────────
@@ -318,7 +319,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
   // For the portfolio calculator (advanced path)
   const [properties, setProperties] = useState<PortfolioProperty[]>([
-    { id: "1", address: "", type: "sfh", interiorAddon: false },
+    { id: "1", address: "", type: "sfh", interiorAddon: false, tier: "essential" },
   ]);
 
   // Google Maps autocomplete refs — one per property row
@@ -582,7 +583,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 phase: "DOCUMENT",
                 icon: "📋",
                 title: "Build a Legal & Financial Record",
-                body: "Every visit generates a written report with photos, findings, and repair estimates. This record satisfies ORS 90.320 habitability requirements, supports insurance claims, and is lender-ready for refinancing or sale.",
+                body: "Every visit generates a written report with photos, findings, and repair estimates. This record supports WA RCW 59.18.060 habitability compliance, Vancouver's Rental Registration Program requirements, insurance claims, and is lender-ready for refinancing or sale.",
               },
               {
                 phase: "RETAIN",
@@ -841,6 +842,23 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             })}
           </div>
 
+          {/* Member Repair Discounts */}
+          <div className="rounded-xl p-6 max-w-2xl mx-auto mb-6" style={{ background: "oklch(22% 0.07 155)" }}>
+            <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Member Repair Discounts</div>
+            <p className="text-sm text-center mb-4" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
+              All 360° Portfolio members receive automatic discounts on out-of-scope repair work — the bigger the job, the more you save.
+            </p>
+            <div className="grid grid-cols-3 gap-3">
+              {MEMBER_REPAIR_DISCOUNTS.map((d) => (
+                <div key={d.label} className="rounded-lg p-3 text-center" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
+                  <div className="font-display text-2xl font-black mb-1" style={{ color: "oklch(65% 0.15 72)" }}>{d.rate}%</div>
+                  <div className="text-xs" style={{ color: "oklch(100% 0 0 / 0.7)" }}>off</div>
+                  <div className="text-xs mt-1 font-semibold" style={{ color: "oklch(100% 0 0 / 0.55)" }}>{d.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Interior add-on callout */}
           <div
             className="rounded-xl p-6 text-center max-w-2xl mx-auto"
@@ -906,15 +924,28 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                     ))}
                   </select>
                   {prop.type !== "custom" && (
-                    <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: "oklch(35% 0.03 255)" }}>
-                      <input
-                        type="checkbox"
-                        checked={prop.interiorAddon}
-                        onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
-                        style={{ accentColor: "oklch(22% 0.07 155)" }}
-                      />
-                      +Interior
-                    </label>
+                    <>
+                      <select
+                        value={prop.tier ?? "essential"}
+                        onChange={(e) => updateProperty(prop.id, { tier: e.target.value })}
+                        className="text-xs px-2 py-2 rounded-md border"
+                        style={{ borderColor: "oklch(85% 0.02 80)", color: "oklch(22% 0.07 155)" }}
+                        title="Protection level for this property"
+                      >
+                        {PM_TIERS.map((t) => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      <label className="flex items-center gap-1.5 text-xs font-semibold cursor-pointer" style={{ color: "oklch(35% 0.03 255)" }}>
+                        <input
+                          type="checkbox"
+                          checked={prop.interiorAddon}
+                          onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
+                          style={{ accentColor: "oklch(22% 0.07 155)" }}
+                        />
+                        +Interior
+                      </label>
+                    </>
                   )}
                   {properties.length > 1 && (
                     <button
