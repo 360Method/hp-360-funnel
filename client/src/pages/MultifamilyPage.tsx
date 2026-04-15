@@ -207,11 +207,11 @@ const PM_STATS = [
   },
   {
     icon: "⚖️",
-    stat: "ORS 90.320",
-    label: "habitability standard — your legal obligation",
+    stat: "3-Layer",
+    label: "compliance exposure: city, state & federal",
     title: "You're Legally Required to Maintain",
-    body: "Oregon Revised Statute 90.320 requires landlords to maintain rental units in a habitable condition at all times — functional heating, weathertight structure, working plumbing, and safe common areas. Failure to maintain is grounds for rent withholding, lease termination, and civil liability. A documented maintenance program is your strongest legal defense.",
-    source: "Oregon Revised Statutes § 90.320",
+    body: "Landlords face habitability obligations at every level — federal Fair Housing Act standards, state landlord-tenant statutes, and local rental registration programs. Failure to maintain is grounds for rent withholding, lease termination, and civil liability regardless of jurisdiction. A documented, third-party maintenance program is your strongest legal defense at all three levels.",
+    source: "HUD Fair Housing Act; State Landlord-Tenant Law; Local Rental Registration Programs",
   },
 ];
 
@@ -518,7 +518,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           </p>
 
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
-            {["Licensed & Insured", "ORS 90.320 Compliant Documentation", "1-Year Labor Guarantee", "Priority Scheduling Available"].map((b) => (
+            {["Licensed & Insured", "Habitability-Compliant Documentation", "1-Year Labor Guarantee", "Priority Scheduling Available"].map((b) => (
               <span key={b} className="flex items-center gap-1.5">
                 <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
               </span>
@@ -583,7 +583,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 phase: "DOCUMENT",
                 icon: "📋",
                 title: "Build a Legal & Financial Record",
-                body: "Every visit generates a written report with photos, findings, and repair estimates. This record supports WA RCW 59.18.060 habitability compliance, Vancouver's Rental Registration Program requirements, insurance claims, and is lender-ready for refinancing or sale.",
+                body: "Every visit generates a written report with photos, findings, and repair estimates. This record satisfies habitability documentation requirements at the city, state, and federal level — supports insurance claims, local rental registration compliance, and is lender-ready for refinancing or sale.",
               },
               {
                 phase: "RETAIN",
