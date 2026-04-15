@@ -828,23 +828,23 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                     <p className="text-sm" style={{ color: "oklch(50% 0.02 60)" }}>{tier.tagline}</p>
                   </div>
 
-                  <div className="mb-2">
+                  <div className="mb-1">
                     <span className="font-display text-4xl font-black" style={{ color: "oklch(22% 0.07 155)" }}>
-                      ${price}
+                      ${cadence === "annual" ? Math.round(price / 10) : cadence === "quarterly" ? Math.round(price / 3) : price}
                     </span>
-                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>
-                      /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"} per property
-                    </span>
+                    <span className="text-sm ml-1" style={{ color: "oklch(50% 0.02 60)" }}>/mo per property</span>
                   </div>
                   {cadence !== "monthly" && (
                     <p className="text-xs mb-1" style={{ color: "oklch(50% 0.02 60)" }}>
-                      ${cadence === "annual" ? Math.round(price / 10) : Math.round(price / 3)}/mo equivalent
+                      billed ${price.toLocaleString()}/{cadence === "quarterly" ? "qtr" : "yr"}
                     </p>
                   )}
                   {savings > 0 && (
-                    <p className="text-xs mb-1" style={{ color: "oklch(65% 0.15 72)" }}>
-                      Save ${savings}/property vs. monthly
-                    </p>
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded mb-2" style={{ background: "oklch(40% 0.12 145 / 0.1)", border: "1px solid oklch(40% 0.12 145 / 0.25)" }}>
+                      <span className="text-xs font-bold" style={{ color: "oklch(35% 0.12 145)" }}>
+                        Save ${savings}/yr · {cadence === "quarterly" ? "7" : "17"}% off
+                      </span>
+                    </div>
                   )}
                   {unitCount > 1 && (
                     <p className="text-xs font-semibold mb-4 break-words" style={{ color: "oklch(22% 0.07 155)" }}>
