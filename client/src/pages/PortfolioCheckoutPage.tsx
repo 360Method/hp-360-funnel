@@ -78,9 +78,8 @@ const SERVICE_AREA_ZIPS = new Set([
 ]);
 
 function getPropertyMonthly(p: PortfolioProperty): number {
-  return p.tier && TIER_MONTHLY_PRICES[p.tier]
-    ? TIER_MONTHLY_PRICES[p.tier]
-    : BASE_MONTHLY_PRICES[p.type] ?? 59;
+  const tier = p.tier ?? "essential";
+  return TIER_MONTHLY_PRICES[tier] ?? BASE_MONTHLY_PRICES[p.type] ?? 59;
 }
 
 function getPropertyPrice(p: PortfolioProperty, cadence: BillingCadence): number {
@@ -136,13 +135,12 @@ const PROPERTY_TYPE_OPTIONS = [
   { value: "fourplex", label: "Fourplex" },
 ];
 const TIER_OPTIONS = [
-  { value: "",          label: "No plan (exterior base only)" },
-  { value: "essential", label: "Exterior Shield" },
-  { value: "silver",    label: "Full Coverage" },
-  { value: "gold",      label: "Maximum" },
+  { value: "essential", label: "Exterior Shield",  mo: 59,  laborBank: 0,   desc: "2 visits/yr · 5% discount" },
+  { value: "full",      label: "Full Coverage",   mo: 99,  laborBank: 300, desc: "4 visits/yr · 8% discount" },
+  { value: "maximum",   label: "Portfolio Max",   mo: 149, laborBank: 600, desc: "4 visits/yr · 12% discount" },
 ];
 function newProperty(): PortfolioProperty {
-  return { id: Math.random().toString(36).slice(2), address: "", type: "sfh", interiorAddon: false };
+  return { id: Math.random().toString(36).slice(2), address: "", type: "sfh", tier: "essential", interiorAddon: false };
 }
 export default function PortfolioCheckoutPage({ properties: initialProperties, cadence, onBack }: PortfolioCheckoutPageProps) {
   const [editableProperties, setEditableProperties] = useState<PortfolioProperty[]>(
@@ -340,7 +338,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
                         onFocus={focusAmber} onBlur={blurReset}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-3">
                       <div>
                         <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Property Type</label>
                         <select
@@ -356,18 +354,38 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Plan Tier</label>
-                        <select
-                          value={prop.tier ?? ""}
-                          onChange={(e) => updateProperty(prop.id, { tier: e.target.value || undefined })}
-                          className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
-                          style={inputStyle}
-                          onFocus={focusAmber} onBlur={blurReset}
-                        >
-                          {TIER_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
-                          ))}
-                        </select>
+                        <label className="block text-xs font-semibold mb-2 uppercase tracking-wide" style={{ color: M }}>Plan Tier — select to set price</label>
+                        <div className="grid grid-cols-3 gap-2" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+                          {TIER_OPTIONS.map((o) => {
+                            const isActive = (prop.tier ?? "essential") === o.value;
+                            const tierPrice = activeCadence === "monthly" ? o.mo
+                              : activeCadence === "quarterly" ? Math.round(o.mo * 2.8)
+                              : o.mo * 10;
+                            const tierSuffix = activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr";
+                            return (
+                              <button
+                                key={o.value}
+                                type="button"
+                                onClick={() => updateProperty(prop.id, { tier: o.value })}
+                                className="rounded-md py-2 px-2 text-xs font-semibold transition-all border-2 text-left"
+                                style={{
+                                  background: isActive ? G : "oklch(100% 0 0)",
+                                  color: isActive ? "oklch(100% 0 0)" : G,
+                                  borderColor: isActive ? G : "oklch(80% 0.02 80)",
+                                }}
+                              >
+                                <div className="font-bold">{o.label}</div>
+                                <div className="font-black mt-0.5" style={{ fontSize: "0.85rem", color: isActive ? "oklch(85% 0.12 72)" : A }}>${tierPrice}/{tierSuffix}</div>
+                                <div className="text-xs mt-0.5 opacity-80">{o.desc}</div>
+                                {o.laborBank > 0 && (
+                                  <div className="text-xs mt-0.5" style={{ color: isActive ? "oklch(80% 0.12 72)" : "oklch(55% 0.14 68)" }}>
+                                    {activeCadence === "monthly" ? `⏳ $${o.laborBank} bank` : `✅ $${o.laborBank} bank`}
+                                  </div>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                     <label className="flex items-center gap-2 cursor-pointer text-sm" style={{ color: M }}>
