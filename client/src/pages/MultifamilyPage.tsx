@@ -909,17 +909,17 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                     >
                       {cadence === "monthly" ? (
                         <>
-                          <span className="font-bold" style={{ color: "oklch(55% 0.02 60)" }}>
-                            🔒 Labor bank credit
+                          <span className="font-bold" style={{ color: "oklch(50% 0.02 60)" }}>
+                            ⏳ Labor bank credit — accrues after 90 days on Monthly
                           </span>
-                          <span style={{ color: "oklch(50% 0.02 60)" }}> — available on Quarterly and Annual plans. Switch above to unlock ${tier.laborBank}/property in pre-paid labor.</span>
+                          <span style={{ color: "oklch(50% 0.02 60)" }}> — ${tier.laborBank}/property becomes available after your first 90 days. Switch to Quarterly or Annual to unlock the full credit on day one.</span>
                         </>
                       ) : (
                         <>
                           <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
-                            ${tier.laborBank}/property labor bank credit
+                            ✅ ${tier.laborBank}/property labor bank credit — full credit, day one
                           </span>
-                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash per property for any repair between visits. Earns at the end of each billing period. Use-it-or-lose-it annually.</span>
+                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash per property for any repair between visits. Use-it-or-lose-it annually.</span>
                         </>
                       )}
                     </div>

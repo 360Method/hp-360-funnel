@@ -612,17 +612,17 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                     >
                       {cadence === "monthly" ? (
                         <>
-                          <span className="font-bold" style={{ color: "oklch(55% 0.02 60)" }}>
-                            🔒 Labor bank credit
+                          <span className="font-bold" style={{ color: "oklch(50% 0.02 60)" }}>
+                            ⏳ Labor bank credit — accrues after 90 days on Monthly
                           </span>
-                          <span style={{ color: "oklch(50% 0.02 60)" }}> — available on Quarterly and Annual plans. Switch above to unlock ${tier.laborBankDollars} in pre-paid labor.</span>
+                          <span style={{ color: "oklch(50% 0.02 60)" }}> — ${tier.laborBankDollars} becomes available after your first 90 days. Switch to Quarterly or Annual to unlock the full credit on day one.</span>
                         </>
                       ) : (
                         <>
                           <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
-                            ${tier.laborBankDollars} labor bank credit
+                            ✅ ${tier.laborBankDollars} labor bank credit — full credit, day one
                           </span>
-                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash for any handyman task between visits (leaky faucet, stuck door, fixture swap). Earns at the end of each billing period. Use-it-or-lose-it annually.</span>
+                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash for any handyman task between visits (leaky faucet, stuck door, fixture swap). Use-it-or-lose-it annually.</span>
                         </>
                       )}
                     </div>
