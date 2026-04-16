@@ -204,8 +204,44 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         <div>
           <h2 className="font-display text-2xl font-black mb-6" style={{ color: G }}>Your Information</h2>
 
-          {/* Cadence display */}
- 
+          {/* Cadence inline switcher */}
+          <div className="rounded-md px-4 py-3 mb-6" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: M }}>Billing Frequency</p>
+            <div className="flex gap-2">
+              {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => {
+                const cLabel = c === "monthly" ? "Monthly" : c === "quarterly" ? "Quarterly" : "Annual";
+                const cPrice = getPrice(tierData, c);
+                const cSuffix = c === "monthly" ? "mo" : c === "quarterly" ? "qtr" : "yr";
+                const isActive = activeCadence === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setActiveCadence(c)}
+                    className="flex-1 rounded-md py-2 px-2 text-xs font-semibold transition-all border-2"
+                    style={{
+                      background: isActive ? G : "oklch(100% 0 0)",
+                      color: isActive ? "oklch(100% 0 0)" : G,
+                      borderColor: isActive ? G : "oklch(80% 0.02 80)",
+                    }}
+                  >
+                    <div>{cLabel}</div>
+                    <div className="font-black" style={{ fontSize: "0.9rem" }}>${cPrice}/{cSuffix}</div>
+                    {c === "annual" && <div className="text-xs mt-0.5" style={{ color: isActive ? "oklch(75% 0.12 72)" : A }}>Best value</div>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Labor bank upgrade nudge — monthly only */}
+          {activeCadence === "monthly" && hasLaborBank && (
+            <div className="rounded-md px-4 py-3 mb-6 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
+              <span style={{ color: "oklch(45% 0.12 68)" }}>
+                💡 <strong>Unlock ${tierData.laborBankDollars} in labor bank credit on day one</strong> — switch to Quarterly or Annual above.
+              </span>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -322,47 +358,48 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
           <div>
             <h2 className="font-display text-2xl font-black mb-4" style={{ color: G }}>Order Summary</h2>
             <div className="rounded-lg border-2 bg-white overflow-hidden" style={{ borderColor: G }}>
-              {/* Header */}
+              {/* Header — matches PortfolioCheckoutPage style */}
               <div className="px-5 py-4" style={{ background: G }}>
-                <div className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold mb-2" style={{ background: "oklch(65% 0.15 72 / 0.25)", color: "oklch(90% 0.1 72)" }}>
-                  {tierData.name}
-                </div>
-                <div className="font-display font-black" style={{ fontSize: "2rem", color: "oklch(100% 0 0)" }}>
-                  ${price}
-                  <span className="text-sm font-normal ml-1" style={{ color: "oklch(100% 0 0 / 0.65)" }}>/{cadenceSuffix}</span>
-                </div>
-                <p className="text-xs mt-1" style={{ color: "oklch(100% 0 0 / 0.55)" }}>
-                  Billed {cadenceLabel.toLowerCase()} · Recurring subscription
+                <p className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: "oklch(65% 0.07 155)" }}>360° Method — {tierData.name}</p>
+                <p className="font-display text-lg font-black" style={{ color: "oklch(100% 0 0)" }}>
+                  {cadenceLabel} Billing
                 </p>
               </div>
-
-              {/* Features */}
-              <div className="px-5 py-4">
-                <ul className="space-y-2 mb-4">
-                  {tierData.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
-                      <span style={{ color: A }} className="mt-0.5 flex-shrink-0">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Labor bank with cadence gate */}
-                {hasLaborBank && (
-                  <div className="rounded-md px-3 py-3 text-sm" style={{ background: cadence === "monthly" ? "oklch(92% 0.01 80)" : "oklch(65% 0.15 72 / 0.08)", border: `1px solid ${cadence === "monthly" ? "oklch(80% 0.02 80)" : "oklch(65% 0.15 72 / 0.25)"}` }}>
-                    {cadence === "monthly" ? (
-                      <>
-                        <p className="font-semibold text-xs mb-1" style={{ color: M }}>⏳ ${tierData.laborBankDollars} Labor Bank</p>
-                        <p className="text-xs" style={{ color: M }}>Accrues after your first 90 days on Monthly. Switch to Quarterly or Annual to unlock on day one.</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="font-semibold text-xs mb-1" style={{ color: "oklch(45% 0.12 68)" }}>✅ ${tierData.laborBankDollars} Labor Bank — Day One</p>
-                        <p className="text-xs" style={{ color: "oklch(50% 0.05 68)" }}>Full credit available immediately. Use on any handyman task — just call or message us.</p>
-                      </>
-                    )}
+              {/* Line items — mirrors PortfolioCheckoutPage per-property style */}
+              <div className="px-5 py-4 space-y-3">
+                <div className="pb-3" style={{ borderBottom: `1px solid oklch(92% 0.01 80)` }}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-sm font-semibold" style={{ color: G }}>{tierData.name} Plan</p>
+                      <p className="text-xs mt-0.5" style={{ color: M }}>{cadenceLabel} membership · 4 seasonal visits/yr</p>
+                      {hasLaborBank && (
+                        <p className="text-xs mt-0.5 font-medium" style={{ color: activeCadence === "monthly" ? "oklch(55% 0.02 60)" : "oklch(55% 0.14 68)" }}>
+                          {activeCadence === "monthly"
+                            ? `⏳ $${tierData.laborBankDollars} labor bank — unlocks after 90 days`
+                            : `✅ $${tierData.laborBankDollars} labor bank — day one`}
+                        </p>
+                      )}
+                    </div>
+                    <span className="text-sm font-bold flex-shrink-0" style={{ color: G }}>${price}</span>
                   </div>
-                )}
+                  <ul className="mt-2 space-y-1">
+                    {tierData.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-1.5 text-xs" style={{ color: "oklch(45% 0.03 255)" }}>
+                        <span style={{ color: A }} className="flex-shrink-0">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* Total row */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-bold text-sm" style={{ color: G }}>Total</span>
+                  <div className="text-right">
+                    <span className="font-display text-2xl font-black" style={{ color: G }}>${price}</span>
+                    <span className="text-sm ml-1" style={{ color: M }}>/{cadenceSuffix}</span>
+                  </div>
+                </div>
+                <p className="text-xs" style={{ color: M }}>Billed {cadenceLabel.toLowerCase()} · Recurring subscription · Cancel anytime</p>
               </div>
             </div>
           </div>

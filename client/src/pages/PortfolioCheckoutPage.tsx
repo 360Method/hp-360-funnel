@@ -99,8 +99,8 @@ function getInteriorPrice(p: PortfolioProperty, cadence: BillingCadence): number
   return Math.round(annual / 12);
 }
 
-function getPortfolioTotal(properties: PortfolioProperty[], cadence: BillingCadence): number {
-  return properties.reduce((sum, p) => sum + getPropertyPrice(p, cadence) + getInteriorPrice(p, cadence), 0);
+function getPortfolioTotal(props: PortfolioProperty[], cadence: BillingCadence): number {
+  return props.reduce((sum: number, p: PortfolioProperty) => sum + getPropertyPrice(p, cadence) + getInteriorPrice(p, cadence), 0);
 }
 
 interface PortfolioCheckoutPageProps {
@@ -129,7 +129,31 @@ function Spinner() {
   );
 }
 
-export default function PortfolioCheckoutPage({ properties, cadence, onBack }: PortfolioCheckoutPageProps) {
+const PROPERTY_TYPE_OPTIONS = [
+  { value: "sfh",      label: "Single-Family Rental" },
+  { value: "duplex",   label: "Duplex" },
+  { value: "triplex",  label: "Triplex" },
+  { value: "fourplex", label: "Fourplex" },
+];
+const TIER_OPTIONS = [
+  { value: "",          label: "No plan (exterior base only)" },
+  { value: "essential", label: "Exterior Shield" },
+  { value: "silver",    label: "Full Coverage" },
+  { value: "gold",      label: "Maximum" },
+];
+function newProperty(): PortfolioProperty {
+  return { id: Math.random().toString(36).slice(2), address: "", type: "sfh", interiorAddon: false };
+}
+export default function PortfolioCheckoutPage({ properties: initialProperties, cadence, onBack }: PortfolioCheckoutPageProps) {
+  const [editableProperties, setEditableProperties] = useState<PortfolioProperty[]>(
+    initialProperties.length > 0 ? initialProperties : [newProperty()]
+  );
+  const updateProperty = (id: string, patch: Partial<PortfolioProperty>) =>
+    setEditableProperties((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+  const removeProperty = (id: string) =>
+    setEditableProperties((prev) => prev.filter((p) => p.id !== id));
+  const addProperty = () =>
+    setEditableProperties((prev) => [...prev, newProperty()]);
   const [form, setForm] = useState({
     firstName: "", lastName: "",
     email: "", phone: "",
@@ -141,13 +165,13 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const [activeCadence, setActiveCadence] = useState<BillingCadence>(cadence);
-  const total = useMemo(() => getPortfolioTotal(properties, activeCadence), [properties, activeCadence]);
+  const total = useMemo(() => getPortfolioTotal(editableProperties, activeCadence), [editableProperties, activeCadence]);
 
   // Determine if any property has a labor bank tier
-  const hasLaborBank = properties.some(
+  const hasLaborBank = editableProperties.some(
     (p) => p.tier && TIER_LABOR_BANK[p.tier] > 0
   );
-  const totalLaborBank = properties.reduce(
+  const totalLaborBank = editableProperties.reduce(
     (sum, p) => sum + (p.tier ? (TIER_LABOR_BANK[p.tier] ?? 0) : 0),
     0
   );
@@ -188,7 +212,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
       body: JSON.stringify({
         json: {
           cadence: activeCadence,
-          properties,
+          editableProperties,
           customerName: `${form.firstName} ${form.lastName}`.trim(),
           customerEmail: form.email,
           customerPhone: form.phone,
@@ -208,7 +232,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
         body: JSON.stringify({
           json: {
             cadence: activeCadence,
-            properties,
+            editableProperties,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
@@ -284,6 +308,97 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
 
         {/* ── LEFT: FORM ── */}
         <div>
+          {/* ── EDITABLE PORTFOLIO BUILDER ── */}
+          <div className="mb-8">
+            <h2 className="font-display text-2xl font-black mb-1" style={{ color: G }}>Your Properties</h2>
+            <p className="text-sm mb-4" style={{ color: M }}>Review and edit your portfolio below. Add or remove properties before completing enrollment.</p>
+            <div className="space-y-4">
+              {editableProperties.map((prop, idx) => (
+                <div key={prop.id} className="rounded-lg p-4 bg-white" style={{ border: `1px solid ${B}` }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold uppercase tracking-wide" style={{ color: G }}>Property {idx + 1}</span>
+                    {editableProperties.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeProperty(prop.id)}
+                        className="text-xs font-semibold transition-opacity hover:opacity-60"
+                        style={{ color: "oklch(50% 0.18 25)" }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Address</label>
+                      <input
+                        value={prop.address}
+                        onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
+                        placeholder="e.g. 123 Main St, Vancouver WA"
+                        className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                        style={inputStyle}
+                        onFocus={focusAmber} onBlur={blurReset}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Property Type</label>
+                        <select
+                          value={prop.type}
+                          onChange={(e) => updateProperty(prop.id, { type: e.target.value as PortfolioProperty["type"] })}
+                          className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                          style={inputStyle}
+                          onFocus={focusAmber} onBlur={blurReset}
+                        >
+                          {PROPERTY_TYPE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Plan Tier</label>
+                        <select
+                          value={prop.tier ?? ""}
+                          onChange={(e) => updateProperty(prop.id, { tier: e.target.value || undefined })}
+                          className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                          style={inputStyle}
+                          onFocus={focusAmber} onBlur={blurReset}
+                        >
+                          {TIER_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer text-sm" style={{ color: M }}>
+                      <input
+                        type="checkbox"
+                        checked={prop.interiorAddon}
+                        onChange={(e) => updateProperty(prop.id, { interiorAddon: e.target.checked })}
+                        className="w-4 h-4 rounded accent-amber-600"
+                      />
+                      Add Interior Maintenance add-on
+                      <span className="text-xs" style={{ color: A }}>(+${getInteriorPrice(prop, activeCadence)}/{activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr"})</span>
+                    </label>
+                  </div>
+                  <div className="mt-3 pt-3 flex justify-between items-center" style={{ borderTop: `1px solid ${B}` }}>
+                    <span className="text-xs" style={{ color: M }}>Property subtotal</span>
+                    <span className="text-sm font-bold" style={{ color: G }}>
+                      ${(getPropertyPrice(prop, activeCadence) + getInteriorPrice(prop, activeCadence)).toLocaleString()}/{activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={addProperty}
+              className="mt-3 w-full rounded-md py-2 text-sm font-semibold border-2 border-dashed transition-all hover:opacity-70"
+              style={{ borderColor: G, color: G, background: "transparent" }}
+            >
+              + Add Another Property
+            </button>
+          </div>
           <h2 className="font-display text-2xl font-black mb-1" style={{ color: G }}>Complete Enrollment</h2>
           <p className="text-sm mb-6" style={{ color: M }}>You'll be redirected to Stripe to complete payment securely.</p>
 
@@ -293,7 +408,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
             <div className="flex gap-2">
               {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => {
                 const cLabel = c === "monthly" ? "Monthly" : c === "quarterly" ? "Quarterly" : "Annual";
-                const cTotal = getPortfolioTotal(properties, c);
+                const cTotal = getPortfolioTotal(editableProperties, c);
                 const cSuffix = c === "monthly" ? "mo" : c === "quarterly" ? "qtr" : "yr";
                 const isActive = activeCadence === c;
                 return (
@@ -462,7 +577,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
 
               {/* Per-property line items */}
               <div className="px-5 py-4 space-y-3">
-                {properties.map((prop, idx) => {
+                {editableProperties.map((prop, idx) => {
                   const propPrice = getPropertyPrice(prop, cadence);
                   const intPrice  = getInteriorPrice(prop, cadence);
                   const tierLabel = prop.tier ? TIER_LABELS[prop.tier] : null;
