@@ -748,6 +748,36 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
         </div>
       </section>
 
+      {/* ── GOOGLE REVIEWS — above portfolio calculator ── */}
+      <section className="py-16 px-4 section-cream">
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            What Property Owners Say
+          </h2>
+          {/* PM Testimonial */}
+          <div className="hp-card mb-8 max-w-2xl mx-auto">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 font-black text-lg" style={{ background: "oklch(22% 0.07 155)", color: "#fff" }}>B</div>
+              <div>
+                <div className="flex items-center gap-1 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} style={{ color: "oklch(65% 0.15 72)" }}>★</span>
+                  ))}
+                  <span className="text-xs ml-1" style={{ color: "oklch(55% 0.02 60)" }}>Google Review</span>
+                </div>
+                <p className="text-sm leading-relaxed mb-3" style={{ color: "oklch(35% 0.03 255)" }}>
+                  &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10&rdquo;
+                </p>
+                <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
+                <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>Rental property owner · Verified Google review</div>
+              </div>
+            </div>
+          </div>
+          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
+        </div>
+      </section>
+
       {/* ── PRICING ── */}
       <section id="pricing" className="py-20 px-4 section-white">
         <div className="max-w-5xl mx-auto">
@@ -948,36 +978,6 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               Each interior visit generates a per-unit report with photos. Add it per property in the portfolio calculator below.
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* ── GOOGLE REVIEWS — above portfolio calculator ── */}
-      <section className="py-16 px-4 section-cream">
-        <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
-          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Property Owners Say
-          </h2>
-          {/* PM Testimonial */}
-          <div className="hp-card mb-8 max-w-2xl mx-auto">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 font-black text-lg" style={{ background: "oklch(22% 0.07 155)", color: "#fff" }}>B</div>
-              <div>
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} style={{ color: "oklch(65% 0.15 72)" }}>★</span>
-                  ))}
-                  <span className="text-xs ml-1" style={{ color: "oklch(55% 0.02 60)" }}>Google Review</span>
-                </div>
-                <p className="text-sm leading-relaxed mb-3" style={{ color: "oklch(35% 0.03 255)" }}>
-                  &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10&rdquo;
-                </p>
-                <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
-                <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>Rental property owner · Verified Google review</div>
-              </div>
-            </div>
-          </div>
-          <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
         </div>
       </section>
 
