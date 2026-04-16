@@ -62,7 +62,7 @@ export const TIERS: TierData[] = [
     badgeText: "text-slate-800",
     prices: { monthly: 99, quarterly: 279, annual: 948 },
     annualMonthly: 79,
-    laborBankDollars: 200,
+    laborBankDollars: 300,
     visits: 4,
     visitDescription: "All 4 Seasons",
     popular: true,
@@ -73,7 +73,7 @@ export const TIERS: TierData[] = [
     ],
     features: [
       "Everything in Essential, plus:",
-      "$200 labor bank credit (use on any handyman task)",
+      "$300 labor bank credit (use on any handyman task)",
       "Summer visit — dry-season exterior + HVAC prep",
       "Winter visit — freeze protection + moisture inspection",
       "Upsell-to-estimate in one tap — findings become quotes instantly",
@@ -91,7 +91,7 @@ export const TIERS: TierData[] = [
     badgeText: "text-blue-900",
     prices: { monthly: 149, quarterly: 419, annual: 1428 },
     annualMonthly: 119,
-    laborBankDollars: 500,
+    laborBankDollars: 600,
     visits: 4,
     visitDescription: "All 4 Seasons + Priority",
     discountBrackets: [
@@ -101,7 +101,7 @@ export const TIERS: TierData[] = [
     ],
     features: [
       "Everything in Full Coverage, plus:",
-      "$500 labor bank credit — you're ahead after month 5",
+      "$600 labor bank credit — you're ahead after month 5",
       "Priority scheduling — your calls go first",
       "Dedicated HP account manager",
       "Pre-negotiated sub-contractor rates on major work",

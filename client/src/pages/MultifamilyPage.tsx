@@ -272,10 +272,10 @@ const PM_TIERS = [
     popular: true,
     visits: 4,
     visitDesc: "All 4 seasons exterior",
-    laborBank: 200,
+    laborBank: 300,
     features: [
       "Everything in Exterior Shield, plus:",
-      "$200 labor bank credit per property — use on any repair between visits",
+      "$300 labor bank credit per property — use on any repair between visits",
       "Summer visit — dry-season exterior, deck, paint, ventilation",
       "Winter visit — freeze protection, moisture, sump, pipe insulation",
       "Maintenance log for each property — tax documentation + liability protection",
@@ -291,10 +291,10 @@ const PM_TIERS = [
     popular: false,
     visits: 4,
     visitDesc: "All 4 seasons + priority",
-    laborBank: 500,
+    laborBank: 600,
     features: [
       "Everything in Full Coverage, plus:",
-      "$500 labor bank credit per property — you're ahead after month 5",
+      "$600 labor bank credit per property — you're ahead after month 5",
       "Priority scheduling — your properties go first",
       "Dedicated HP account manager for your portfolio",
       "Pre-negotiated sub rates on major work (roof, HVAC, plumbing)",
@@ -774,6 +774,9 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               </div>
             </div>
           </div>
+          <p className="text-center text-xs mb-3" style={{ color: "oklch(55% 0.02 60)" }}>
+            General member reviews — includes homeowner and rental property clients
+          </p>
           <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
         </div>
       </section>

@@ -262,7 +262,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           </p>
 
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
-            See My Savings →
+            See Plans & Pricing →
           </a>
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
             No contracts. Cancel anytime. PNW-specific service.
