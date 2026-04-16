@@ -495,10 +495,18 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           <div className="flex items-center gap-3">
             <button
               onClick={onGoHome}
-              className="hidden sm:block text-sm font-medium transition-colors"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(35% 0.03 255)" }}
+              className="hidden sm:block text-sm font-semibold transition-all"
+              style={{
+                background: "none",
+                border: "2px solid oklch(65% 0.15 72)",
+                borderRadius: "6px",
+                cursor: "pointer",
+                color: "oklch(65% 0.15 72)",
+                padding: "6px 14px",
+                letterSpacing: "0.03em",
+              }}
             >
-              Homeowners
+              🏠 Homeowners
             </button>
 
             <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
