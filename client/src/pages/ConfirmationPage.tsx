@@ -21,15 +21,16 @@ const M = "oklch(50% 0.02 60)";
 export default function ConfirmationPage() {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
 
-  // Support both old (tier=gold/silver/bronze) and new (tier=gold) param formats
-  const tierParam   = params.get("tier") ?? "silver";
-  const cadenceParam = (params.get("cadence") ?? "annual") as BillingCadence;
-  const sessionId   = params.get("session_id") ?? null;
+  const tierParam    = params.get("tier") ?? null;
+  const cadenceParam = (params.get("cadence") ?? null) as BillingCadence | null;
+  const sessionId    = params.get("session_id") ?? null;
+  const isPortfolio  = params.get("type") === "portfolio";
 
-  const tierData = TIERS.find((t) => t.id === tierParam) ?? TIERS[1];
-  const cadenceLabel = CADENCE_LABELS[cadenceParam];
-  const hasLaborBank = tierData.laborBankDollars > 0;
-  const laborBankActive = hasLaborBank && cadenceParam !== "monthly";
+  // Only look up tier data if we have a valid tier param
+  const tierData = tierParam ? (TIERS.find((t) => t.id === tierParam) ?? null) : null;
+  const cadenceLabel = cadenceParam ? CADENCE_LABELS[cadenceParam] : null;
+  const hasLaborBank = tierData ? tierData.laborBankDollars > 0 : false;
+  const laborBankActive = hasLaborBank && cadenceParam !== null && cadenceParam !== "monthly";
 
   // Portal URL — pass session_id if available for auto-login
   const portalUrl = sessionId
@@ -52,13 +53,13 @@ export default function ConfirmationPage() {
       title: "First seasonal visit queued within 48 hours",
       body: "Based on today's date, we'll schedule your next seasonal visit and send a reminder 2 weeks before.",
     },
-    ...(laborBankActive
+    ...(laborBankActive && tierData
       ? [{
           icon: "💰",
           title: `$${tierData.laborBankDollars} labor bank is loaded`,
           body: "Your labor bank credit is available now. Use it on any handyman task — just call or message us and we'll apply it to your invoice.",
         }]
-      : hasLaborBank && cadenceParam === "monthly"
+      : hasLaborBank && tierData && cadenceParam === "monthly"
       ? [{
           icon: "⏳",
           title: `$${tierData.laborBankDollars} labor bank — accruing`,
@@ -107,7 +108,7 @@ export default function ConfirmationPage() {
           <span style={{ color: A }}>360° Method.</span>
         </h1>
         <p className="text-lg max-w-xl mx-auto mb-2" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-          Your <strong className="text-white">{tierData.name}</strong> membership is active.
+          Your <strong className="text-white">{tierData?.name ?? (isPortfolio ? "Portfolio" : "360°")}</strong> membership is active.
         </p>
         <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.5)" }}>
           Billing: {cadenceLabel}

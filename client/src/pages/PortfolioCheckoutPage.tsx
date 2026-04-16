@@ -178,7 +178,8 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
     setError(null);
     setLoading(true);
 
-    const origin = window.location.origin;
+    // Encode cadence and portfolio flag into origin so ConfirmationPage reads accurate values after Stripe redirect
+    const origin = `${window.location.origin}?cadence=${activeCadence}&type=portfolio`;
 
     // Fire-and-forget cart abandonment capture
     fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {

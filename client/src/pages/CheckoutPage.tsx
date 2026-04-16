@@ -114,7 +114,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
             serviceCity: form.city,
             serviceState: form.state,
             serviceZip: form.zip,
-            origin: window.location.origin,
+            origin: `${window.location.origin}?tier=${tier}&cadence=${activeCadence}`,
           },
         }),
       });
