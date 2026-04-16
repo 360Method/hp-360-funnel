@@ -1206,8 +1206,15 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 {hasCustom ? "Request My Custom Quote →" : "Enroll My Portfolio →"}
               </button>
               <p className="text-xs text-center mt-3" style={{ color: "oklch(100% 0 0 / 0.4)" }}>
-                {hasCustom ? "No commitment required · We'll build a custom plan for you" : "🔒 Secured by Stripe · No contracts · Cancel anytime"}
+                {hasCustom
+                  ? "No commitment required · We'll build a custom plan for you"
+                  : "🔒 Secured by Stripe · No contracts · Cancel anytime"}
               </p>
+              {!hasCustom && (
+                <p className="text-xs text-center mt-1" style={{ color: "oklch(100% 0 0 / 0.35)" }}>
+                  You'll confirm your properties, select billing frequency, and get your first visit scheduled within 48 hours.
+                </p>
+              )}
             </div>
           ) : (
             /* Custom quote contact form */

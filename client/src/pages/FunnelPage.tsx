@@ -141,6 +141,10 @@ const FAQS = [
     q: "Is this available outside Portland/SW Washington?",
     a: "Currently the 360° Method is delivered in the Portland metro and SW Washington area. We're expanding regionally — join the waitlist for your area at the bottom of this page.",
   },
+  {
+    q: "Do member discounts apply to labor bank tasks too?",
+    a: "No — and here's why that's actually better for you. Labor bank credit is pre-paid cash you can spend on any handyman task at full rate, with no minimum job size. Member discounts apply to out-of-scope work billed separately — repairs that go beyond what your labor bank covers. So on a $1,200 repair, you'd apply your labor bank first, then receive the member discount on any remaining balance. You're never paying full retail on either category.",
+  },
 ];
 
 // ─── TIMELINE DATA ────────────────────────────────────────────────────────────
@@ -711,6 +715,49 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ── 1-YEAR LABOR GUARANTEE ── */}
+      <section className="py-16 px-4" style={{ background: "oklch(22% 0.07 155)" }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Our Commitment to You</div>
+          <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(100% 0 0)" }}>
+            1-Year Labor Guarantee — No Asterisks.
+          </h2>
+          <p className="text-center text-base mb-10 max-w-2xl mx-auto" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
+            Every task our technicians perform is backed by a full one-year labor guarantee. If something we touched fails or was done incorrectly, we come back and fix it — at no additional charge.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+            {[
+              {
+                icon: "🔧",
+                title: "Workmanship Covered",
+                body: "If a repair we performed fails within 12 months due to workmanship — not normal wear or unrelated damage — we return and correct it. No service call fee, no debate.",
+              },
+              {
+                icon: "📋",
+                title: "Documented Every Time",
+                body: "Every visit generates a timestamped report with photos. If a warranty question ever comes up, the documentation is already there — in your account, ready to reference.",
+              },
+              {
+                icon: "🤝",
+                title: "No Fine Print",
+                body: "We don't carve out exceptions for 'normal wear' on tasks we just completed. If we caulked it, sealed it, or installed it — it's covered for a year. That's the whole policy.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="rounded-xl p-6" style={{ background: "oklch(100% 0 0 / 0.06)", border: "1px solid oklch(100% 0 0 / 0.12)" }}>
+                <div className="text-3xl mb-3">{item.icon}</div>
+                <h3 className="font-bold text-base mb-2" style={{ color: "oklch(100% 0 0)" }}>{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.65)" }}>{item.body}</p>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-xl px-6 py-5 max-w-2xl mx-auto text-center" style={{ background: "oklch(65% 0.15 72 / 0.12)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
+            <p className="text-sm" style={{ color: "oklch(100% 0 0 / 0.8)" }}>
+              <strong style={{ color: "oklch(75% 0.15 72)" }}>What's not covered:</strong> Material failures from manufacturer defects, damage caused by third parties or acts of nature, or tasks outside the original scope of work. If we didn't do it, we don't guarantee it — but we'll tell you who should.
+            </p>
+          </div>
         </div>
       </section>
 
