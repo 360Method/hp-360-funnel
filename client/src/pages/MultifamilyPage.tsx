@@ -898,12 +898,32 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
                   <div className="text-xs mb-4 flex gap-3" style={{ color: "oklch(50% 0.02 60)" }}>
                     <span>🗓 {tier.visitDesc}</span>
-                    {tier.laborBank > 0 && (
-                      cadence === "monthly"
-                        ? <span style={{ color: "oklch(55% 0.02 60)" }}>🔒 Labor bank — Quarterly/Annual only</span>
-                        : <span>💳 ${tier.laborBank} labor bank/property</span>
-                    )}
                   </div>
+                  {tier.laborBank > 0 && (
+                    <div
+                      className="rounded-md px-3 py-2 mb-4 text-sm"
+                      style={{
+                        background: cadence === "monthly" ? "oklch(94% 0.01 60)" : "oklch(65% 0.15 72 / 0.08)",
+                        border: `1px solid ${cadence === "monthly" ? "oklch(80% 0.02 60)" : "oklch(65% 0.15 72 / 0.25)"}`,
+                      }}
+                    >
+                      {cadence === "monthly" ? (
+                        <>
+                          <span className="font-bold" style={{ color: "oklch(55% 0.02 60)" }}>
+                            🔒 Labor bank credit
+                          </span>
+                          <span style={{ color: "oklch(50% 0.02 60)" }}> — available on Quarterly and Annual plans. Switch above to unlock ${tier.laborBank}/property in pre-paid labor.</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
+                            ${tier.laborBank}/property labor bank credit
+                          </span>
+                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash per property for any repair between visits. Earns at the end of each billing period. Use-it-or-lose-it annually.</span>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   <ul className="space-y-2 mb-6 flex-1">
                     {tier.features.map((f, i) => (
