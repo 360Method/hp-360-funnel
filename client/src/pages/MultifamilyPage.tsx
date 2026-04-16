@@ -895,7 +895,11 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
                   <div className="text-xs mb-4 flex gap-3" style={{ color: "oklch(50% 0.02 60)" }}>
                     <span>🗓 {tier.visitDesc}</span>
-                    {tier.laborBank > 0 && <span>💳 ${tier.laborBank} labor bank</span>}
+                    {tier.laborBank > 0 && (
+                      cadence === "monthly"
+                        ? <span style={{ color: "oklch(55% 0.02 60)" }}>🔒 Labor bank — Quarterly/Annual only</span>
+                        : <span>💳 ${tier.laborBank} labor bank/property</span>
+                    )}
                   </div>
 
                   <ul className="space-y-2 mb-6 flex-1">
@@ -1387,7 +1391,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             },
             {
               q: "How does the labor bank work for a portfolio?",
-              a: "Each property in your portfolio has its own labor bank credit. Credits are pre-loaded at enrollment and renew annually. Use them on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture. Credits are per-property and do not transfer between properties.",
+              a: "Labor bank credit is available on Quarterly and Annual plans. Each property in your portfolio has its own credit balance, earned at the end of your first billing period and renewing annually. Use it on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture. Credits are per-property and do not transfer between properties. Monthly plans include all visits and member discounts but do not include a labor bank.",
             },
             {
               q: "What if a tech finds something that needs a bigger repair?",

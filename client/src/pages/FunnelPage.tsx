@@ -127,11 +127,11 @@ const FAQS = [
   },
   {
     q: "How does the labor bank work?",
-    a: "Your labor bank credit is pre-loaded at enrollment and renews annually. Use it on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture swap. Our tech logs time on-site and the system auto-debits your bank. You get a receipt. Credits do not roll over year-to-year (use-it-or-lose-it), which keeps your plan priced fairly.",
+    a: "Labor bank credit is available on Quarterly and Annual plans. Your credit is earned at the end of your first billing period and renews each year. Use it on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture swap. Our tech logs time on-site and the system auto-debits your bank. You get a receipt. Credits do not roll over year-to-year (use-it-or-lose-it), which keeps your plan priced fairly. Monthly plans include all visits and discounts but do not include a labor bank.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes. Monthly and quarterly plans cancel at the end of the current billing period. Annual plans can be cancelled with a prorated refund for unused months, minus any labor bank credits already used. We'd rather earn your renewal than lock you in.",
+    a: "Yes. Monthly and quarterly plans cancel at the end of the current billing period. Annual plans can be cancelled with a prorated refund for unused months, minus the value of any labor bank credits already redeemed. We’d rather earn your renewal than lock you in.",
   },
   {
     q: "What does the Annual 360° Home Scan include?",
@@ -606,14 +606,25 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                     <div
                       className="rounded-md px-3 py-2 mb-4 text-sm"
                       style={{
-                        background: "oklch(65% 0.15 72 / 0.08)",
-                        border: "1px solid oklch(65% 0.15 72 / 0.25)",
+                        background: cadence === "monthly" ? "oklch(94% 0.01 60)" : "oklch(65% 0.15 72 / 0.08)",
+                        border: `1px solid ${cadence === "monthly" ? "oklch(80% 0.02 60)" : "oklch(65% 0.15 72 / 0.25)"}`,
                       }}
                     >
-                      <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
-                        ${tier.laborBankDollars} labor bank credit
-                      </span>
-                      <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-loaded cash for any handyman task between visits (leaky faucet, stuck door, fixture swap). Use-it-or-lose-it annually.</span>
+                      {cadence === "monthly" ? (
+                        <>
+                          <span className="font-bold" style={{ color: "oklch(55% 0.02 60)" }}>
+                            🔒 Labor bank credit
+                          </span>
+                          <span style={{ color: "oklch(50% 0.02 60)" }}> — available on Quarterly and Annual plans. Switch above to unlock ${tier.laborBankDollars} in pre-paid labor.</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>
+                            ${tier.laborBankDollars} labor bank credit
+                          </span>
+                          <span style={{ color: "oklch(35% 0.03 255)" }}> — pre-paid cash for any handyman task between visits (leaky faucet, stuck door, fixture swap). Earns at the end of each billing period. Use-it-or-lose-it annually.</span>
+                        </>
+                      )}
                     </div>
                   )}
 
