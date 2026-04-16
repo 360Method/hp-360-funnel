@@ -1,9 +1,19 @@
 /*
  * PortfolioCheckoutPage — 360° Portfolio Plan checkout
- * Design: matches handypioneers.com (same as CheckoutPage)
+ * Design: HP design system — forest green / amber / cream
+ *   - Matches CheckoutPage visual language exactly
+ *   - First/Last name split
+ *   - Cadence display with change link
+ *   - Labor bank cadence gate
+ *   - Trust signals panel
+ *   - "What Happens Next" 3-step timeline
+ *   - Quarterly upgrade nudge for monthly + labor bank tiers
+ *   - Sticky mobile order summary bar
+ *   - Spinner on submit
+ *   - Clark County / Portland metro ZIP validation
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { BillingCadence } from "../tiers";
 import { CADENCE_LABELS } from "../tiers";
 import type { PortfolioProperty } from "./MultifamilyPage";
@@ -22,14 +32,18 @@ const TIER_LABELS: Record<string, string> = {
   maximum:   "Portfolio Max",
 };
 
-// Tier monthly prices mirror MultifamilyPage TIER_MONTHLY
+const TIER_LABOR_BANK: Record<string, number> = {
+  essential: 0,
+  full:      300,
+  maximum:   600,
+};
+
 const TIER_MONTHLY_PRICES: Record<string, number> = {
   essential: 59,
   full:      99,
   maximum:   149,
 };
 
-// Base monthly prices (fallback when no tier is set)
 const BASE_MONTHLY_PRICES: Record<string, number> = {
   sfh:      59,
   duplex:   79,
@@ -44,6 +58,25 @@ const PROPERTY_DOORS: Record<string, number> = {
   sfh: 1, duplex: 2, triplex: 3, fourplex: 4, custom: 0,
 };
 
+// Clark County WA + Portland metro OR ZIP codes
+const SERVICE_AREA_ZIPS = new Set([
+  // Clark County WA
+  "98660","98661","98662","98663","98664","98665","98666","98667","98668",
+  "98671","98672","98673","98674","98675","98682","98683","98684","98685",
+  "98686","98687","98604","98606","98607","98629","98642","98629","98674",
+  // Portland metro OR
+  "97201","97202","97203","97204","97205","97206","97207","97208","97209",
+  "97210","97211","97212","97213","97214","97215","97216","97217","97218",
+  "97219","97220","97221","97222","97223","97224","97225","97227","97229",
+  "97230","97231","97232","97233","97236","97239","97240","97242","97258",
+  "97266","97267","97268","97269","97271","97272","97280","97281","97282",
+  "97283","97286","97290","97291","97292","97293","97294","97296","97298",
+  "97301","97302","97303","97304","97305","97306","97307","97308","97309",
+  "97310","97311","97312","97313","97314","97317","97321","97325","97330",
+  "97331","97333","97338","97351","97352","97361","97362","97371","97374",
+  "97375","97376","97377","97378","97381","97383","97384","97385","97386",
+]);
+
 function getPropertyMonthly(p: PortfolioProperty): number {
   return p.tier && TIER_MONTHLY_PRICES[p.tier]
     ? TIER_MONTHLY_PRICES[p.tier]
@@ -54,7 +87,7 @@ function getPropertyPrice(p: PortfolioProperty, cadence: BillingCadence): number
   const mo = getPropertyMonthly(p);
   if (cadence === "monthly")   return mo;
   if (cadence === "quarterly") return Math.round(mo * 2.8);
-  return mo * 10; // annual
+  return mo * 10;
 }
 
 function getInteriorPrice(p: PortfolioProperty, cadence: BillingCadence): number {
@@ -76,59 +109,96 @@ interface PortfolioCheckoutPageProps {
   onBack: () => void;
 }
 
+const G  = "oklch(22% 0.07 155)";
+const A  = "oklch(65% 0.15 72)";
+const B  = "oklch(85% 0.02 80)";
+const M  = "oklch(50% 0.02 60)";
+
+const inputStyle: React.CSSProperties = {
+  border: `1px solid ${B}`,
+  background: "oklch(100% 0 0)",
+  color: "oklch(18% 0.03 60)",
+};
+
+function Spinner() {
+  return (
+    <svg className="animate-spin inline-block mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function PortfolioCheckoutPage({ properties, cadence, onBack }: PortfolioCheckoutPageProps) {
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "OR",
-    zip: "",
+    firstName: "", lastName: "",
+    email: "", phone: "",
+    address: "", city: "", state: "WA", zip: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState<string | null>(null);
+  const [zipError, setZipError]     = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  const total = getPortfolioTotal(properties, cadence);
-  const interiorDoors = properties.filter((p) => p.interiorAddon).length;
+  const total = useMemo(() => getPortfolioTotal(properties, cadence), [properties, cadence]);
+
+  // Determine if any property has a labor bank tier
+  const hasLaborBank = properties.some(
+    (p) => p.tier && TIER_LABOR_BANK[p.tier] > 0
+  );
+  const totalLaborBank = properties.reduce(
+    (sum, p) => sum + (p.tier ? (TIER_LABOR_BANK[p.tier] ?? 0) : 0),
+    0
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "zip") setZipError(null);
   };
+
+  const focusAmber = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
+    (e.currentTarget.style.borderColor = A);
+  const blurReset = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
+    (e.currentTarget.style.borderColor = B);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ZIP validation
+    const zip = form.zip.trim();
+    if (zip && !SERVICE_AREA_ZIPS.has(zip)) {
+      setZipError(
+        "This ZIP code is outside our current service area (Clark County WA & Portland metro OR). Call us at (360) 544-9858 to discuss coverage."
+      );
+      return;
+    }
+
     setError(null);
     setLoading(true);
 
     const origin = window.location.origin;
 
     // Fire-and-forget cart abandonment capture
-    try {
-      await fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          json: {
-            cadence,
-            properties,
-            customerName: form.name,
-            customerEmail: form.email,
-            customerPhone: form.phone,
-            billingAddress: form.address,
-            billingCity: form.city,
-            billingState: form.state,
-            billingZip: form.zip,
-          },
-        }),
-      });
-    } catch {
-      // Non-fatal
-    }
+    fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        json: {
+          cadence,
+          properties,
+          customerName: `${form.firstName} ${form.lastName}`.trim(),
+          customerEmail: form.email,
+          customerPhone: form.phone,
+          billingAddress: form.address,
+          billingCity: form.city,
+          billingState: form.state,
+          billingZip: form.zip,
+        },
+      }),
+    }).catch(() => null);
 
-    // Create Stripe checkout session
     try {
       const res = await fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioCheckout.createSession", {
         method: "POST",
@@ -138,7 +208,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
           json: {
             cadence,
             properties,
-            customerName: form.name,
+            customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
             billingAddress: form.address,
@@ -159,213 +229,310 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
       }
 
       window.location.href = url;
-    } catch (err: any) {
-      setError(err.message ?? "Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setLoading(false);
     }
   };
 
-  return (
-    <div style={{ fontFamily: "Inter, sans-serif", background: "#f5f0e8", minHeight: "100vh" }}>
+  const cadenceLabel = CADENCE_LABELS[cadence];
+  const cadenceSuffix = cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr";
 
-      {/* NAV */}
-      <nav style={{ background: "#fff", borderBottom: "1px solid #e8e0d0", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "60px" }}>
-          <button
-            onClick={onBack}
-            style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" }}
-          >
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
-              alt="360°"
-              style={{ width: "36px", height: "36px", objectFit: "contain", flexShrink: 0 }}
-            />
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
-              alt="Handy Pioneers"
-              style={{ height: "34px", width: "auto", objectFit: "contain" }}
-              className="hidden sm:block"
-            />
+  return (
+    <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
+
+      {/* Top utility bar */}
+      <div style={{ background: "oklch(16% 0.06 155)" }} className="text-white/80 text-xs py-2 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <span>5-Star Rated · Licensed &amp; Insured · WA Lic. HANDYP*761NH</span>
+          <a href="tel:3605449858" className="hover:text-white transition-colors font-medium">(360) 544-9858</a>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 bg-white border-b shadow-sm" style={{ borderColor: B }}>
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+          <button onClick={onBack} className="text-sm font-medium flex items-center gap-1 transition-colors hover:opacity-70" style={{ color: M }}>
+            ← Back
           </button>
-          <button
-            onClick={onBack}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "0.4rem" }}
-          >
-            ← Back to Portfolio
-          </button>
+          <span style={{ color: B }}>|</span>
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-360-logo_69b6cf24.png"
+            alt="360°"
+            className="w-8 h-8 flex-shrink-0 object-contain"
+          />
+          <img
+            src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hp-full-logo_7d3d2c7d.jpg"
+            alt="Handy Pioneers"
+            className="h-8 w-auto object-contain hidden sm:block"
+          />
+          <span className="text-xs ml-1" style={{ color: M }}>· Secure Checkout</span>
         </div>
       </nav>
 
-      {/* CONTENT */}
-      <div style={{ maxWidth: "960px", margin: "0 auto", padding: "2rem 1rem" }} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Sticky mobile order bar */}
+      <div className="md:hidden sticky top-[52px] z-40 px-4 py-2 flex items-center justify-between text-sm font-semibold shadow-sm" style={{ background: G, color: "oklch(100% 0 0)" }}>
+        <span>360° Portfolio Plan · {cadenceLabel}</span>
+        <span>${total.toLocaleString()}/{cadenceSuffix}</span>
+      </div>
 
-        {/* Left: form */}
+      <div className="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+
+        {/* ── LEFT: FORM ── */}
         <div>
-          <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.8rem", color: "#1a3a2a", marginBottom: "0.5rem" }}>
-            Complete Enrollment
-          </h1>
-          <p style={{ color: "#6b7280", marginBottom: "2rem", fontSize: "0.9rem" }}>
-            You'll be redirected to Stripe to complete payment securely.
-          </p>
+          <h2 className="font-display text-2xl font-black mb-1" style={{ color: G }}>Complete Enrollment</h2>
+          <p className="text-sm mb-6" style={{ color: M }}>You'll be redirected to Stripe to complete payment securely.</p>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {[
-              { name: "name",  label: "Full Name",    type: "text",  placeholder: "Jane Smith",            required: true },
-              { name: "email", label: "Email",         type: "email", placeholder: "jane@example.com",      required: true },
-              { name: "phone", label: "Phone",         type: "tel",   placeholder: "(503) 555-0100",        required: false },
-              { name: "address", label: "Billing Address", type: "text", placeholder: "123 Main St",        required: false },
-            ].map((field) => (
-              <div key={field.name}>
-                <label style={{ display: "block", fontSize: "0.8rem", color: "#374151", fontWeight: 600, marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.07em" }}>
-                  {field.label}{field.required && <span style={{ color: "#c8922a" }}> *</span>}
-                </label>
-                <input
-                  type={field.type}
-                  name={field.name}
-                  value={(form as any)[field.name]}
-                  onChange={handleChange}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  style={{ width: "100%", padding: "0.6rem 0.8rem", border: "1px solid #d1c9b8", borderRadius: "6px", fontSize: "0.9rem", background: "#fff", color: "#1f2937", boxSizing: "border-box" }}
-                />
-              </div>
-            ))}
+          {/* Cadence display */}
+          <div className="rounded-md px-4 py-3 mb-6 flex items-center justify-between text-sm" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
+            <span style={{ color: G }}>
+              <strong>Billing:</strong> {cadenceLabel}
+              {cadence === "monthly" && <span className="ml-2 text-xs" style={{ color: M }}>(Quarterly or Annual unlocks labor bank day one)</span>}
+            </span>
+            <button onClick={onBack} className="text-xs underline underline-offset-2 font-medium transition-colors hover:opacity-70 ml-3 flex-shrink-0" style={{ color: A }}>
+              Change
+            </button>
+          </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "0.75rem" }}>
-              <div>
-                <label style={{ display: "block", fontSize: "0.8rem", color: "#374151", fontWeight: 600, marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.07em" }}>City</label>
-                <input type="text" name="city" value={form.city} onChange={handleChange} placeholder="Portland" style={{ width: "100%", padding: "0.6rem 0.8rem", border: "1px solid #d1c9b8", borderRadius: "6px", fontSize: "0.9rem", background: "#fff", color: "#1f2937", boxSizing: "border-box" }} />
+          {/* Quarterly upgrade nudge for monthly + labor bank */}
+          {cadence === "monthly" && hasLaborBank && (
+            <div className="rounded-md px-4 py-3 mb-6 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
+              <span style={{ color: "oklch(45% 0.12 68)" }}>
+                💡 <strong>Switch to Quarterly</strong> to unlock ${totalLaborBank.toLocaleString()} in labor bank credit across your portfolio — available on day one instead of after 90 days.
+              </span>
+              <button onClick={onBack} className="ml-2 text-xs underline underline-offset-2 font-semibold" style={{ color: A }}>
+                Change cadence →
+              </button>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* First / Last */}
+            <div className="grid grid-cols-2 gap-4">
+              {(["firstName", "lastName"] as const).map((n) => (
+                <div key={n}>
+                  <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>
+                    {n === "firstName" ? "First Name" : "Last Name"} *
+                  </label>
+                  <input
+                    name={n}
+                    value={form[n]}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                    style={inputStyle}
+                    onFocus={focusAmber}
+                    onBlur={blurReset}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Email *</label>
+              <input name="email" type="email" value={form.email} onChange={handleChange} required
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Phone</label>
+              <input name="phone" type="tel" value={form.phone} onChange={handleChange}
+                placeholder="(360) 555-0100"
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Billing Address</label>
+              <input name="address" value={form.address} onChange={handleChange}
+                placeholder="123 Main St"
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-1">
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>City</label>
+                <input name="city" value={form.city} onChange={handleChange}
+                  placeholder="Vancouver"
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "0.8rem", color: "#374151", fontWeight: 600, marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.07em" }}>State</label>
-                <select name="state" value={form.state} onChange={handleChange} style={{ width: "100%", padding: "0.6rem 0.8rem", border: "1px solid #d1c9b8", borderRadius: "6px", fontSize: "0.9rem", background: "#fff", color: "#1f2937", boxSizing: "border-box" }}>
-                  <option value="OR">OR</option>
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>State</label>
+                <select name="state" value={form.state} onChange={handleChange}
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset}>
                   <option value="WA">WA</option>
+                  <option value="OR">OR</option>
                 </select>
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "0.8rem", color: "#374151", fontWeight: 600, marginBottom: "0.3rem", textTransform: "uppercase", letterSpacing: "0.07em" }}>ZIP</label>
-                <input type="text" name="zip" value={form.zip} onChange={handleChange} placeholder="97201" style={{ width: "100%", padding: "0.6rem 0.8rem", border: "1px solid #d1c9b8", borderRadius: "6px", fontSize: "0.9rem", background: "#fff", color: "#1f2937", boxSizing: "border-box" }} />
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>ZIP</label>
+                <input name="zip" value={form.zip} onChange={handleChange}
+                  placeholder="98660"
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                  style={{ ...inputStyle, borderColor: zipError ? "oklch(55% 0.18 25)" : undefined }}
+                  onFocus={focusAmber} onBlur={blurReset} />
               </div>
             </div>
 
+            {zipError && (
+              <div className="rounded-md px-4 py-3 text-sm" style={{ background: "oklch(95% 0.02 25)", border: "1px solid oklch(70% 0.18 25)", color: "oklch(35% 0.15 25)" }}>
+                {zipError}
+              </div>
+            )}
+
             {error && (
-              <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "6px", padding: "0.75rem 1rem", color: "#991b1b", fontSize: "0.875rem" }}>
+              <div className="rounded-md px-4 py-3 text-sm" style={{ background: "oklch(95% 0.02 25)", border: "1px solid oklch(70% 0.18 25)", color: "oklch(35% 0.15 25)" }}>
                 {error}
               </div>
             )}
 
-            <label style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", cursor: "pointer" }}>
+            <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={agreedToTerms}
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                style={{ marginTop: "2px", flexShrink: 0, width: "16px", height: "16px", accentColor: "#c8922a" }}
+                className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-amber-600"
               />
-              <span style={{ fontSize: "0.78rem", color: "#6b7280", lineHeight: 1.5 }}>
+              <span className="text-xs leading-relaxed" style={{ color: M }}>
                 I agree to the{" "}
                 <button
                   type="button"
                   onClick={() => window.open("/terms", "_blank", "width=800,height=600")}
-                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#1a3a2a", fontWeight: 600, textDecoration: "underline", fontSize: "0.78rem" }}
+                  className="underline underline-offset-2 font-semibold transition-colors hover:opacity-70"
+                  style={{ color: G }}
                 >
                   Terms &amp; Conditions
                 </button>{" "}
                 and authorize recurring subscription billing as described above. I understand I may cancel anytime from my member portal.
               </span>
             </label>
+
             <button
               type="submit"
               disabled={loading || !agreedToTerms}
-              style={{
-                background: loading || !agreedToTerms ? "#9ca3af" : "#c8922a",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-                padding: "0.875rem",
-                fontSize: "1rem",
-                fontWeight: 700,
-                cursor: loading || !agreedToTerms ? "not-allowed" : "pointer",
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-                marginTop: "0.5rem",
-                transition: "background 0.15s",
-              }}
+              className="w-full text-white font-bold py-3 rounded-md transition-all text-sm uppercase tracking-wide disabled:opacity-60"
+              style={{ background: G }}
+              onMouseEnter={(e) => !loading && agreedToTerms && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = G)}
             >
-              {loading ? "Redirecting to Stripe…" : "Continue to Payment →"}
+              {loading ? (
+                <><Spinner />Redirecting to payment...</>
+              ) : (
+                `Continue to Payment — $${total.toLocaleString()}/${cadenceSuffix}`
+              )}
             </button>
 
-            <p style={{ fontSize: "0.75rem", color: "#9ca3af", textAlign: "center" }}>
-              🔒 Secured by Stripe · No card stored on our servers
+            <p className="text-center text-xs" style={{ color: "oklch(60% 0.02 60)" }}>
+              🔒 Secure checkout powered by Stripe · You'll confirm your properties and get your first visit scheduled within 48 hours.
             </p>
           </form>
         </div>
 
-        {/* Right: order summary */}
-        <div>
-          <div style={{ background: "#fff", border: "1px solid #e8e0d0", borderRadius: "10px", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.05)", position: "sticky", top: "80px" }}>
-            <div style={{ background: "#1a3a2a", padding: "1.25rem 1.5rem" }}>
-              <p style={{ color: "#a8c4b0", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600, marginBottom: "0.25rem" }}>
-                Order Summary
-              </p>
-              <p style={{ color: "#f5f0e8", fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.1rem" }}>
-                360° Portfolio Plan · {CADENCE_LABELS[cadence]}
-              </p>
-            </div>
-            <div style={{ padding: "1.25rem 1.5rem" }}>
-              {properties.map((prop, idx) => {
-                const propPrice = getPropertyPrice(prop, cadence);
-                const intPrice  = getInteriorPrice(prop, cadence);
-                const tierLabel = prop.tier ? TIER_LABELS[prop.tier] : null;
-                return (
-                  <div key={prop.id} style={{ padding: "0.6rem 0", borderBottom: "1px solid #f0ebe0" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <div>
-                        <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a" }}>
-                          {prop.address || `Property ${idx + 1}`}
-                        </p>
-                        <p style={{ fontSize: "0.75rem", color: "#6b7280" }}>
-                          {PROPERTY_TYPE_LABELS[prop.type]}
-                          {tierLabel ? ` · ${tierLabel}` : ""}
-                        </p>
-                      </div>
-                      <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#1a3a2a", marginLeft: "1rem", whiteSpace: "nowrap" }}>
-                        ${propPrice.toLocaleString()}
-                      </span>
-                    </div>
-                    {intPrice > 0 && (
-                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.25rem" }}>
-                        <p style={{ fontSize: "0.72rem", color: "#c8922a" }}>+ Interior add-on</p>
-                        <span style={{ fontSize: "0.72rem", fontWeight: 600, color: "#c8922a" }}>+${intPrice.toLocaleString()}</span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "1rem", marginTop: "0.25rem" }}>
-                <span style={{ fontWeight: 700, color: "#1a3a2a", fontSize: "1rem" }}>Total</span>
-                <div style={{ textAlign: "right" }}>
-                  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: "1.6rem", fontWeight: 700, color: "#1a3a2a" }}>
-                    ${total.toLocaleString()}
-                  </span>
-                  <span style={{ color: "#6b7280", fontSize: "0.8rem" }}>
-                    /{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
-                  </span>
-                </div>
+        {/* ── RIGHT: ORDER SUMMARY ── */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-display text-2xl font-black mb-4" style={{ color: G }}>Order Summary</h2>
+            <div className="rounded-lg border-2 bg-white overflow-hidden" style={{ borderColor: G }}>
+              {/* Header */}
+              <div className="px-5 py-4" style={{ background: G }}>
+                <p className="text-xs uppercase tracking-widest font-semibold mb-1" style={{ color: "oklch(65% 0.07 155)" }}>360° Portfolio Plan</p>
+                <p className="font-display text-lg font-black" style={{ color: "oklch(100% 0 0)" }}>
+                  {cadenceLabel} Billing
+                </p>
               </div>
+
+              {/* Per-property line items */}
+              <div className="px-5 py-4 space-y-3">
+                {properties.map((prop, idx) => {
+                  const propPrice = getPropertyPrice(prop, cadence);
+                  const intPrice  = getInteriorPrice(prop, cadence);
+                  const tierLabel = prop.tier ? TIER_LABELS[prop.tier] : null;
+                  const laborBank = prop.tier ? (TIER_LABOR_BANK[prop.tier] ?? 0) : 0;
+                  return (
+                    <div key={prop.id} className="pb-3" style={{ borderBottom: "1px solid oklch(92% 0.01 80)" }}>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-sm font-semibold" style={{ color: G }}>
+                            {prop.address || `Property ${idx + 1}`}
+                          </p>
+                          <p className="text-xs mt-0.5" style={{ color: M }}>
+                            {PROPERTY_TYPE_LABELS[prop.type]}
+                            {tierLabel ? ` · ${tierLabel}` : ""}
+                          </p>
+                          {laborBank > 0 && (
+                            <p className="text-xs mt-0.5 font-medium" style={{ color: cadence === "monthly" ? "oklch(55% 0.02 60)" : "oklch(55% 0.14 68)" }}>
+                              {cadence === "monthly"
+                                ? `⏳ $${laborBank} labor bank — unlocks after 90 days`
+                                : `✅ $${laborBank} labor bank — day one`}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-bold flex-shrink-0" style={{ color: G }}>
+                          ${propPrice.toLocaleString()}
+                        </span>
+                      </div>
+                      {intPrice > 0 && (
+                        <div className="flex justify-between mt-1">
+                          <p className="text-xs" style={{ color: A }}>+ Interior add-on</p>
+                          <span className="text-xs font-semibold" style={{ color: A }}>+${intPrice.toLocaleString()}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Total */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-bold text-sm" style={{ color: G }}>Total</span>
+                  <div className="text-right">
+                    <span className="font-display text-2xl font-black" style={{ color: G }}>
+                      ${total.toLocaleString()}
+                    </span>
+                    <span className="text-sm ml-1" style={{ color: M }}>/{cadenceSuffix}</span>
+                  </div>
+                </div>
+                <p className="text-xs" style={{ color: M }}>
+                  Billed {cadenceLabel.toLowerCase()} · Recurring subscription · Cancel anytime
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Trust signals */}
+          <div className="rounded-lg p-4 space-y-2 bg-white" style={{ border: `1px solid ${B}` }}>
+            {[
+              "🔒 256-bit SSL encryption",
+              "✓ Licensed & Insured — WA Lic. HANDYP*761NH",
+              "✓ Cancel anytime, no long-term contracts",
+              "✓ 1-Year Labor Guarantee on all work",
+              "✓ Habitability-compliant documentation on every visit",
+            ].map((t) => (
+              <div key={t} className="text-xs" style={{ color: "oklch(40% 0.03 60)" }}>{t}</div>
+            ))}
+          </div>
+
+          {/* What Happens Next */}
+          <div className="rounded-lg p-5 bg-white" style={{ border: `1px solid ${B}` }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: A }}>What Happens Next</p>
+            <div className="space-y-4">
+              {[
+                { step: "1", title: "Payment confirmed", body: "You'll receive a receipt and welcome email from help@handypioneers.com within minutes." },
+                { step: "2", title: "We contact you within 24 hrs", body: "Our team reviews your portfolio and reaches out to confirm property details and scheduling preferences." },
+                { step: "3", title: "First visits scheduled within 48 hrs", body: "We queue all properties for their first seasonal visit and send you a schedule confirmation." },
+              ].map((s) => (
+                <div key={s.step} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 text-white" style={{ background: G }}>
+                    {s.step}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: G }}>{s.title}</p>
+                    <p className="text-xs leading-relaxed mt-0.5" style={{ color: M }}>{s.body}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Responsive styles */}
-      <style>{`
-        @media (max-width: 640px) {
-          div[style*="gridTemplateColumns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

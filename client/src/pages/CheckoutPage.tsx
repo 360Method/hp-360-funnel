@@ -1,9 +1,13 @@
 /*
  * CheckoutPage — 360° Method by Handy Pioneers
- * Design: matches handypioneers.com
- *   - Warm cream background, white cards, HP nav
- *   - Forest green headings, amber accents
- *   - HP button styles, clean form inputs
+ * Design: HP design system — forest green / amber / cream
+ *   - Cadence display with change link
+ *   - Labor bank cadence gate in order summary
+ *   - ZIP code service area validation
+ *   - Quarterly upgrade nudge for monthly + labor bank tiers
+ *   - Sticky mobile order summary bar
+ *   - Spinner on submit
+ *   - "What Happens Next" 3-step timeline
  */
 
 import { useState } from "react";
@@ -18,36 +22,75 @@ interface Props {
 
 const PRO_API = "https://pro.handypioneers.com";
 
+// Clark County WA + Portland metro OR ZIP codes
+const SERVICE_AREA_ZIPS = new Set([
+  // Clark County WA
+  "98660","98661","98662","98663","98664","98665","98666","98667","98668",
+  "98671","98672","98673","98674","98675","98682","98683","98684","98685",
+  "98686","98687","98604","98606","98607","98629","98642","98629","98674",
+  // Portland metro OR
+  "97201","97202","97203","97204","97205","97206","97207","97208","97209",
+  "97210","97211","97212","97213","97214","97215","97216","97217","97218",
+  "97219","97220","97221","97222","97223","97224","97225","97227","97229",
+  "97230","97231","97232","97233","97236","97239","97240","97242","97258",
+  "97266","97267","97268","97269","97271","97272","97280","97281","97282",
+  "97283","97286","97290","97291","97292","97293","97294","97296","97298",
+  "97301","97302","97303","97304","97305","97306","97307","97308","97309",
+  "97310","97311","97312","97313","97314","97317","97321","97325","97330",
+  "97331","97333","97338","97351","97352","97361","97362","97371","97374",
+  "97375","97376","97377","97378","97381","97383","97384","97385","97386",
+]);
+
+function Spinner() {
+  return (
+    <svg className="animate-spin inline-block mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
+      <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const tierData = TIERS.find((t) => t.id === tier)!;
   const price = getPrice(tierData, cadence);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState<string | null>(null);
+  const [zipError, setZipError]     = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
-    address: "", city: "", state: "OR", zip: "",
+    address: "", city: "", state: "WA", zip: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "zip") setZipError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ZIP validation
+    const zip = form.zip.trim();
+    if (zip && !SERVICE_AREA_ZIPS.has(zip)) {
+      setZipError(
+        "This ZIP code is outside our current service area (Clark County WA & Portland metro OR). Call us at (360) 544-9858 to discuss coverage."
+      );
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      // ── Pre-redirect: capture lead for cart abandonment follow-up ──────────
-      // Fire-and-forget: non-fatal, never blocks the Stripe redirect.
+      // Fire-and-forget cart abandonment capture
       fetch(`${PRO_API}/api/trpc/threeSixty.abandonedLead.capture`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           json: {
-            tier,
-            cadence,
-            customerName: `${form.firstName} ${form.lastName}`,
+            tier, cadence,
+            customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
             serviceAddress: form.address,
@@ -56,17 +99,16 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
             serviceZip: form.zip,
           },
         }),
-      }).catch(() => null); // swallow silently
+      }).catch(() => null);
 
       const res = await fetch(`${PRO_API}/api/trpc/threeSixty.checkout.createSession`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-          body: JSON.stringify({
+        body: JSON.stringify({
           json: {
-            tier,
-            cadence,
-            customerName: `${form.firstName} ${form.lastName}`,
+            tier, cadence,
+            customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
             serviceAddress: form.address,
@@ -100,11 +142,20 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const B = "oklch(85% 0.02 80)";
   const M = "oklch(50% 0.02 60)";
 
-  const inputStyle = { border: `1px solid ${B}`, background: "oklch(100% 0 0)", color: "oklch(18% 0.03 60)" };
+  const inputStyle: React.CSSProperties = { border: `1px solid ${B}`, background: "oklch(100% 0 0)", color: "oklch(18% 0.03 60)" };
   const focusAmber = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
     (e.currentTarget.style.borderColor = A);
   const blurReset = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
     (e.currentTarget.style.borderColor = B);
+
+  const cadenceLabel  = CADENCE_LABELS[cadence];
+  const cadenceSuffix = cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr";
+  const hasLaborBank  = tierData.laborBankDollars > 0;
+
+  // Quarterly savings vs monthly
+  const quarterlyPrice   = tierData.prices.quarterly;
+  const monthlyAnnualized = tierData.prices.monthly * 12;
+  const quarterlySavings  = monthlyAnnualized - quarterlyPrice * 4;
 
   return (
     <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
@@ -115,6 +166,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
           <a href="tel:3605449858" className="hover:text-white transition-colors font-medium">(360) 544-9858</a>
         </div>
       </div>
+
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white border-b shadow-sm" style={{ borderColor: B }}>
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
@@ -136,90 +188,112 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Order Summary */}
-        <div>
-          <h2 className="font-display text-2xl font-black mb-6" style={{ color: G }}>Order Summary</h2>
-          <div className="rounded-lg border-2 p-6 bg-white" style={{ borderColor: G }}>
-            <div className="inline-flex px-3 py-1 rounded-full text-xs font-bold mb-3" style={{ background: "oklch(22% 0.07 155 / 0.1)", color: G }}>
-              {tierData.name}
-            </div>
-            <div className="font-black font-display mb-1" style={{ fontSize: "1.875rem", color: G }}>
-              ${price}
-              <span className="text-sm font-normal ml-1" style={{ color: M }}>/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}</span>
-            </div>
-            <div className="text-xs mb-4" style={{ color: M }}>Billed {CADENCE_LABELS[cadence].toLowerCase()} · Recurring subscription</div>
-            <ul className="space-y-2">
-              {tierData.features.map((f, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
-                  <span style={{ color: A }} className="mt-0.5 flex-shrink-0">✓</span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-            {tierData.laborBankDollars > 0 && (
-              <div className="mt-4 rounded-md px-3 py-2 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.25)" }}>
-                <span className="font-bold" style={{ color: "oklch(55% 0.14 68)" }}>${tierData.laborBankDollars}</span>
-                <span style={{ color: "oklch(35% 0.03 255)" }}> labor bank credit added at enrollment</span>
-              </div>
-            )}
-          </div>
-          <p className="text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>
-            Secure payment processed by Stripe. Cancel anytime from your member portal.
-          </p>
-          <div className="mt-6 rounded-lg p-4 text-sm space-y-2 bg-white" style={{ border: `1px solid ${B}` }}>
-            {["🔒 256-bit SSL encryption", "✓ Licensed & Insured — WA Lic. HANDYP*761NH", "✓ Cancel anytime, no long-term contracts", "✓ 1-Year Labor Guarantee on all work"].map((t) => (
-              <div key={t} className="text-xs" style={{ color: "oklch(40% 0.03 60)" }}>{t}</div>
-            ))}
-          </div>
-        </div>
+      {/* Sticky mobile order bar */}
+      <div className="md:hidden sticky top-[52px] z-40 px-4 py-2 flex items-center justify-between text-sm font-semibold shadow-sm" style={{ background: G, color: "oklch(100% 0 0)" }}>
+        <span>{tierData.name} · {cadenceLabel}</span>
+        <span>${price}/{cadenceSuffix}</span>
+      </div>
 
-        {/* Form */}
+      <div className="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+
+        {/* ── LEFT: FORM ── */}
         <div>
           <h2 className="font-display text-2xl font-black mb-6" style={{ color: G }}>Your Information</h2>
+
+          {/* Cadence display */}
+          <div className="rounded-md px-4 py-3 mb-5 flex items-center justify-between text-sm" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
+            <span style={{ color: G }}>
+              <strong>Billing:</strong> {cadenceLabel} — ${price}/{cadenceSuffix}
+              {cadence === "monthly" && hasLaborBank && (
+                <span className="ml-2 text-xs" style={{ color: M }}>(Quarterly unlocks labor bank day one)</span>
+              )}
+            </span>
+            <button onClick={onBack} className="text-xs underline underline-offset-2 font-medium transition-colors hover:opacity-70 ml-3 flex-shrink-0" style={{ color: A }}>
+              Change
+            </button>
+          </div>
+
+          {/* Quarterly upgrade nudge */}
+          {cadence === "monthly" && hasLaborBank && (
+            <div className="rounded-md px-4 py-3 mb-5 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
+              <span style={{ color: "oklch(45% 0.12 68)" }}>
+                💡 <strong>Switch to Quarterly</strong> to unlock your ${tierData.laborBankDollars} labor bank on day one
+                {quarterlySavings > 0 ? ` and save $${quarterlySavings}/yr` : ""}.
+              </span>
+              <button onClick={onBack} className="ml-2 text-xs underline underline-offset-2 font-semibold" style={{ color: A }}>
+                Change cadence →
+              </button>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               {(["firstName", "lastName"] as const).map((n) => (
                 <div key={n}>
-                  <label className="block text-xs font-semibold mb-1" style={{ color: M }}>{n === "firstName" ? "First Name" : "Last Name"} *</label>
-                  <input name={n} value={form[n]} onChange={handleChange} required className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+                  <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>
+                    {n === "firstName" ? "First Name" : "Last Name"} *
+                  </label>
+                  <input name={n} value={form[n]} onChange={handleChange} required
+                    className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
                 </div>
               ))}
             </div>
+
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: M }}>Email *</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} required className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Email *</label>
+              <input name="email" type="email" value={form.email} onChange={handleChange} required
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
             </div>
+
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: M }}>Phone *</label>
-              <input name="phone" type="tel" value={form.phone} onChange={handleChange} required className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Phone *</label>
+              <input name="phone" type="tel" value={form.phone} onChange={handleChange} required
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
             </div>
+
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: M }}>Service Address *</label>
-              <input name="address" value={form.address} onChange={handleChange} required placeholder="Street address" className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+              <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Service Address *</label>
+              <input name="address" value={form.address} onChange={handleChange} required
+                placeholder="Street address"
+                className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
             </div>
+
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-1">
-                <label className="block text-xs font-semibold mb-1" style={{ color: M }}>City *</label>
-                <input name="city" value={form.city} onChange={handleChange} required className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>City *</label>
+                <input name="city" value={form.city} onChange={handleChange} required
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1" style={{ color: M }}>State *</label>
-                <select name="state" value={form.state} onChange={handleChange} className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset}>
-                  <option value="OR">OR</option>
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>State *</label>
+                <select name="state" value={form.state} onChange={handleChange}
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset}>
                   <option value="WA">WA</option>
+                  <option value="OR">OR</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1" style={{ color: M }}>ZIP *</label>
-                <input name="zip" value={form.zip} onChange={handleChange} required className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>ZIP *</label>
+                <input name="zip" value={form.zip} onChange={handleChange} required
+                  placeholder="98660"
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                  style={{ ...inputStyle, borderColor: zipError ? "oklch(55% 0.18 25)" : undefined }}
+                  onFocus={focusAmber} onBlur={blurReset} />
               </div>
             </div>
+
+            {zipError && (
+              <div className="rounded-md px-4 py-3 text-sm" style={{ background: "oklch(95% 0.02 25)", border: "1px solid oklch(70% 0.18 25)", color: "oklch(35% 0.15 25)" }}>
+                {zipError}
+              </div>
+            )}
+
             {error && (
               <div className="rounded-md px-4 py-3 text-sm" style={{ background: "oklch(95% 0.02 25)", border: "1px solid oklch(70% 0.18 25)", color: "oklch(35% 0.15 25)" }}>
                 {error}
               </div>
             )}
+
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -240,6 +314,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
                 and authorize recurring subscription billing as described above. I understand I may cancel anytime from my member portal.
               </span>
             </label>
+
             <button
               type="submit"
               disabled={loading || !agreedToTerms}
@@ -248,10 +323,102 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
               onMouseEnter={(e) => !loading && agreedToTerms && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = G)}
             >
-              {loading ? "Redirecting to payment..." : `Continue to Payment — $${price}/${cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}`}
+              {loading ? (
+                <><Spinner />Redirecting to payment...</>
+              ) : (
+                `Continue to Payment — $${price}/${cadenceSuffix}`
+              )}
             </button>
-            <p className="text-center text-xs" style={{ color: "oklch(60% 0.02 60)" }}>🔒 Secure checkout powered by Stripe</p>
+
+            <p className="text-center text-xs" style={{ color: "oklch(60% 0.02 60)" }}>
+              🔒 Secure checkout powered by Stripe · You'll confirm your address and get your first visit scheduled within 48 hours.
+            </p>
           </form>
+        </div>
+
+        {/* ── RIGHT: ORDER SUMMARY ── */}
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-display text-2xl font-black mb-4" style={{ color: G }}>Order Summary</h2>
+            <div className="rounded-lg border-2 bg-white overflow-hidden" style={{ borderColor: G }}>
+              {/* Header */}
+              <div className="px-5 py-4" style={{ background: G }}>
+                <div className="inline-flex px-2 py-0.5 rounded-full text-xs font-bold mb-2" style={{ background: "oklch(65% 0.15 72 / 0.25)", color: "oklch(90% 0.1 72)" }}>
+                  {tierData.name}
+                </div>
+                <div className="font-display font-black" style={{ fontSize: "2rem", color: "oklch(100% 0 0)" }}>
+                  ${price}
+                  <span className="text-sm font-normal ml-1" style={{ color: "oklch(100% 0 0 / 0.65)" }}>/{cadenceSuffix}</span>
+                </div>
+                <p className="text-xs mt-1" style={{ color: "oklch(100% 0 0 / 0.55)" }}>
+                  Billed {cadenceLabel.toLowerCase()} · Recurring subscription
+                </p>
+              </div>
+
+              {/* Features */}
+              <div className="px-5 py-4">
+                <ul className="space-y-2 mb-4">
+                  {tierData.features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "oklch(35% 0.03 255)" }}>
+                      <span style={{ color: A }} className="mt-0.5 flex-shrink-0">✓</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Labor bank with cadence gate */}
+                {hasLaborBank && (
+                  <div className="rounded-md px-3 py-3 text-sm" style={{ background: cadence === "monthly" ? "oklch(92% 0.01 80)" : "oklch(65% 0.15 72 / 0.08)", border: `1px solid ${cadence === "monthly" ? "oklch(80% 0.02 80)" : "oklch(65% 0.15 72 / 0.25)"}` }}>
+                    {cadence === "monthly" ? (
+                      <>
+                        <p className="font-semibold text-xs mb-1" style={{ color: M }}>⏳ ${tierData.laborBankDollars} Labor Bank</p>
+                        <p className="text-xs" style={{ color: M }}>Accrues after your first 90 days on Monthly. Switch to Quarterly or Annual to unlock on day one.</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-semibold text-xs mb-1" style={{ color: "oklch(45% 0.12 68)" }}>✅ ${tierData.laborBankDollars} Labor Bank — Day One</p>
+                        <p className="text-xs" style={{ color: "oklch(50% 0.05 68)" }}>Full credit available immediately. Use on any handyman task — just call or message us.</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Trust signals */}
+          <div className="rounded-lg p-4 space-y-2 bg-white" style={{ border: `1px solid ${B}` }}>
+            {[
+              "🔒 256-bit SSL encryption",
+              "✓ Licensed & Insured — WA Lic. HANDYP*761NH",
+              "✓ Cancel anytime, no long-term contracts",
+              "✓ 1-Year Labor Guarantee on all work",
+            ].map((t) => (
+              <div key={t} className="text-xs" style={{ color: "oklch(40% 0.03 60)" }}>{t}</div>
+            ))}
+          </div>
+
+          {/* What Happens Next */}
+          <div className="rounded-lg p-5 bg-white" style={{ border: `1px solid ${B}` }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: A }}>What Happens Next</p>
+            <div className="space-y-4">
+              {[
+                { step: "1", title: "Payment confirmed", body: "You'll receive a receipt and welcome email from help@handypioneers.com within minutes." },
+                { step: "2", title: "We contact you within 24 hrs", body: "Our team reaches out to confirm your address and schedule your Annual 360° Home Scan." },
+                { step: "3", title: "First visit scheduled within 48 hrs", body: "Your first seasonal visit is queued. You'll receive a confirmation with your scheduled date." },
+              ].map((s) => (
+                <div key={s.step} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 text-white" style={{ background: G }}>
+                    {s.step}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: G }}>{s.title}</p>
+                    <p className="text-xs leading-relaxed mt-0.5" style={{ color: M }}>{s.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
