@@ -746,7 +746,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 body: "We don't carve out exceptions for 'normal wear' on tasks we just completed. If we caulked it, sealed it, or installed it — it's covered for a year. That's the whole policy.",
               },
             ].map((item, i) => (
-              <div key={i} className="rounded-xl p-6" style={{ background: "oklch(100% 0 0 / 0.06)", border: "1px solid oklch(100% 0 0 / 0.12)" }}>
+              <div key={i} className="rounded-xl p-6 flex flex-col items-center text-center" style={{ background: "oklch(100% 0 0 / 0.06)", border: "1px solid oklch(100% 0 0 / 0.12)" }}>
                 <div className="text-3xl mb-3">{item.icon}</div>
                 <h3 className="font-bold text-base mb-2" style={{ color: "oklch(100% 0 0)" }}>{item.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.65)" }}>{item.body}</p>
