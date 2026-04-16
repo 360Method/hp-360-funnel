@@ -52,7 +52,6 @@ function Spinner() {
 
 export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const tierData = TIERS.find((t) => t.id === tier)!;
-  const price = getPrice(tierData, cadence);
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState<string | null>(null);
   const [zipError, setZipError]     = useState<string | null>(null);
@@ -89,7 +88,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           json: {
-            tier, cadence,
+            tier, cadence: activeCadence,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
@@ -107,7 +106,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         credentials: "include",
         body: JSON.stringify({
           json: {
-            tier, cadence,
+            tier, cadence: activeCadence,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
@@ -148,8 +147,10 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const blurReset = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
     (e.currentTarget.style.borderColor = B);
 
-  const cadenceLabel  = CADENCE_LABELS[cadence];
-  const cadenceSuffix = cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr";
+  const [activeCadence, setActiveCadence] = useState<BillingCadence>(cadence);
+  const price = getPrice(tierData, activeCadence);
+  const cadenceLabel  = CADENCE_LABELS[activeCadence];
+  const cadenceSuffix = activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr";
   const hasLaborBank  = tierData.laborBankDollars > 0;
 
   // Quarterly savings vs monthly

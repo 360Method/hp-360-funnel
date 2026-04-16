@@ -140,7 +140,8 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
   const [zipError, setZipError]     = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  const total = useMemo(() => getPortfolioTotal(properties, cadence), [properties, cadence]);
+  const [activeCadence, setActiveCadence] = useState<BillingCadence>(cadence);
+  const total = useMemo(() => getPortfolioTotal(properties, activeCadence), [properties, activeCadence]);
 
   // Determine if any property has a labor bank tier
   const hasLaborBank = properties.some(
@@ -186,7 +187,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
       credentials: "include",
       body: JSON.stringify({
         json: {
-          cadence,
+          cadence: activeCadence,
           properties,
           customerName: `${form.firstName} ${form.lastName}`.trim(),
           customerEmail: form.email,
@@ -206,7 +207,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
         credentials: "include",
         body: JSON.stringify({
           json: {
-            cadence,
+            cadence: activeCadence,
             properties,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
@@ -235,8 +236,8 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
     }
   };
 
-  const cadenceLabel = CADENCE_LABELS[cadence];
-  const cadenceSuffix = cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr";
+  const cadenceLabel = CADENCE_LABELS[activeCadence];
+  const cadenceSuffix = activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr";
 
   return (
     <div className="min-h-screen font-sans" style={{ background: "oklch(96% 0.015 80)" }}>
@@ -283,26 +284,42 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
           <h2 className="font-display text-2xl font-black mb-1" style={{ color: G }}>Complete Enrollment</h2>
           <p className="text-sm mb-6" style={{ color: M }}>You'll be redirected to Stripe to complete payment securely.</p>
 
-          {/* Cadence display */}
-          <div className="rounded-md px-4 py-3 mb-6 flex items-center justify-between text-sm" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
-            <span style={{ color: G }}>
-              <strong>Billing:</strong> {cadenceLabel}
-              {cadence === "monthly" && <span className="ml-2 text-xs" style={{ color: M }}>(Quarterly or Annual unlocks labor bank day one)</span>}
-            </span>
-            <button onClick={onBack} className="text-xs underline underline-offset-2 font-medium transition-colors hover:opacity-70 ml-3 flex-shrink-0" style={{ color: A }}>
-              Change
-            </button>
+          {/* Cadence inline switcher */}
+          <div className="rounded-md px-4 py-3 mb-5" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: M }}>Billing Frequency</p>
+            <div className="flex gap-2">
+              {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => {
+                const cLabel = c === "monthly" ? "Monthly" : c === "quarterly" ? "Quarterly" : "Annual";
+                const cTotal = getPortfolioTotal(properties, c);
+                const cSuffix = c === "monthly" ? "mo" : c === "quarterly" ? "qtr" : "yr";
+                const isActive = activeCadence === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setActiveCadence(c)}
+                    className="flex-1 rounded-md py-2 px-2 text-xs font-semibold transition-all border-2"
+                    style={{
+                      background: isActive ? G : "oklch(100% 0 0)",
+                      color: isActive ? "oklch(100% 0 0)" : G,
+                      borderColor: isActive ? G : "oklch(80% 0.02 80)",
+                    }}
+                  >
+                    <div>{cLabel}</div>
+                    <div className="font-black" style={{ fontSize: "0.9rem" }}>${cTotal.toLocaleString()}/{cSuffix}</div>
+                    {c === "annual" && <div className="text-xs mt-0.5" style={{ color: isActive ? "oklch(75% 0.12 72)" : A }}>Best value</div>}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Quarterly upgrade nudge for monthly + labor bank */}
-          {cadence === "monthly" && hasLaborBank && (
+          {/* Labor bank nudge — no navigation, just context */}
+          {activeCadence === "monthly" && hasLaborBank && (
             <div className="rounded-md px-4 py-3 mb-6 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
               <span style={{ color: "oklch(45% 0.12 68)" }}>
-                💡 <strong>Switch to Quarterly</strong> to unlock ${totalLaborBank.toLocaleString()} in labor bank credit across your portfolio — available on day one instead of after 90 days.
+                💡 <strong>Unlock ${totalLaborBank.toLocaleString()} in portfolio labor bank credit on day one</strong> — switch to Quarterly or Annual above.
               </span>
-              <button onClick={onBack} className="ml-2 text-xs underline underline-offset-2 font-semibold" style={{ color: A }}>
-                Change cadence →
-              </button>
             </div>
           )}
 
