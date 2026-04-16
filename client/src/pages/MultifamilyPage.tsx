@@ -992,10 +992,31 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Add each property in your portfolio. Mix single-family rentals, duplexes, triplexes, and fourplexes.
             Toggle the interior add-on for properties where you want unit-level visits.
           </p>
+          {/* Cadence toggle — repeated above calculator for in-context switching */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex rounded-lg overflow-hidden border" style={{ borderColor: "oklch(85% 0.02 80)" }}>
+              {(["monthly", "quarterly", "annual"] as BillingCadence[]).map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCadence(c)}
+                  className="px-5 py-2.5 text-sm font-semibold transition-colors"
+                  style={{
+                    background: cadence === c ? "oklch(22% 0.07 155)" : "#fff",
+                    color: cadence === c ? "#fff" : "oklch(35% 0.03 255)",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {CADENCE_LABELS[c]}
+                  {c === "quarterly" && <span className="block text-xs font-bold" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(55% 0.12 145)" }}>Save ~7%</span>}
+                  {c === "annual" && <span className="block text-xs font-bold" style={{ color: cadence === c ? "oklch(65% 0.15 72)" : "oklch(55% 0.12 145)" }}>Save ~17%</span>}
+                </button>
+              ))}
+            </div>
+          </div>
           <p className="text-center text-xs mb-6" style={{ color: "oklch(55% 0.02 60)" }}>
             🔒 Addresses are used only to confirm service area — not stored until enrollment.
           </p>
-
           {/* Properties list */}
           <div className="space-y-3 mb-4">
             {properties.map((prop, idx) => (
