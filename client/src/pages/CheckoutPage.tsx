@@ -14,6 +14,18 @@ import { useState } from "react";
 import type { MemberTier, BillingCadence } from "../tiers";
 import { TIERS, CADENCE_LABELS, getPrice } from "../tiers";
 
+const HO_PROPERTY_TYPE_OPTIONS = [
+  { value: "sfh",   label: "Single-Family Home" },
+  { value: "condo", label: "Condo / Townhome" },
+  { value: "other", label: "Other" },
+];
+
+const HO_TIER_OPTIONS = [
+  { value: "bronze" as MemberTier, label: "Essential",     desc: "2 visits/yr · 5% discount" },
+  { value: "silver" as MemberTier, label: "Full Coverage", desc: "4 visits/yr · 8% discount · $300 labor bank" },
+  { value: "gold"   as MemberTier, label: "Maximum",       desc: "4 visits/yr · 12% discount · $600 labor bank" },
+];
+
 interface Props {
   tier: MemberTier;
   cadence: BillingCadence;
@@ -51,7 +63,9 @@ function Spinner() {
 }
 
 export default function CheckoutPage({ tier, cadence, onBack }: Props) {
-  const tierData = TIERS.find((t) => t.id === tier)!;
+  const [activeTier, setActiveTier] = useState<MemberTier>(tier);
+  const [propertyType, setPropertyType] = useState("sfh");
+  const tierData = TIERS.find((t) => t.id === activeTier)!;
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState<string | null>(null);
   const [zipError, setZipError]     = useState<string | null>(null);
@@ -88,7 +102,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           json: {
-            tier, cadence: activeCadence,
+            tier: activeTier, cadence: activeCadence,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
@@ -106,7 +120,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         credentials: "include",
         body: JSON.stringify({
           json: {
-            tier, cadence: activeCadence,
+            tier: activeTier, cadence: activeCadence,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
@@ -126,7 +140,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
       const url = data?.result?.data?.json?.url;
       if (url) {
         // Store purchase context in sessionStorage — survives Stripe redirect back
-        sessionStorage.setItem("hp360_tier", tier);
+        sessionStorage.setItem("hp360_tier", activeTier);
         sessionStorage.setItem("hp360_cadence", activeCadence);
         window.location.href = url;
       } else {
@@ -203,6 +217,62 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         {/* ── LEFT: FORM ── */}
         <div>
           <h2 className="font-display text-2xl font-black mb-6" style={{ color: G }}>Your Information</h2>
+
+          {/* ── PROPERTY CARD ── */}
+          <div className="mb-6 rounded-lg p-4 bg-white" style={{ border: `2px solid ${G}` }}>
+            <h3 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: G }}>Your Property</h3>
+            <div className="space-y-3">
+              {/* Property type */}
+              <div>
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Property Type</label>
+                <select
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className="w-full rounded-md px-3 py-2 text-sm focus:outline-none"
+                  style={inputStyle}
+                  onFocus={focusAmber} onBlur={blurReset}
+                >
+                  {HO_PROPERTY_TYPE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Tier picker */}
+              <div>
+                <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Plan</label>
+                <div className="space-y-2">
+                  {HO_TIER_OPTIONS.map((t) => {
+                    const tData = TIERS.find((td) => td.id === t.value)!;
+                    const tPrice = getPrice(tData, activeCadence);
+                    const tSuffix = activeCadence === "monthly" ? "mo" : activeCadence === "quarterly" ? "qtr" : "yr";
+                    const isActive = activeTier === t.value;
+                    return (
+                      <button
+                        key={t.value}
+                        type="button"
+                        onClick={() => setActiveTier(t.value)}
+                        className="w-full rounded-md px-3 py-2.5 text-left transition-all border-2 flex items-center justify-between"
+                        style={{
+                          background: isActive ? "oklch(22% 0.07 155 / 0.06)" : "oklch(100% 0 0)",
+                          borderColor: isActive ? G : "oklch(85% 0.02 80)",
+                          color: G,
+                        }}
+                      >
+                        <div>
+                          <p className="text-sm font-bold">{t.label}</p>
+                          <p className="text-xs mt-0.5" style={{ color: M }}>{t.desc}</p>
+                        </div>
+                        <div className="text-right flex-shrink-0 ml-3">
+                          <p className="text-sm font-black">${tPrice}/{tSuffix}</p>
+                          {isActive && <p className="text-xs" style={{ color: A }}>✓ Selected</p>}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Cadence inline switcher */}
           <div className="rounded-md px-4 py-3 mb-6" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
