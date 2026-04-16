@@ -23,6 +23,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const price = getPrice(tierData, cadence);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
     address: "", city: "", state: "OR", zip: "",
@@ -219,12 +220,32 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
                 {error}
               </div>
             )}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-amber-600"
+              />
+              <span className="text-xs leading-relaxed" style={{ color: M }}>
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => window.open("/terms", "_blank", "width=800,height=600")}
+                  className="underline underline-offset-2 font-semibold transition-colors hover:opacity-70"
+                  style={{ color: G }}
+                >
+                  Terms &amp; Conditions
+                </button>{" "}
+                and authorize recurring subscription billing as described above. I understand I may cancel anytime from my member portal.
+              </span>
+            </label>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !agreedToTerms}
               className="w-full text-white font-bold py-3 rounded-md transition-all text-sm uppercase tracking-wide disabled:opacity-60"
               style={{ background: G }}
-              onMouseEnter={(e) => !loading && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
+              onMouseEnter={(e) => !loading && agreedToTerms && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = G)}
             >
               {loading ? "Redirecting to payment..." : `Continue to Payment — $${price}/${cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}`}

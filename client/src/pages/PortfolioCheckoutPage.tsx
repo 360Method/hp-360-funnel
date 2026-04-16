@@ -88,6 +88,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const total = getPortfolioTotal(properties, cadence);
   const interiorDoors = properties.filter((p) => p.interiorAddon).length;
@@ -254,18 +255,37 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
               </div>
             )}
 
+            <label style={{ display: "flex", alignItems: "flex-start", gap: "0.6rem", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                style={{ marginTop: "2px", flexShrink: 0, width: "16px", height: "16px", accentColor: "#c8922a" }}
+              />
+              <span style={{ fontSize: "0.78rem", color: "#6b7280", lineHeight: 1.5 }}>
+                I agree to the{" "}
+                <button
+                  type="button"
+                  onClick={() => window.open("/terms", "_blank", "width=800,height=600")}
+                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "#1a3a2a", fontWeight: 600, textDecoration: "underline", fontSize: "0.78rem" }}
+                >
+                  Terms &amp; Conditions
+                </button>{" "}
+                and authorize recurring subscription billing as described above. I understand I may cancel anytime from my member portal.
+              </span>
+            </label>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !agreedToTerms}
               style={{
-                background: loading ? "#9ca3af" : "#c8922a",
+                background: loading || !agreedToTerms ? "#9ca3af" : "#c8922a",
                 color: "#fff",
                 border: "none",
                 borderRadius: "8px",
                 padding: "0.875rem",
                 fontSize: "1rem",
                 fontWeight: 700,
-                cursor: loading ? "not-allowed" : "pointer",
+                cursor: loading || !agreedToTerms ? "not-allowed" : "pointer",
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 marginTop: "0.5rem",

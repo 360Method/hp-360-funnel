@@ -706,6 +706,9 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Exterior Shield includes Spring + Fall. Full Coverage and Portfolio Max include all four seasons.
             Interior Add-On is annual only — $49/door/yr.
           </p>
+          <p className="text-center text-xs mt-2" style={{ color: "oklch(60% 0.02 60)" }}>
+            <em>Roof work is limited to walkable, low-slope surfaces. Steep-pitch and third-story work is referred to a licensed roofer.</em>
+          </p>
         </div>
       </section>
 
@@ -1308,6 +1311,33 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
 
 
+      {/* ── WORK PHOTOS — PM-relevant ── */}
+      <section className="py-14 px-4 section-cream">
+        <div className="max-w-5xl mx-auto">
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Our Work</div>
+          <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
+            Real Jobs. Real Results.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/gutter_cleaning_ea6257be.jpg", caption: "Gutter Cleaning — Multi-Unit" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/mailbox_post_repair_5a0a7b0b.jpg", caption: "Mailbox Post Repair" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/dryer_vent_cleaning_1f5a2c3d.jpg", caption: "Dryer Vent Cleaning" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/roof_cleaning_moss_treatment_4b2e1a9f.jpg", caption: "Roof Moss Treatment" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/Before_Afters(10)_81ded948.png", caption: "Pressure Washing — Common Area" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/exterior_light_fixture_replacement_ebcaac9c.jpg", caption: "Exterior Light Fixture Replacement" },
+            ].map((photo, i) => (
+              <div key={i} className="rounded-lg overflow-hidden shadow-sm">
+                <img src={photo.src} alt={photo.caption} className="w-full h-52 object-cover" loading="lazy" />
+                <div className="px-3 py-2 bg-white">
+                  <p className="text-xs font-medium" style={{ color: "oklch(45% 0.02 60)" }}>{photo.caption}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ── */}
       <section className="py-16 px-4 section-white">
         <div className="max-w-3xl mx-auto">
@@ -1338,6 +1368,14 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             {
               q: "Is this available for 5+ unit buildings?",
               a: "We currently serve 1–4 unit properties under the Portfolio Plan. For 5+ unit buildings, contact us for a custom quote — scope, pricing, and visit frequency are tailored to the property.",
+            },
+            {
+              q: "Does HP manage the cleaning crew for turnover packages?",
+              a: "Yes. HP coordinates and pays the cleaning crew directly — that cost is already built into the turnover package price. You don't need to source or manage a separate cleaning vendor. We handle scheduling, access, and quality control. If a unit requires a specialty clean (e.g., biohazard, hoarding, or fire/smoke damage), we'll quote that separately.",
+            },
+            {
+              q: "What materials are billed separately on a turnover?",
+              a: "Materials that stay in the unit are billed separately at cost plus a standard markup. This includes paint, primer, caulk, grout, hardware, light fixtures, blinds, outlet covers, and similar consumables. Labor to install those materials is included in the package price. We provide an itemized materials receipt with every turnover invoice so you have documentation for your records.",
             },
           ].map((faq, i) => (
             <button

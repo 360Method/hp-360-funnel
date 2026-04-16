@@ -442,6 +442,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <p className="text-center text-xs mt-4" style={{ color: "oklch(60% 0.02 60)" }}>
             Essential includes Spring + Fall. Full Coverage and Maximum Protection include all four seasons.
           </p>
+          <p className="text-center text-xs mt-2" style={{ color: "oklch(60% 0.02 60)" }}>
+            <em>Roof work is limited to walkable, low-slope surfaces. Steep-pitch and third-story work is referred to a licensed roofer.</em>
+          </p>
         </div>
       </section>
 
@@ -803,23 +806,23 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
             Real Jobs. Real Results.
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/SJzOyycrDNaWEYHN.jpg", caption: "Exterior remodel — new siding, windows, and landscaping" },
-              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/hsBQUCJsPHmAqWDF.jpg", caption: "Deck Trex railing installation with custom gate" },
-              { src: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663386531688/WrTgmbwrBOLkeuvQ.jpg", caption: "Garage transformation — clean-out and full organization" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/roof_moss_cleaning_8ec59cf6.jpg", caption: "Roof Moss Cleaning" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/gutter_cleaning_ea6257be.jpg", caption: "Gutter Cleaning" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/hose_bib_covering_cd7cd768.jpg", caption: "Hose Bib Winterization" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/exterior_light_fixture_replacement_ebcaac9c.jpg", caption: "Exterior Light Fixture Replacement" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/rotted_stair_repair_7a04b221.jpg", caption: "Rotted Stair Repair" },
+              { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/Before_Afters(10)_81ded948.png", caption: "Pressure Washing — Driveway" },
             ].map((photo, i) => (
               <div key={i} className="rounded-lg overflow-hidden shadow-sm">
                 <img src={photo.src} alt={photo.caption} className="w-full h-52 object-cover" loading="lazy" />
                 <div className="px-3 py-2 bg-white">
-                  <p className="text-xs" style={{ color: "oklch(45% 0.02 60)" }}>{photo.caption}</p>
+                  <p className="text-xs font-medium" style={{ color: "oklch(45% 0.02 60)" }}>{photo.caption}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-center text-xs mt-4" style={{ color: "oklch(55% 0.02 60)" }}>
-            Exterior maintenance photos (moss treatment, gutter service, fascia repair) will be added as we document member visits.
-          </p>
         </div>
       </section>
 
