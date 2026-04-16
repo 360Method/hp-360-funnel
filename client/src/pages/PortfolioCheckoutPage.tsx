@@ -202,6 +202,17 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
 
     const origin = window.location.origin;
 
+    // Map internal tier keys to backend API values
+    const TIER_API_MAP: Record<string, string> = {
+      essential: "exterior_shield",
+      full:      "full_coverage",
+      maximum:   "max",
+    };
+    const mappedProperties = editableProperties.map((p) => ({
+      ...p,
+      tier: TIER_API_MAP[p.tier ?? "essential"] ?? "exterior_shield",
+    }));
+
     // Fire-and-forget cart abandonment capture
     fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {
       method: "POST",
@@ -210,7 +221,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
       body: JSON.stringify({
         json: {
           cadence: activeCadence,
-          properties: editableProperties,
+          properties: mappedProperties,
           customerName: `${form.firstName} ${form.lastName}`.trim(),
           customerEmail: form.email,
           customerPhone: form.phone,
@@ -230,7 +241,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
         body: JSON.stringify({
           json: {
             cadence: activeCadence,
-            properties: editableProperties,
+            properties: mappedProperties,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
