@@ -37,7 +37,9 @@ export default function App() {
     const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
 
-    if (path.startsWith("/confirmation") || path.startsWith("/360/confirmation")) {
+    // Stripe redirects to the root URL with session_id in query params
+    // Also handle explicit /confirmation path
+    if (params.get("session_id") || path.startsWith("/confirmation") || path.startsWith("/360/confirmation")) {
       setPage("confirmation");
     } else if (path.startsWith("/checkout") || path.startsWith("/360/checkout")) {
       const tier = (params.get("tier") ?? "silver") as MemberTier;
