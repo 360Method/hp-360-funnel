@@ -21,10 +21,19 @@ const M = "oklch(50% 0.02 60)";
 export default function ConfirmationPage() {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
 
-  const tierParam    = params.get("tier") ?? null;
-  const cadenceParam = (params.get("cadence") ?? null) as BillingCadence | null;
+  // session_id comes from URL params (Stripe appends it)
   const sessionId    = params.get("session_id") ?? null;
-  const isPortfolio  = params.get("type") === "portfolio";
+  // tier/cadence/type were stored in sessionStorage before the Stripe redirect
+  // (URL params are unreliable because the backend appends session_id as a path suffix)
+  const tierParam    = sessionStorage.getItem("hp360_tier") ?? params.get("tier") ?? null;
+  const cadenceParam = (sessionStorage.getItem("hp360_cadence") ?? params.get("cadence") ?? null) as BillingCadence | null;
+  const isPortfolio  = sessionStorage.getItem("hp360_type") === "portfolio" || params.get("type") === "portfolio";
+  // Clear sessionStorage after reading so it doesn't persist to future visits
+  if (sessionId) {
+    sessionStorage.removeItem("hp360_tier");
+    sessionStorage.removeItem("hp360_cadence");
+    sessionStorage.removeItem("hp360_type");
+  }
 
   // Only look up tier data if we have a valid tier param
   const tierData = tierParam ? (TIERS.find((t) => t.id === tierParam) ?? null) : null;

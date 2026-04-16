@@ -114,7 +114,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
             serviceCity: form.city,
             serviceState: form.state,
             serviceZip: form.zip,
-            origin: `${window.location.origin}?tier=${tier}&cadence=${activeCadence}`,
+            origin: window.location.origin,
           },
         }),
       });
@@ -125,6 +125,9 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
       const data = await res.json();
       const url = data?.result?.data?.json?.url;
       if (url) {
+        // Store purchase context in sessionStorage — survives Stripe redirect back
+        sessionStorage.setItem("hp360_tier", tier);
+        sessionStorage.setItem("hp360_cadence", activeCadence);
         window.location.href = url;
       } else {
         const msg = data?.error?.json?.message ?? data?.error?.message ?? "Failed to create checkout session";

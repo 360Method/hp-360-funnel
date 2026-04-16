@@ -178,8 +178,7 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
     setError(null);
     setLoading(true);
 
-    // Encode cadence and portfolio flag into origin so ConfirmationPage reads accurate values after Stripe redirect
-    const origin = `${window.location.origin}?cadence=${activeCadence}&type=portfolio`;
+    const origin = window.location.origin;
 
     // Fire-and-forget cart abandonment capture
     fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {
@@ -230,6 +229,9 @@ export default function PortfolioCheckoutPage({ properties, cadence, onBack }: P
         throw new Error(msg);
       }
 
+      // Store purchase context in sessionStorage — survives Stripe redirect back
+      sessionStorage.setItem("hp360_cadence", activeCadence);
+      sessionStorage.setItem("hp360_type", "portfolio");
       window.location.href = url;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
