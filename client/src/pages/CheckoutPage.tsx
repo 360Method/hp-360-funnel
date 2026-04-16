@@ -202,30 +202,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
           <h2 className="font-display text-2xl font-black mb-6" style={{ color: G }}>Your Information</h2>
 
           {/* Cadence display */}
-          <div className="rounded-md px-4 py-3 mb-5 flex items-center justify-between text-sm" style={{ background: "oklch(22% 0.07 155 / 0.06)", border: `1px solid oklch(22% 0.07 155 / 0.15)` }}>
-            <span style={{ color: G }}>
-              <strong>Billing:</strong> {cadenceLabel} — ${price}/{cadenceSuffix}
-              {cadence === "monthly" && hasLaborBank && (
-                <span className="ml-2 text-xs" style={{ color: M }}>(Quarterly unlocks labor bank day one)</span>
-              )}
-            </span>
-            <button onClick={onBack} className="text-xs underline underline-offset-2 font-medium transition-colors hover:opacity-70 ml-3 flex-shrink-0" style={{ color: A }}>
-              Change
-            </button>
-          </div>
-
-          {/* Quarterly upgrade nudge */}
-          {cadence === "monthly" && hasLaborBank && (
-            <div className="rounded-md px-4 py-3 mb-5 text-sm" style={{ background: "oklch(65% 0.15 72 / 0.08)", border: "1px solid oklch(65% 0.15 72 / 0.3)" }}>
-              <span style={{ color: "oklch(45% 0.12 68)" }}>
-                💡 <strong>Switch to Quarterly</strong> to unlock your ${tierData.laborBankDollars} labor bank on day one
-                {quarterlySavings > 0 ? ` and save $${quarterlySavings}/yr` : ""}.
-              </span>
-              <button onClick={onBack} className="ml-2 text-xs underline underline-offset-2 font-semibold" style={{ color: A }}>
-                Change cadence →
-              </button>
-            </div>
-          )}
+ 
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
