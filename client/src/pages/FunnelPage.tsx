@@ -258,7 +258,8 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
             One annual scan. Four seasonal tune-ups. A labor credit that pays for itself.
             Proactive home maintenance — done for you — starting at{" "}
-            <strong className="text-white">$49/mo</strong>.
+            <strong className="text-white">$59/mo</strong>{" "}
+            <span style={{ fontSize: "0.85em", opacity: 0.7 }}>(or $49/mo on an Annual plan)</span>.
           </p>
 
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
@@ -683,7 +684,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                     Enroll — ${price}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                   </button>
                   <p className="text-center text-xs mt-2" style={{ color: "oklch(60% 0.02 60)" }}>
-                    You’ll select your billing frequency at checkout.
+                    You'll confirm your address, select billing frequency, and get your first visit scheduled within 48 hours.
                   </p>
                 </div>
               );
@@ -893,7 +894,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           </h2>
           <p className="mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
             The 360° Method is the only done-for-you proactive home maintenance system
-            in the Portland metro. Starting at $49/mo — less than a dinner out.
+            in the Portland metro. Starting at $59/mo monthly, or $49/mo on an Annual plan.
           </p>
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
             Enroll Today →
