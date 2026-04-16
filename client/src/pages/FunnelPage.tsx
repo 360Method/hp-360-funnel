@@ -481,7 +481,6 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(50% 0.02 60)" }}>
             Based on Handy Pioneers field data from 2023–2025 across 47 Portland metro member homes.
             Figures represent median outcomes; individual results vary by home age, condition, and tier.
-            Full methodology available on request.
           </p>
         </div>
       </section>
@@ -497,8 +496,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             Choose Your Level of Protection
           </h2>
           <p className="text-center max-w-xl mx-auto mb-8" style={{ color: "oklch(50% 0.02 60)" }}>
-            Step-ladder discounts protect our margin on larger jobs while still rewarding members.
-            The bigger the job, the more you save in absolute dollars.
+            Member discounts scale with job size — the bigger the repair, the more you save in absolute dollars.
           </p>
 
           {/* Cadence toggle */}
@@ -673,6 +671,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                   >
                     Enroll — ${price}/{cadence === "monthly" ? "mo" : cadence === "quarterly" ? "qtr" : "yr"}
                   </button>
+                  <p className="text-center text-xs mt-2" style={{ color: "oklch(60% 0.02 60)" }}>
+                    You’ll select your billing frequency at checkout.
+                  </p>
                 </div>
               );
             })}

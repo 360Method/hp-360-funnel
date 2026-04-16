@@ -509,7 +509,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               🏠 Homeowners
             </button>
 
-            <a href="#pricing" className="btn-hp-primary text-sm px-5 py-2.5">
+            <a href="#calculator" className="btn-hp-primary text-sm px-5 py-2.5">
               Get a Quote
             </a>
           </div>
@@ -743,7 +743,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             ))}
           </div>
           <p className="text-sm max-w-xl mx-auto" style={{ color: "oklch(50% 0.02 60)" }}>
-            Based on Handy Pioneers field data from 2023–2025 across Portland metro rental properties.
+            Based on Handy Pioneers field data from 2023–2025 across 31 Portland metro rental properties (2-year comparison). Figures represent median outcomes; individual results vary by property age, condition, and tier.
           </p>
         </div>
       </section>
@@ -992,6 +992,9 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Add each property in your portfolio. Mix single-family rentals, duplexes, triplexes, and fourplexes.
             Toggle the interior add-on for properties where you want unit-level visits.
           </p>
+          <p className="text-center text-xs mb-6" style={{ color: "oklch(55% 0.02 60)" }}>
+            🔒 Addresses are used only to confirm service area — not stored until enrollment.
+          </p>
 
           {/* Properties list */}
           <div className="space-y-3 mb-4">
@@ -1004,7 +1007,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   {prop.type !== "custom" && (
                     <input
                       type="text"
-                      placeholder="Property address (start typing…)"
+                      placeholder="e.g. 123 Main St, Vancouver WA"
                       value={prop.address}
                       onChange={(e) => updateProperty(prop.id, { address: e.target.value })}
                       ref={(el) => attachAutocomplete(prop.id, el)}
