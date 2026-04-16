@@ -210,7 +210,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
       body: JSON.stringify({
         json: {
           cadence: activeCadence,
-          editableProperties,
+          properties: editableProperties,
           customerName: `${form.firstName} ${form.lastName}`.trim(),
           customerEmail: form.email,
           customerPhone: form.phone,
@@ -230,7 +230,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
         body: JSON.stringify({
           json: {
             cadence: activeCadence,
-            editableProperties,
+            properties: editableProperties,
             customerName: `${form.firstName} ${form.lastName}`.trim(),
             customerEmail: form.email,
             customerPhone: form.phone,
