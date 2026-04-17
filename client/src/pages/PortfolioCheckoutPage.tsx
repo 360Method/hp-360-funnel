@@ -201,6 +201,15 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
     setError(null);
     setLoading(true);
 
+    const TIER_API_MAP: Record<string, string> = {
+      essential: "exterior_shield",
+      full:      "full_coverage",
+      maximum:   "max",
+    };
+    const mappedProperties = editableProperties.map((p) => ({
+      ...p,
+      tier: TIER_API_MAP[p.tier ?? "essential"] ?? "exterior_shield",
+    }));
     const customer = {
       name: `${form.firstName} ${form.lastName}`.trim(),
       email: form.email,
@@ -212,33 +221,15 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
     };
     const API = "https://pro.handypioneers.com";
 
-    // Map internal tier keys to backend API values
-    const TIER_API_MAP: Record<string, string> = {
-      essential: "exterior_shield",
-      full:      "full_coverage",
-      maximum:   "max",
-    };
-    const mappedProperties = editableProperties.map((p) => ({
-      ...p,
-      tier: TIER_API_MAP[p.tier ?? "essential"] ?? "exterior_shield",
-    }));
-
-    // Fire-and-forget abandonment capture
     fetch(`${API}/api/360/event`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         event: "checkout_started",
         type: "portfolio",
-        data: {
-          cadence: activeCadence,
-          properties: mappedProperties,
-          ...customer,
-          serviceAddress: form.address,
-          serviceCity: form.city,
-          serviceState: form.state,
-          serviceZip: form.zip,
-        },
+        data: { cadence: activeCadence, properties: mappedProperties, ...customer,
+          serviceAddress: form.address, serviceCity: form.city,
+          serviceState: form.state, serviceZip: form.zip },
       }),
     }).catch(() => {});
 
@@ -247,17 +238,18 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "portfolio",
-          cadence: activeCadence,
-          properties: mappedProperties,
-          customer,
+          type: "portfolio", cadence: activeCadence,
+          properties: mappedProperties, customer,
           origin: window.location.origin,
         }),
       });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Server error ${res.status}: ${text.slice(0, 200)}`);
+      }
       const json = await res.json();
-      const url = json?.url ?? json?.result?.data?.json?.url;
-      if (!url) throw new Error(json?.error ?? json?.result?.data?.json?.error ?? "Checkout failed");
-      // Store purchase context in sessionStorage — survives Stripe redirect back
+      const url = json?.url;
+      if (!url) throw new Error(json?.error ?? "Checkout failed");
       sessionStorage.setItem("hp360_cadence", activeCadence);
       sessionStorage.setItem("hp360_type", "portfolio");
       window.location.href = url;
