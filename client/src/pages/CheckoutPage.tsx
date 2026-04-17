@@ -83,6 +83,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToTerms) { setError("Please agree to the terms."); return; }
 
     // ZIP validation
     const zip = form.zip.trim();
@@ -95,58 +96,64 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
 
     setLoading(true);
     setError(null);
-    try {
-      // Fire-and-forget cart abandonment capture
-      fetch(`${PRO_API}/api/trpc/threeSixty.abandonedLead.capture`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          json: {
-            tier: activeTier, cadence: activeCadence,
-            customerName: `${form.firstName} ${form.lastName}`.trim(),
-            customerEmail: form.email,
-            customerPhone: form.phone,
-            serviceAddress: form.address,
-            serviceCity: form.city,
-            serviceState: form.state,
-            serviceZip: form.zip,
-          },
-        }),
-      }).catch(() => null);
 
-      const res = await fetch(`${PRO_API}/api/trpc/threeSixty.checkout.createSession`, {
+    const customer = {
+      name: `${form.firstName} ${form.lastName}`.trim(),
+      email: form.email,
+      phone: form.phone,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      zip: form.zip,
+    };
+    const API = "https://pro.handypioneers.com";
+
+    // Map internal tier keys to backend API values
+    const TIER_API_MAP: Record<string, string> = {
+      bronze: "exterior_shield",
+      silver: "full_coverage",
+      gold:   "max",
+    };
+    const apiTier = TIER_API_MAP[activeTier] ?? activeTier;
+
+    // Fire-and-forget abandonment capture
+    fetch(`${API}/api/360/event`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "checkout_started",
+        type: "homeowner",
+        data: {
+          tier: apiTier,
+          cadence: activeCadence,
+          ...customer,
+          serviceAddress: form.address,
+          serviceCity: form.city,
+          serviceState: form.state,
+          serviceZip: form.zip,
+        },
+      }),
+    }).catch(() => {});
+
+    try {
+      const res = await fetch(`${API}/api/360/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
-          json: {
-            tier: activeTier, cadence: activeCadence,
-            customerName: `${form.firstName} ${form.lastName}`.trim(),
-            customerEmail: form.email,
-            customerPhone: form.phone,
-            serviceAddress: form.address,
-            serviceCity: form.city,
-            serviceState: form.state,
-            serviceZip: form.zip,
-            origin: window.location.origin,
-          },
+          type: "homeowner",
+          tier: apiTier,
+          cadence: activeCadence,
+          customer,
+          origin: window.location.origin,
         }),
       });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Server error ${res.status}: ${errText.slice(0, 200)}`);
-      }
-      const data = await res.json();
-      const url = data?.result?.data?.json?.url;
-      if (url) {
-        // Store purchase context in sessionStorage — survives Stripe redirect back
-        sessionStorage.setItem("hp360_tier", activeTier);
-        sessionStorage.setItem("hp360_cadence", activeCadence);
-        window.location.href = url;
-      } else {
-        const msg = data?.error?.json?.message ?? data?.error?.message ?? "Failed to create checkout session";
-        throw new Error(msg);
-      }
+      const json = await res.json();
+      const url = json?.url ?? json?.result?.data?.json?.url;
+      if (!url) throw new Error(json?.error ?? json?.result?.data?.json?.error ?? "Checkout failed");
+      // Store purchase context in sessionStorage — survives Stripe redirect back
+      sessionStorage.setItem("hp360_tier", activeTier);
+      sessionStorage.setItem("hp360_cadence", activeCadence);
+      window.location.href = url;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setLoading(false);

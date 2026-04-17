@@ -187,6 +187,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToTerms) { setError("Please agree to the terms."); return; }
 
     // ZIP validation
     const zip = form.zip.trim();
@@ -200,7 +201,16 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
     setError(null);
     setLoading(true);
 
-    const origin = window.location.origin;
+    const customer = {
+      name: `${form.firstName} ${form.lastName}`.trim(),
+      email: form.email,
+      phone: form.phone,
+      address: form.address,
+      city: form.city,
+      state: form.state,
+      zip: form.zip,
+    };
+    const API = "https://pro.handypioneers.com";
 
     // Map internal tier keys to backend API values
     const TIER_API_MAP: Record<string, string> = {
@@ -213,55 +223,40 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
       tier: TIER_API_MAP[p.tier ?? "essential"] ?? "exterior_shield",
     }));
 
-    // Fire-and-forget cart abandonment capture
-    fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioAbandonedLead.capture", {
+    // Fire-and-forget abandonment capture
+    fetch(`${API}/api/360/event`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify({
-        json: {
+        event: "checkout_started",
+        type: "portfolio",
+        data: {
           cadence: activeCadence,
           properties: mappedProperties,
-          customerName: `${form.firstName} ${form.lastName}`.trim(),
-          customerEmail: form.email,
-          customerPhone: form.phone,
-          billingAddress: form.address,
-          billingCity: form.city,
-          billingState: form.state,
-          billingZip: form.zip,
+          ...customer,
+          serviceAddress: form.address,
+          serviceCity: form.city,
+          serviceState: form.state,
+          serviceZip: form.zip,
         },
       }),
-    }).catch(() => null);
+    }).catch(() => {});
 
     try {
-      const res = await fetch("https://pro.handypioneers.com/api/trpc/threeSixty.portfolioCheckout.createSession", {
+      const res = await fetch(`${API}/api/360/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
-          json: {
-            cadence: activeCadence,
-            properties: mappedProperties,
-            customerName: `${form.firstName} ${form.lastName}`.trim(),
-            customerEmail: form.email,
-            customerPhone: form.phone,
-            billingAddress: form.address,
-            billingCity: form.city,
-            billingState: form.state,
-            billingZip: form.zip,
-            origin,
-          },
+          type: "portfolio",
+          cadence: activeCadence,
+          properties: mappedProperties,
+          customer,
+          origin: window.location.origin,
         }),
       });
-
-      const data = await res.json();
-      const url = data?.result?.data?.json?.url;
-
-      if (!url) {
-        const msg = data?.error?.json?.message ?? "Failed to create checkout session.";
-        throw new Error(msg);
-      }
-
+      const json = await res.json();
+      const url = json?.url ?? json?.result?.data?.json?.url;
+      if (!url) throw new Error(json?.error ?? json?.result?.data?.json?.error ?? "Checkout failed");
       // Store purchase context in sessionStorage — survives Stripe redirect back
       sessionStorage.setItem("hp360_cadence", activeCadence);
       sessionStorage.setItem("hp360_type", "portfolio");
