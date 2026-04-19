@@ -541,7 +541,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           </h1>
 
           <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            One annual scan per property. Four seasonal exterior visits. A labor credit that covers the small stuff.
+            We walk every property, score every system, and hand you a documented report — then visit four times a year to keep that score climbing and your liability documented.
             Proactive property maintenance — done for you — starting at{" "}
             <strong className="text-white">$59/mo per property</strong>.
           </p>
@@ -571,6 +571,102 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
               </span>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROPERTY SCORE SECTION — cream bg ── */}
+      <section className="py-20 px-4" style={{ background: "oklch(97% 0.01 80)" }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: copy */}
+            <div>
+              <div className="hp-overline">The 360° Property Score</div>
+              <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
+                Every property gets a score.<br />
+                <span style={{ color: "oklch(55% 0.13 72)" }}>Your portfolio gets documented.</span>
+              </h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
+                Every 360° enrollment starts with a <strong>full baseline walkthrough</strong> of each property — exterior, common areas, roof, drainage, and all major systems. We photograph everything, flag every risk, and assign each property an initial score.
+              </p>
+              <p className="text-base leading-relaxed mb-8" style={{ color: "oklch(38% 0.03 60)" }}>
+                After each seasonal visit, the score updates. You have a timestamped, lender-ready record of every property's condition — before any tenant dispute, insurance claim, or refinancing conversation.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                {[
+                  { icon: "📋", label: "Baseline Walkthrough", desc: "Full documented assessment per property" },
+                  { icon: "📊", label: "Property Score", desc: "0–100 score updated after every visit" },
+                  { icon: "📁", label: "Portfolio Report", desc: "Lender-ready PDF for your whole portfolio" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0)", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 1px 4px oklch(0% 0 0 / 0.06)" }}>
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <div className="font-bold text-sm mb-1" style={{ color: "oklch(22% 0.07 155)" }}>{item.label}</div>
+                    <div className="text-xs" style={{ color: "oklch(50% 0.02 60)" }}>{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Urgency block */}
+              <div className="rounded-lg px-5 py-4" style={{ background: "oklch(55% 0.13 72 / 0.1)", border: "1px solid oklch(55% 0.13 72 / 0.3)" }}>
+                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>⏱ Start the clock on your portfolio's history</p>
+                <p className="text-sm" style={{ color: "oklch(38% 0.03 60)" }}>
+                  Members who enroll today get baseline walkthroughs scheduled within 48 hours. Every month without documentation is a month of exposure — and a weaker position in any tenant dispute, insurance claim, or lender review.
+                </p>
+              </div>
+            </div>
+            {/* Right: phone mockup */}
+            <div className="flex justify-center lg:justify-end">
+              <img
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/home-score-dashboard-GQ7FXXYRtmgjjZZ5jyrgw2.webp"
+                alt="HP 360° Property Score dashboard showing score progression"
+                className="rounded-2xl shadow-2xl"
+                style={{ maxWidth: "360px", width: "100%" }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHAT'S IN YOUR REPORT — white bg ── */}
+      <section className="py-20 px-4 section-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: report mockup */}
+            <div className="flex justify-center lg:justify-start">
+              <img
+                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/report-card-mockup-4AdTXSJrKZ4HDyTzWNLbPz.webp"
+                alt="360° Property Scan Report showing Property Score with photo documentation"
+                className="rounded-2xl shadow-xl"
+                style={{ maxWidth: "320px", width: "100%" }}
+              />
+            </div>
+            {/* Right: what's in the report */}
+            <div>
+              <div className="hp-overline">What You Receive</div>
+              <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
+                A real report. Not a checklist.
+              </h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
+                Every visit generates a written report with photos, findings, and repair estimates — timestamped and stored in your account. This is documented proof of each property's condition, ready for any conversation with a lender, insurer, or tenant.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { label: "Baseline walkthrough with photos", why: "Establishes condition before any dispute, claim, or habitability review" },
+                  { label: "Prioritized repair list with cost estimates", why: "Know what to fix first across your whole portfolio" },
+                  { label: "Property Score (0–100) updated each visit", why: "Track improvement over time — see your investment working" },
+                  { label: "Seasonal visit reports", why: "Timestamped proof of proactive maintenance per property" },
+                  { label: "Annual portfolio health report", why: "Lender-ready, shareable with your accountant or property manager" },
+                  { label: "Move-out documentation baseline", why: "Pre-established condition record protects you in security deposit disputes" },
+                ].map((row) => (
+                  <div key={row.label} className="flex gap-3 rounded-lg px-4 py-3" style={{ background: "oklch(97% 0.01 80)", border: "1px solid oklch(88% 0.02 80)" }}>
+                    <span style={{ color: "oklch(45% 0.12 155)", flexShrink: 0, marginTop: "2px" }}>✓</span>
+                    <div>
+                      <div className="text-sm font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>{row.label}</div>
+                      <div className="text-xs mt-0.5" style={{ color: "oklch(50% 0.02 60)" }}>{row.why}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
