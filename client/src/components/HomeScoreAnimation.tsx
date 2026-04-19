@@ -200,6 +200,92 @@ function ReportModal({ onClose, variant }: { onClose: () => void; variant: "home
             </div>
           </div>
 
+          {/* Seasonal visit checklists */}
+          <div style={{ marginBottom: "1.25rem" }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: HP_GREEN, marginBottom: "0.6rem" }}>
+              Seasonal Visit Checklists
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+              {[
+                {
+                  season: "Baseline Walkthrough", date: "Jan 2024", icon: "🏠",
+                  inspected: [
+                    "Full roof & gutter inspection", "Foundation & crawl space moisture reading",
+                    "Exterior siding & caulking audit", "HVAC filter check & airflow test",
+                    "Plumbing shut-offs & water heater inspection", "Electrical panel & GFCI test",
+                    "Attic insulation & ventilation", "Windows & door seal condition", "Deck & exterior wood assessment",
+                  ],
+                  completed: [
+                    "NW gutter cleared of debris", "South-face window caulking resealed",
+                    "HVAC filter replaced (was at 70%)", "Front door weatherstripping replaced",
+                  ],
+                },
+                {
+                  season: "Spring Visit", date: "Apr 2024", icon: "🌱",
+                  inspected: [
+                    "Post-winter roof & flashing check", "Gutter flow test after leaf season",
+                    "Crawl space moisture re-read", "Exterior paint & wood condition",
+                    "Irrigation system startup check", "Window & door operation",
+                  ],
+                  completed: [
+                    "Crawl space vapor barrier resecured at NW pier", "Moisture reading confirmed at 9% (down from 12%)",
+                    "Gutters flushed & downspout extensions checked", "Deck boards cleaned & surface checked",
+                  ],
+                },
+                {
+                  season: "Summer Visit", date: "Jul 2024", icon: "☀️",
+                  inspected: [
+                    "HVAC cooling performance & refrigerant check", "Attic temperature & ventilation",
+                    "Exterior caulking & paint condition (heat expansion)", "Deck & fence fastener check",
+                    "Hose bibs & irrigation backflow", "Smoke & CO detector test",
+                  ],
+                  completed: [
+                    "HVAC filter replaced (quarterly schedule)", "Attic ridge vent cleared of wasp nest",
+                    "Deck ledger fasteners re-torqued", "Two smoke detectors batteries replaced",
+                  ],
+                },
+                {
+                  season: "Fall Visit", date: "Oct 2024", icon: "🍂",
+                  inspected: [
+                    "Pre-winter roof & flashing integrity", "Gutters cleared post-leaf season",
+                    "Furnace startup & heat exchanger check", "Weatherstripping & door seals",
+                    "Exterior faucet winterization", "Crawl space vent covers", "Chimney & fireplace damper",
+                  ],
+                  completed: [
+                    "Gutters fully cleared — 2 bags debris removed", "Furnace filter replaced, heat exchanger clean",
+                    "All exterior hose bibs winterized", "Crawl space vents closed for winter",
+                    "Front & back door weatherstripping replaced", "Minor fascia board re-nailed at NE corner",
+                  ],
+                },
+              ].map((visit) => (
+                <div key={visit.season} style={{ border: "1px solid #e5e7eb", borderRadius: "10px", overflow: "hidden" }}>
+                  <div style={{ background: "#f9fafb", padding: "0.6rem 0.9rem", borderBottom: "1px solid #e5e7eb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontWeight: 700, fontSize: "0.82rem", color: HP_GREEN }}>{visit.icon} {visit.season}</span>
+                    <span style={{ fontSize: "0.72rem", color: "#6b7280" }}>{visit.date}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
+                    <div style={{ padding: "0.65rem 0.9rem", borderRight: "1px solid #e5e7eb" }}>
+                      <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#6b7280", marginBottom: "0.4rem" }}>Inspected</div>
+                      {visit.inspected.map((item) => (
+                        <div key={item} style={{ display: "flex", gap: "0.35rem", fontSize: "0.73rem", color: "#374151", marginBottom: "0.2rem", lineHeight: 1.35 }}>
+                          <span style={{ color: "#9ca3af", flexShrink: 0 }}>○</span>{item}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ padding: "0.65rem 0.9rem", background: "#f0fdf4" }}>
+                      <div style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#15803d", marginBottom: "0.4rem" }}>Completed On-Site</div>
+                      {visit.completed.map((item) => (
+                        <div key={item} style={{ display: "flex", gap: "0.35rem", fontSize: "0.73rem", color: "#166534", marginBottom: "0.2rem", lineHeight: 1.35 }}>
+                          <span style={{ flexShrink: 0 }}>✓</span>{item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* System results */}
           <div style={{ marginBottom: "1.25rem" }}>
             <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: HP_GREEN, marginBottom: "0.6rem" }}>
