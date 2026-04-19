@@ -1582,7 +1582,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             },
             {
               q: "Is this a licensed property inspection?",
-              a: "No — and that distinction is important. The 360° Method is a proactive maintenance service, not a licensed property inspection. Our technicians document visible and accessible conditions at the time of each visit and generate a written report with photos and recommended actions. This documentation is designed to support your maintenance records, demonstrate proactive care to tenants and lenders, and help you stay ahead of costly repairs. It does not replace a licensed home inspector, structural engineer, or specialist for major assessments. Handy Pioneers is not liable for pre-existing conditions that were not visible, accessible, or detectable during a visit. Full scope is in our Terms & Conditions.",
+              a: "No — and that distinction actually works in your favor. The 360° Method is a proactive maintenance service, not a licensed property inspection. Think of it as what comes after the inspection: a licensed inspector identifies issues at a point in time, and we take it from there — completing the recommended work, maintaining each property season after season, and generating a documented record that protects you in tenant disputes, lender reviews, and insurance claims. If you have existing inspection reports for your properties, those are the perfect starting point for your 360° baseline. We work in tandem with home inspectors and property inspectors, not in place of them. Our documentation does not replace a licensed inspector, structural engineer, or specialist for major assessments, and we are not liable for pre-existing conditions not visible or accessible during a visit. Full scope is in our Terms & Conditions.",
             },
           ].map((faq, i) => (
             <button
@@ -1623,7 +1623,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Starting at $59/mo per property · No contracts · Cancel anytime
           </p>
           <p className="mt-3 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.35)", lineHeight: 1.55 }}>
-            The 360° Method is a proactive maintenance service — not a licensed property inspection. Reports document visible, accessible conditions at the time of each visit and do not replace a licensed inspector or structural engineer.{" "}
+            The 360° Method is a proactive maintenance service — not a licensed property inspection. We work in tandem with inspectors: they identify, we maintain and document. Reports do not replace a licensed inspector or structural engineer.{" "}
             <a href="/terms" className="underline hover:text-white transition-colors" style={{ color: "oklch(100% 0 0 / 0.45)" }}>Full terms apply.</a>
           </p>
         </div>

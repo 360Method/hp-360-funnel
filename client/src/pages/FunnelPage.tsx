@@ -147,7 +147,7 @@ const FAQS = [
   },
   {
     q: "Is this a licensed home inspection?",
-    a: "No — and that distinction matters. The 360° Method is a proactive maintenance service, not a licensed home inspection. Our technicians document visible and accessible conditions at the time of each visit and generate a written report with photos and recommended actions. This documentation is designed to support your maintenance records, help you stay ahead of repairs, and protect your home's value over time. It does not replace a licensed home inspector, structural engineer, or specialist for major assessments. Handy Pioneers is not liable for pre-existing conditions that were not visible, accessible, or detectable during a visit. Full scope is detailed in our Terms & Conditions.",
+    a: "No — and that distinction actually works in your favor. The 360° Method is a proactive maintenance service, not a licensed home inspection. Think of it as what happens after the inspection: a licensed inspector tells you what’s wrong at a point in time, and we take it from there — completing the recommended work, maintaining the home season after season, and documenting every visit so your home’s condition is always on record. If you’ve recently had a home inspection, your inspection report is the perfect starting point for your 360° baseline. We work in tandem with home inspectors, not in place of them. Our documentation does not replace a licensed inspector, structural engineer, or specialist for major assessments, and we are not liable for pre-existing conditions not visible or accessible during a visit. Full scope is in our Terms & Conditions.",
   },
 ];
 
@@ -1043,7 +1043,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             Enroll Today →
           </a>
           <p className="mt-4 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.38)", lineHeight: 1.55 }}>
-            The 360° Method is a proactive maintenance service — not a licensed home inspection. Reports document visible, accessible conditions at the time of each visit and do not replace a licensed inspector or structural engineer.{" "}
+            The 360° Method is a proactive maintenance service — not a licensed home inspection. We work in tandem with home inspectors: they identify, we maintain and document. Reports do not replace a licensed inspector or structural engineer.{" "}
             <a href="/terms" className="underline hover:text-white transition-colors" style={{ color: "oklch(100% 0 0 / 0.45)" }}>Full terms apply.</a>
           </p>
           {onGoToMultifamily && (
