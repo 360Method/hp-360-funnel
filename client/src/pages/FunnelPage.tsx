@@ -258,8 +258,8 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <h1
             className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6"
           >
-            Your home is your most valuable asset.<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>We manage it like one.</span>
+            Most homes are maintained reactively.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>Yours doesn't have to be.</span>
           </h1>
 
           <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
