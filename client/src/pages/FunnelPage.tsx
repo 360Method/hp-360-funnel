@@ -12,6 +12,7 @@
 import { useState } from "react";
 import type { MemberTier, BillingCadence } from "../tiers";
 import { TIERS, CADENCE_LABELS, getPrice, getSavingsVsMonthly } from "../tiers";
+import { HomeScoreAnimation } from "../components/HomeScoreAnimation";
 
 // ─── STAT BUBBLE DATA ─────────────────────────────────────────────────────────
 
@@ -336,14 +337,11 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 </p>
               </div>
             </div>
-            {/* Right: phone mockup */}
-            <div className="flex justify-center lg:justify-end">
-              <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/home-score-dashboard-GQ7FXXYRtmgjjZZ5jyrgw2.webp"
-                alt="HP 360° Home Score dashboard showing score progression from 68 to 91"
-                className="rounded-2xl shadow-2xl"
-                style={{ maxWidth: "360px", width: "100%" }}
-              />
+            {/* Right: animated score + PDF download */}
+            <div className="flex justify-center lg:justify-end" style={{ width: "100%" }}>
+              <div style={{ width: "100%", maxWidth: "400px" }}>
+                <HomeScoreAnimation variant="homeowner" />
+              </div>
             </div>
           </div>
         </div>

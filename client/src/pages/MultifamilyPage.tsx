@@ -19,6 +19,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { BillingCadence } from "../tiers";
 import { CADENCE_LABELS } from "../tiers";
+import { HomeScoreAnimation } from "../components/HomeScoreAnimation";
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
 export interface PortfolioProperty {
@@ -613,14 +614,11 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                 </p>
               </div>
             </div>
-            {/* Right: phone mockup */}
-            <div className="flex justify-center lg:justify-end">
-              <img
-                src="https://d2xsxph8kpxj0f.cloudfront.net/310519663386531688/PdNJ394MjBP7Uu2hurkDFS/home-score-dashboard-GQ7FXXYRtmgjjZZ5jyrgw2.webp"
-                alt="HP 360° Property Score dashboard showing score progression"
-                className="rounded-2xl shadow-2xl"
-                style={{ maxWidth: "360px", width: "100%" }}
-              />
+            {/* Right: animated score + PDF download */}
+            <div className="flex justify-center lg:justify-end" style={{ width: "100%" }}>
+              <div style={{ width: "100%", maxWidth: "400px" }}>
+                <HomeScoreAnimation variant="portfolio" />
+              </div>
             </div>
           </div>
         </div>
