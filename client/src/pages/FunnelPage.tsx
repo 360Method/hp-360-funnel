@@ -258,7 +258,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <h1
             className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6"
           >
-            Your home is a $900,000 asset.<br />
+            Your home is your most valuable asset.<br />
             <span style={{ color: "oklch(65% 0.15 72)" }}>We manage it like one.</span>
           </h1>
 
