@@ -307,22 +307,22 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: copy */}
             <div>
-              <div className="hp-overline">The 360° Home Score</div>
+              <div className="hp-overline">Your Transformation Starts Here</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                Your home has a score.<br />
-                <span style={{ color: "oklch(55% 0.13 72)" }}>We make it climb.</span>
+                Visit 1: you see where your home stands.<br />
+                <span style={{ color: "oklch(55% 0.13 72)" }}>Every visit after: it gets better.</span>
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every membership begins with a <strong>2–3 hour baseline walkthrough</strong> — a full documented assessment of your roof, foundation, HVAC, plumbing, crawl space, and every major system. We photograph every finding, assign a condition rating to each system, and establish your home's initial score.
+                Your membership begins with a <strong>2–3 hour baseline walkthrough</strong> — a full documented assessment of every major system. We photograph every finding, rate every system, and give your home its first score. You leave knowing exactly where you stand.
               </p>
               <p className="text-base leading-relaxed mb-8" style={{ color: "oklch(38% 0.03 60)" }}>
-                After each seasonal visit, your score updates. Over time, you hold a documented record of your home's condition history — an asset in its own right at refinancing, sale, or insurance review.
+                After each seasonal visit, your score updates. You watch your home improve — visit by visit, season by season — with a timestamped record that follows the asset for its entire life.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
-                  { icon: "📋", label: "Baseline Walkthrough", desc: "Full condition assessment on day one" },
-                  { icon: "📊", label: "Home Score", desc: "0–100 score updated after every visit" },
-                  { icon: "📁", label: "Documented Reports", desc: "Timestamped, shareable PDF after each visit" },
+                  { icon: "📋", label: "Day One: Baseline", desc: "You see every system, every risk, every finding" },
+                  { icon: "📈", label: "Every Visit: Score Climbs", desc: "Your home improves — and you have proof" },
+                  { icon: "📁", label: "Always: On Record", desc: "Timestamped PDF after every visit, stored permanently" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0)", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 1px 4px oklch(0% 0 0 / 0.06)" }}>
                     <div className="text-2xl mb-2">{item.icon}</div>
@@ -333,9 +333,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               </div>
               {/* Urgency block */}
               <div className="rounded-lg px-5 py-4" style={{ background: "oklch(55% 0.13 72 / 0.1)", border: "1px solid oklch(55% 0.13 72 / 0.3)" }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Your baseline is scheduled within 48 hours of enrollment</p>
+                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Your transformation starts within 48 hours of enrollment</p>
                 <p className="text-sm" style={{ color: "oklch(38% 0.03 60)" }}>
-                  Every month without a documented baseline is a month of condition history that cannot be recovered. Members who enroll today have their first walkthrough on the calendar before the week is out.
+                  The day you enroll, your baseline walkthrough goes on the calendar. Every month before that is a month of home history you can never recover. Members who start today have their first visit scheduled before the week is out.
                 </p>
               </div>
             </div>
@@ -364,20 +364,20 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             </div>
             {/* Right: what's in the report */}
             <div>
-              <div className="hp-overline">What You Receive</div>
+              <div className="hp-overline">What You Walk Away With</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                A documented record.<br />Not a warranty card.
+                A record that grows<br />with your home.
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every visit generates a written report with photos, system ratings, and prioritized findings — timestamped and stored permanently in your member account. This is a professional condition record for a significant asset. Shareable with your agent, lender, or insurer in one click.
+                After every visit, a written report lands in your account — photos, system ratings, findings, and your updated Home Score. Over time, this becomes the most complete record of your home's condition that has ever existed. Yours to share with an agent, lender, or insurer whenever you need it.
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Baseline walkthrough with photos", why: "Establishes documented condition before any dispute, claim, or sale" },
-                  { label: "Prioritized findings with cost estimates", why: "Clear scope and budget — no guesswork, no contractor sales calls" },
-                  { label: "Home Score (0–100) updated each visit", why: "Quantified asset condition — tracked over time" },
-                  { label: "Seasonal visit reports", why: "Timestamped record of every system, every visit" },
-                  { label: "Shareable PDF", why: "Ready for your agent, lender, or insurer on demand" },
+                  { label: "Baseline walkthrough with photos", why: "You know exactly what you own — before anything else" },
+                  { label: "Prioritized findings with cost estimates", why: "You know what to address and what it costs — no surprises" },
+                  { label: "Home Score updated each visit", why: "You watch your home improve — in a number you can track" },
+                  { label: "Seasonal visit reports", why: "You have proof of every visit, every system, every season" },
+                  { label: "Shareable PDF record", why: "You walk into any conversation with your agent or lender prepared" },
                 ].map((row) => (
                   <div key={row.label} className="flex gap-3 rounded-lg px-4 py-3" style={{ background: "oklch(97% 0.01 80)", border: "1px solid oklch(88% 0.02 80)" }}>
                     <span style={{ color: "oklch(45% 0.12 155)", flexShrink: 0, marginTop: "2px" }}>✓</span>
@@ -396,7 +396,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── STAT BUBBLES — cream bg, HP card style ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="hp-overline">The Asset Case</div>
+          <div className="hp-overline">Why It Matters</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {STAT_BUBBLES.map((bubble, i) => (
               <button
@@ -448,31 +448,30 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             The Framework
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-6">
-            AWARE → ACT → ADVANCE
+            KNOW → MAINTAIN → ADVANCE
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            The 360° Method is a fully managed home stewardship program built on three disciplines.
-            Your technician handles the execution — you receive the documentation and the results.
+            Three phases. One continuous arc. You go from not knowing what you own, to having it maintained by someone who does, to watching its condition — and its value — improve over time. We are the guide. You are the one who arrives.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
-                phase: "AWARE",
+                phase: "KNOW",
                 icon: "🔍",
-                title: "Know Your Asset",
-                body: "The baseline walkthrough establishes a full documented condition record — every system, every surface, every risk — with photos and a Home Score. You know exactly what you own and what it is worth protecting.",
+                title: "You See Everything",
+                body: "Before the 360° Method, most homeowners are guessing. After your baseline walkthrough, you are not. Every system is rated, every risk is photographed, and your home has a score. You know exactly what you own.",
               },
               {
-                phase: "ACT",
+                phase: "MAINTAIN",
                 icon: "🔧",
-                title: "Managed Maintenance",
-                body: "Four seasonal visits — Spring, Summer, Fall, Winter — address the specific demands of the Pacific Northwest climate. Your technician shows up, executes, and documents. You receive the report.",
+                title: "We Handle It",
+                body: "Four seasonal visits address the specific demands of the Pacific Northwest climate. Your technician shows up, executes, and documents. You receive the report. Nothing falls through the cracks — because we are watching.",
               },
               {
                 phase: "ADVANCE",
                 icon: "📈",
-                title: "Grow Asset Value",
-                body: "A documented, well-maintained home appraises higher, sells faster, and commands a premium. Your 360° record is a financial instrument — verifiable by appraisers, lenders, and buyers.",
+                title: "Your Home Improves",
+                body: "Visit by visit, your score climbs and your record grows. The home you have in five years — documented, maintained, with a verifiable condition history — is a fundamentally different asset than the one you have today.",
               },
             ].map((p) => (
               <div
@@ -500,16 +499,15 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── SEASONAL VISITS — white bg, HP card style ── */}
       <section className="py-16 px-4 section-white">
         <div className="max-w-5xl mx-auto">
-          <div className="hp-overline">PNW-Specific Service</div>
+          <div className="hp-overline">Your Year, Managed</div>
           <h2
             className="font-display text-3xl sm:text-4xl font-black text-center mb-4"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            Four Visits. Fully Managed.
+            Four times a year,<br />your home gets better.
           </h2>
           <p className="text-center max-w-xl mx-auto mb-10" style={{ color: "oklch(50% 0.02 60)" }}>
-            Every task is calibrated to the Pacific Northwest's specific demands — moss-prone roofs,
-            clay soil drainage, Douglas Fir needle accumulation, and freeze-thaw cycles. Your technician knows this climate. You don't have to.
+            Right now, your home is accumulating the specific wear patterns of the Pacific Northwest — moss on the roof, debris in the gutters, freeze-thaw stress on the foundation. Your technician knows exactly what to address each season. You receive the report.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SEASONS.map((s, i) => (
@@ -551,12 +549,12 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── SAVINGS STATS — cream bg ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="hp-overline">The Return</div>
+          <div className="hp-overline">The Difference It Makes</div>
           <h2
             className="font-display text-3xl sm:text-4xl font-black mb-6"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            What Managed Maintenance Returns
+            What changes when your home is managed
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
@@ -816,12 +814,12 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── 1-YEAR LABOR GUARANTEE ── */}
       <section className="py-16 px-4" style={{ background: "oklch(22% 0.07 155)" }}>
         <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Our Standard</div>
+          <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Our Commitment to You</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(100% 0 0)" }}>
-            1-Year Labor Guarantee. No Exceptions.
+            You are in good hands. We guarantee it.
           </h2>
           <p className="text-center text-base mb-10 max-w-2xl mx-auto" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
-            Every task performed under the 360° Method is backed by a full one-year labor guarantee. If something we completed fails due to workmanship, we return and correct it — no service call fee, no negotiation.
+            Every task your technician performs is backed by a full one-year labor guarantee. If something we completed fails due to workmanship, we return and correct it — no service call fee, no back-and-forth. That is what a guide owes the people they lead.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
             {[
@@ -859,9 +857,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── GOOGLE REVIEWS — anchored below pricing ── */}
       <section className="py-14 px-4 section-white">
         <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>From Members</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Members Say
+            People who made the same decision you’re considering
           </h2>
           <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
         </div>
@@ -870,11 +868,11 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── TIMELINE COMPARISON — dark green section ── */}
       <section className="py-16 px-4 section-green">
         <div className="max-w-5xl mx-auto">
-          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>
-            5-Year Projection
+           <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>
+            Two Paths. Five Years.
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center text-white mb-10">
-            Managed vs. Unmanaged — The 5-Year Difference
+            Where your home ends up depends on what you do today
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Neglect column */}
@@ -957,9 +955,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── WORK PHOTOS — cream bg ── */}
       <section className="py-14 px-4 section-cream">
         <div className="max-w-5xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Our Work</div>
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>The Work We Do</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            Work Completed. Documented.
+            This is what your home looks like after a visit.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
@@ -984,12 +982,12 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── FAQ — cream bg, HP card style ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-2xl mx-auto">
-          <div className="hp-overline">Common Questions</div>
+          <div className="hp-overline">Before You Enroll</div>
           <h2
             className="font-display text-3xl font-black text-center mb-10"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            Frequently Asked
+            Questions from people exactly where you are now
           </h2>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
@@ -1030,14 +1028,14 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       <section className="py-20 px-4 section-green">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
-            You have someone managing your money.<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>Now you have someone managing your home.</span>
+            Right now, your home has no guide.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>That changes the day you enroll.</span>
           </h2>
           <p className="mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
-            The 360° Method is a fully managed home stewardship program — the only one of its kind in the Portland metro and SW Washington. Annual membership from $588.
+            Your baseline walkthrough is on the calendar within 48 hours. From that day forward, your technician knows your home, tracks its condition, and handles what needs handling — season by season — while your score climbs and your record grows. Annual membership from $588.
           </p>
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
-            View Membership Options →
+            Start My Home’s Transformation →
           </a>
           <p className="mt-4 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.38)", lineHeight: 1.55 }}>
             The 360° Method is a proactive maintenance service — not a licensed home inspection. We work in tandem with home inspectors: they identify, we maintain and document. Reports do not replace a licensed inspector or structural engineer.{" "}

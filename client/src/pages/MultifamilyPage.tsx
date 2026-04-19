@@ -581,22 +581,22 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: copy */}
             <div>
-              <div className="hp-overline">The 360° Property Score</div>
+              <div className="hp-overline">Where Your Portfolio Is Now → Where It’s Going</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                Every property has a score.<br />
-                <span style={{ color: "oklch(55% 0.13 72)" }}>Your portfolio has a record.</span>
+                Right now, your properties have no documented record.<br />
+                <span style={{ color: "oklch(55% 0.13 72)" }}>A year from now, every one of them will.</span>
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every enrollment begins with a <strong>full baseline walkthrough</strong> of each property — exterior, common areas, roof, drainage, and all major systems. We photograph every finding, assign a condition rating to each system, and establish each property's initial score.
+                Most portfolio owners have no baseline condition record for their properties. No system ratings. No timestamped documentation. That gap is invisible until it isn’t — at a refinancing, a tenant dispute, or a deferred repair that became a $20,000 problem.
               </p>
               <p className="text-base leading-relaxed mb-8" style={{ color: "oklch(38% 0.03 60)" }}>
-                After each seasonal visit, the score updates. You hold a timestamped, lender-ready condition record for every property in your portfolio — ready for any conversation with a lender, insurer, or buyer.
+                Your enrollment begins with a <strong>full baseline walkthrough</strong> of each property. Every system documented, every finding photographed, every property’s first score established. From that day forward, we are your guide. Every visit, the record grows.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
-                  { icon: "📋", label: "Baseline Walkthrough", desc: "Full documented assessment per property" },
-                  { icon: "📊", label: "Property Score", desc: "0–100 score updated after every visit" },
-                  { icon: "📁", label: "Portfolio Report", desc: "Lender-ready PDF for your whole portfolio" },
+                  { icon: "📋", label: "Day One: Every Property on Record", desc: "Baseline walkthrough — every system, every risk, documented" },
+                  { icon: "📈", label: "Every Visit: Score Climbs", desc: "Each property improves — and you have the proof" },
+                  { icon: "📁", label: "Always: Lender-Ready", desc: "Annual portfolio report, shareable on demand" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0)", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 1px 4px oklch(0% 0 0 / 0.06)" }}>
                     <div className="text-2xl mb-2">{item.icon}</div>
@@ -607,9 +607,9 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               </div>
               {/* Urgency block */}
               <div className="rounded-lg px-5 py-4" style={{ background: "oklch(55% 0.13 72 / 0.1)", border: "1px solid oklch(55% 0.13 72 / 0.3)" }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Baseline walkthroughs scheduled within 48 hours of enrollment</p>
+                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Your portfolio’s transformation starts within 48 hours of enrollment</p>
                 <p className="text-sm" style={{ color: "oklch(38% 0.03 60)" }}>
-                  Every month without a documented baseline is a month of condition history that cannot be recovered — and a weaker position at refinancing, sale, or any legal review. Members who enroll today have every property on the calendar before the week is out.
+                  The gap between where your portfolio is now and where it needs to be closes the moment your baselines are on the calendar. Every month before that is a month of property history you can never recover — and a weaker position at refinancing, sale, or any legal review.
                 </p>
               </div>
             </div>
@@ -638,21 +638,21 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             </div>
             {/* Right: what's in the report */}
             <div>
-              <div className="hp-overline">What You Receive</div>
+              <div className="hp-overline">What Your Portfolio Walks Away With</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                A documented portfolio record.<br />Not a checklist.
+                A record that grows<br />with every property.
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every visit generates a written report with photos, condition ratings, and prioritized findings — timestamped and stored permanently in your account. This is institutional-grade documentation for a private portfolio. Shareable with your lender, accountant, or insurer on demand.
+                Today, most private portfolios have no documentation trail. After your first visit, each property does. After a year, you have a complete condition history. After five years, you walk into any lender, insurance, or legal conversation with the most comprehensive portfolio record that has ever existed for your properties.
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Baseline walkthrough with photos", why: "Full condition record per property before any dispute, claim, or sale" },
-                  { label: "Prioritized findings with cost estimates", why: "Clear scope and budget across your entire portfolio" },
-                  { label: "Property Score (0–100) updated each visit", why: "Quantified asset condition — tracked over time per property" },
-                  { label: "Seasonal visit reports", why: "Timestamped record of every system, every visit, every property" },
-                  { label: "Annual portfolio health report", why: "Lender-ready — shareable with your accountant, lender, or attorney" },
-                  { label: "Move-out documentation baseline", why: "Pre-established condition record — your strongest position in any deposit dispute" },
+                  { label: "Baseline walkthrough with photos", why: "You go from no documentation to a complete condition record per property" },
+                  { label: "Prioritized findings with cost estimates", why: "You go from reactive repair calls to a managed scope with a budget" },
+                  { label: "Property Score updated each visit", why: "You go from guessing to tracking condition improvement in real time" },
+                  { label: "Seasonal visit reports", why: "You go from hoping to having proof of every visit, every property, every season" },
+                  { label: "Annual portfolio health report", why: "You go from unprepared to walking into any lender conversation ready" },
+                  { label: "Move-out documentation baseline", why: "You go from vulnerable to having the strongest position in any deposit dispute" },
                 ].map((row) => (
                   <div key={row.label} className="flex gap-3 rounded-lg px-4 py-3" style={{ background: "oklch(97% 0.01 80)", border: "1px solid oklch(88% 0.02 80)" }}>
                     <span style={{ color: "oklch(45% 0.12 155)", flexShrink: 0, marginTop: "2px" }}>✓</span>
@@ -671,7 +671,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── STAT BUBBLES ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="hp-overline">The Portfolio Case</div>
+          <div className="hp-overline">The Gap You’re Closing</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {PM_STATS.map((s, i) => (
               <button
@@ -704,33 +704,32 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── FRAMEWORK — dark green ── */}
       <section className="py-16 px-4 section-green">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>The Framework</div>
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Your Portfolio’s Arc</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-6">
-            PROTECT → DOCUMENT → RETAIN
+            PROTECT → DOCUMENT → ADVANCE
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            The 360° Portfolio Plan is built around the three outcomes that matter to a serious property owner:
-            maintaining asset condition, building a verifiable record, and reducing the cost of ownership over time.
+            Three outcomes. One continuous arc. You go from unmanaged properties with no documentation trail, to a fully maintained portfolio with a verifiable record, to a position of strength at every future transaction. We are the guide. You are the one who arrives.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
                 phase: "PROTECT",
                 icon: "🛡️",
-                title: "Maintain Asset Condition",
-                body: "Quarterly visits address the specific demands of the Pacific Northwest climate before they become deferred maintenance. Your technician executes, documents, and flags anything that requires a larger repair — with a scope and estimate ready to authorize.",
+                title: "Your Properties Are Maintained",
+                body: "Before the 360° Plan, deferred maintenance accumulates invisibly. After enrollment, your technician visits each property on a set schedule, executes, and documents. Nothing falls through the cracks — because we are watching every property in your portfolio.",
               },
               {
                 phase: "DOCUMENT",
                 icon: "📋",
-                title: "Build a Verifiable Record",
-                body: "Every visit generates a timestamped report with photos, condition ratings, and findings. This record satisfies habitability documentation requirements at the city, state, and federal level — and is lender-ready for refinancing, sale, or insurance review.",
+                title: "Your Record Is Built",
+                body: "Every visit generates a timestamped report with photos, condition ratings, and findings. Over time, you hold the most complete documentation trail your portfolio has ever had — lender-ready, legally defensible, and shareable in one click.",
               },
               {
-                phase: "RETAIN",
+                phase: "ADVANCE",
                 icon: "📈",
-                title: "Reduce the Cost of Ownership",
-                body: "Well-maintained properties see 23% lower turnover. Issues caught early cost a fraction of deferred repairs. And a documented portfolio commands a premium at sale or refinancing. The membership pays for itself before year two.",
+                title: "Your Portfolio Arrives",
+                body: "The portfolio you have in five years — documented, maintained, with a verifiable condition history per property — is a fundamentally different set of assets than the one you have today. You walk into every future transaction from a position of strength.",
               },
             ].map((p) => (
               <div key={p.phase} className="rounded-lg p-6" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
@@ -749,7 +748,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── SEASONAL VISITS ── */}
       <section className="py-16 px-4 section-white">
         <div className="max-w-5xl mx-auto">
-          <div className="hp-overline">PNW-Specific Service</div>
+          <div className="hp-overline">Your Portfolio, Managed Year-Round</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
             Four Visits. Fully Managed.
           </h2>
@@ -815,7 +814,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── SAVINGS STATS ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="hp-overline">The Return</div>
+          <div className="hp-overline">The Difference It Makes</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black mb-6" style={{ color: "oklch(22% 0.07 155)" }}>
             What a Managed Portfolio Returns
           </h2>
@@ -843,7 +842,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── GOOGLE REVIEWS — above portfolio calculator ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>From Portfolio Owners</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
             What Portfolio Members Say
           </h2>
@@ -1514,7 +1513,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── WORK PHOTOS — PM-relevant ── */}
       <section className="py-14 px-4 section-cream">
         <div className="max-w-5xl mx-auto">
-          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Our Work</div>
+          <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>The Work We Do</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
             Real Jobs. Real Results.
           </h2>
@@ -1541,7 +1540,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── FAQ ── */}
       <section className="py-16 px-4 section-white">
         <div className="max-w-3xl mx-auto">
-          <div className="hp-overline">Common Questions</div>
+          <div className="hp-overline">Before You Enroll</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
             Landlord FAQ
           </h2>
@@ -1605,16 +1604,16 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── FINAL CTA ── */}
       <section className="py-20 px-4 section-green text-center">
         <div className="max-w-2xl mx-auto">
-          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Ready to Manage Your Portfolio Properly?</div>
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Your Portfolio Has No Guide. Yet.</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
-            You manage the returns.<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>We manage the properties.</span>
+            Right now, your properties are unmanaged.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>That changes the day you enroll.</span>
           </h2>
           <p className="text-lg mb-8" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            Join Portland metro and SW Washington property owners who have replaced reactive repair calls with a fully managed stewardship program — documented, lender-ready, and handled.
+            Your baseline walkthroughs are on the calendar within 48 hours. From that day forward, your technician knows every property, tracks every system, and handles what needs handling — while your portfolio’s record grows and its position at every future transaction strengthens.
           </p>
           <a href="#calculator" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
-            Build My Portfolio Plan →
+            Start My Portfolio’s Transformation →
           </a>
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
             Annual membership from $588/property · No contracts · Cancel anytime
