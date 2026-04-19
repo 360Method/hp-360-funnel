@@ -142,9 +142,12 @@ const FAQS = [
     q: "Is this available outside Portland/SW Washington?",
     a: "Currently the 360° Method is delivered in the Portland metro and SW Washington area. We're expanding regionally — join the waitlist for your area at the bottom of this page.",
   },
-  {
-    q: "Do member discounts apply to labor bank tasks too?",
+  { q: "Do member discounts apply to labor bank tasks too?",
     a: "No — and here's why that's actually better for you. Labor bank credit is pre-paid cash you can spend on any handyman task at full rate, with no minimum job size. Member discounts apply to out-of-scope work billed separately — repairs that go beyond what your labor bank covers. So on a $1,200 repair, you'd apply your labor bank first, then receive the member discount on any remaining balance. You're never paying full retail on either category.",
+  },
+  {
+    q: "Is this a licensed home inspection?",
+    a: "No — and that distinction matters. The 360° Method is a proactive maintenance service, not a licensed home inspection. Our technicians document visible and accessible conditions at the time of each visit and generate a written report with photos and recommended actions. This documentation is designed to support your maintenance records, help you stay ahead of repairs, and protect your home's value over time. It does not replace a licensed home inspector, structural engineer, or specialist for major assessments. Handy Pioneers is not liable for pre-existing conditions that were not visible, accessible, or detectable during a visit. Full scope is detailed in our Terms & Conditions.",
   },
 ];
 
@@ -1039,6 +1042,10 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
             Enroll Today →
           </a>
+          <p className="mt-4 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.38)", lineHeight: 1.55 }}>
+            The 360° Method is a proactive maintenance service — not a licensed home inspection. Reports document visible, accessible conditions at the time of each visit and do not replace a licensed inspector or structural engineer.{" "}
+            <a href="/terms" className="underline hover:text-white transition-colors" style={{ color: "oklch(100% 0 0 / 0.45)" }}>Full terms apply.</a>
+          </p>
           {onGoToMultifamily && (
             <div className="mt-6">
               <button

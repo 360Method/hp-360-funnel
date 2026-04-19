@@ -1580,6 +1580,10 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               q: "What materials are billed separately on a turnover?",
               a: "Materials that stay in the unit are billed separately at cost plus a standard markup. This includes paint, primer, caulk, grout, hardware, light fixtures, blinds, outlet covers, and similar consumables. Labor to install those materials is included in the package price. We provide an itemized materials receipt with every turnover invoice so you have documentation for your records.",
             },
+            {
+              q: "Is this a licensed property inspection?",
+              a: "No — and that distinction is important. The 360° Method is a proactive maintenance service, not a licensed property inspection. Our technicians document visible and accessible conditions at the time of each visit and generate a written report with photos and recommended actions. This documentation is designed to support your maintenance records, demonstrate proactive care to tenants and lenders, and help you stay ahead of costly repairs. It does not replace a licensed home inspector, structural engineer, or specialist for major assessments. Handy Pioneers is not liable for pre-existing conditions that were not visible, accessible, or detectable during a visit. Full scope is in our Terms & Conditions.",
+            },
           ].map((faq, i) => (
             <button
               key={i}
@@ -1615,8 +1619,12 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           <a href="#calculator" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
             Build My Portfolio Plan →
           </a>
-           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
+          <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
             Starting at $59/mo per property · No contracts · Cancel anytime
+          </p>
+          <p className="mt-3 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.35)", lineHeight: 1.55 }}>
+            The 360° Method is a proactive maintenance service — not a licensed property inspection. Reports document visible, accessible conditions at the time of each visit and do not replace a licensed inspector or structural engineer.{" "}
+            <a href="/terms" className="underline hover:text-white transition-colors" style={{ color: "oklch(100% 0 0 / 0.45)" }}>Full terms apply.</a>
           </p>
         </div>
       </section>

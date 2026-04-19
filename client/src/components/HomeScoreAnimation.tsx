@@ -347,6 +347,9 @@ function ReportModal({ onClose, variant }: { onClose: () => void; variant: "home
           <div style={{ background: "#f9fafb", borderRadius: "8px", padding: "0.75rem 1rem", fontSize: "0.75rem", color: "#374151", lineHeight: 1.6, marginBottom: "0.5rem" }}>
             <strong style={{ color: HP_GREEN }}>Technician Notes:</strong> Overall this home is well-maintained for its age. Primary concern is the deck ledger board — address before next rainy season. Crawl space moisture within acceptable range but warrants monitoring. All on-site work completed during this visit is documented in the service log.
           </div>
+          <div style={{ background: "#fefce8", border: "1px solid #fbbf24", borderRadius: "8px", padding: "0.65rem 0.9rem", fontSize: "0.72rem", color: "#78350f", lineHeight: 1.55, marginBottom: "0.6rem" }}>
+            <strong style={{ color: "#92400e" }}>Important:</strong> The 360° Method is a proactive maintenance service — not a licensed home inspection. Reports document conditions visible and accessible at the time of each visit. This documentation does not replace a licensed home inspector, structural engineer, or specialist for major assessments. Handy Pioneers is not liable for pre-existing conditions that were not visible or detectable during a visit. <a href="/terms" style={{ color: "#92400e", textDecoration: "underline" }}>Full terms apply.</a>
+          </div>
           <div style={{ fontSize: "0.7rem", color: "#9ca3af", textAlign: "center" }}>
             Sample report for illustration only · Actual reports stored securely in your member portal · © 2025 Handy Pioneers LLC
           </div>
