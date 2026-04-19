@@ -218,27 +218,27 @@ const PM_SEASONS = [
 
 const PM_STATS = [
   {
-    icon: "📋",
+    icon: "📊",
     stat: "34%",
-    label: "of small landlords have no maintenance system",
-    title: "The Reactive Trap",
-    body: "A 2024 survey by the National Apartment Association found that 34% of independent landlords (1–4 units) operate entirely reactively — no scheduled inspections, no preventive maintenance, no documentation. The result: higher tenant turnover, larger repair bills, and personal liability exposure when habitability issues go undetected.",
+    label: "of private landlords operate with zero maintenance system",
+    title: "The Undocumented Portfolio Risk",
+    body: "A 2024 National Apartment Association survey found that 34% of independent property owners (1–4 units) operate entirely reactively — no scheduled walkthroughs, no preventive maintenance, no condition records. For a portfolio owner, that is not just an operational gap. It is a liability position: no documentation means no defense in a habitability dispute, no leverage at refinancing, and no record at sale.",
     source: "National Apartment Association, 2024",
   },
   {
-    icon: "🔄",
+    icon: "📉",
     stat: "$3,800",
-    label: "avg. cost per unit turnover",
-    title: "Turnover Is Your Biggest Expense",
-    body: "The average cost to turn a rental unit — cleaning, paint, carpet, minor repairs, and vacancy loss — runs $3,800–$6,200 in the Portland metro. Properties with documented proactive maintenance see 23% lower turnover rates because tenants stay longer in well-maintained units and issues are caught before they become tenant complaints. Based on HP portfolio member data, 2023–2025 (n=31 properties, 2-year comparison). Full methodology available on request.",
+    label: "median cost per unit turnover in the Portland metro",
+    title: "Vacancy Is a Portfolio Expense",
+    body: "The median cost to turn a rental unit — cleaning, paint, carpet, minor repairs, and vacancy loss — runs $3,800–$6,200 in the Portland metro. Properties with documented proactive maintenance programs see 23% lower turnover. Tenants stay longer in well-managed properties, and issues are resolved before they become complaints or lease terminations. Based on HP portfolio member data, 2023–2025 (n=31 properties). Full methodology available on request.",
     source: "Buildium Rental Industry Report, 2024; HP field data 2023–2025",
   },
   {
-    icon: "⚖️",
+    icon: "🏗️",
     stat: "3-Layer",
     label: "compliance exposure: city, state & federal",
-    title: "You're Legally Required to Maintain",
-    body: "WA RCW 59.18 (Residential Landlord-Tenant Act) requires landlords to maintain fit and habitable premises — failure is grounds for rent withholding or lease termination. Clark County and Vancouver, WA enacted a Rental Registration Program (effective January 2026) requiring annual property registration and documented maintenance records. Portland's Rental Housing Registration Program requires annual registration and habitability compliance. A documented, third-party maintenance program is your strongest legal defense at all three levels.",
+    title: "Documentation Is Your Legal Defense",
+    body: "WA RCW 59.18 requires property owners to maintain fit and habitable premises — failure is grounds for rent withholding or lease termination. Clark County and Vancouver, WA enacted a Rental Registration Program (effective January 2026) requiring annual registration and documented maintenance records. Portland's Rental Housing Registration Program has the same requirement. A third-party, timestamped maintenance record is your strongest position at all three levels.",
     source: "WA RCW 59.18; Clark County Rental Registration (2026); Portland Rental Housing Registration",
   },
 ];
@@ -532,19 +532,18 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               alt="360°"
               className="w-5 h-5 object-contain"
             />
-            <span>360° Portfolio Plan — For Property Managers &amp; Small Landlords</span>
+            <span>360° Portfolio Plan — For Property Owners &amp; Portfolio Investors</span>
           </div>
 
           <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6">
-            Your tenants notice<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>what you've been ignoring.</span><br />
-            The 360° Method fixes that.
+            You manage the returns.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>We manage the properties.</span>
           </h1>
 
           <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            We walk every property, score every system, and hand you a documented report — then visit four times a year to keep that score climbing and your liability documented.
-            Proactive property maintenance — done for you — starting at{" "}
-            <strong className="text-white">$59/mo per property</strong>.
+            The 360° Portfolio Plan is institutional-grade property stewardship at private-owner scale. Baseline walkthroughs, quarterly visits, lender-ready documentation, and a named technician who knows every property in your portfolio. From{" "}
+            <strong className="text-white">$588/year per property</strong>{" "}
+            <span style={{ fontSize: "0.85em", opacity: 0.7 }}>($49/mo on Annual)</span>.
           </p>
 
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
@@ -556,7 +555,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
 
           {/* Homeowner redirect prompt — visible on all screen sizes */}
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 rounded-lg px-5 py-3 mx-auto max-w-sm sm:max-w-none" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
-            <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>🏠 Own your home personally, not as a rental?</span>
+            <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>Own your primary residence, not a rental portfolio?</span>
             <button
               onClick={onGoHome}
               className="text-sm font-bold transition-colors"
@@ -567,7 +566,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
-            {["Licensed & Insured", "Habitability-Compliant Documentation", "1-Year Labor Guarantee", "Priority Scheduling Available"].map((b) => (
+            {["Licensed & Insured", "Lender-Ready Documentation", "1-Year Labor Guarantee", "Dedicated Portfolio Technician"].map((b) => (
               <span key={b} className="flex items-center gap-1.5">
                 <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
               </span>
@@ -584,14 +583,14 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             <div>
               <div className="hp-overline">The 360° Property Score</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                Every property gets a score.<br />
-                <span style={{ color: "oklch(55% 0.13 72)" }}>Your portfolio gets documented.</span>
+                Every property has a score.<br />
+                <span style={{ color: "oklch(55% 0.13 72)" }}>Your portfolio has a record.</span>
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every 360° enrollment starts with a <strong>full baseline walkthrough</strong> of each property — exterior, common areas, roof, drainage, and all major systems. We photograph everything, flag every risk, and assign each property an initial score.
+                Every enrollment begins with a <strong>full baseline walkthrough</strong> of each property — exterior, common areas, roof, drainage, and all major systems. We photograph every finding, assign a condition rating to each system, and establish each property's initial score.
               </p>
               <p className="text-base leading-relaxed mb-8" style={{ color: "oklch(38% 0.03 60)" }}>
-                After each seasonal visit, the score updates. You have a timestamped, lender-ready record of every property's condition — before any tenant dispute, insurance claim, or refinancing conversation.
+                After each seasonal visit, the score updates. You hold a timestamped, lender-ready condition record for every property in your portfolio — ready for any conversation with a lender, insurer, or buyer.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
@@ -608,9 +607,9 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
               </div>
               {/* Urgency block */}
               <div className="rounded-lg px-5 py-4" style={{ background: "oklch(55% 0.13 72 / 0.1)", border: "1px solid oklch(55% 0.13 72 / 0.3)" }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>⏱ Start the clock on your portfolio's history</p>
+                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Baseline walkthroughs scheduled within 48 hours of enrollment</p>
                 <p className="text-sm" style={{ color: "oklch(38% 0.03 60)" }}>
-                  Members who enroll today get baseline walkthroughs scheduled within 48 hours. Every month without documentation is a month of exposure — and a weaker position in any tenant dispute, insurance claim, or lender review.
+                  Every month without a documented baseline is a month of condition history that cannot be recovered — and a weaker position at refinancing, sale, or any legal review. Members who enroll today have every property on the calendar before the week is out.
                 </p>
               </div>
             </div>
@@ -641,19 +640,19 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             <div>
               <div className="hp-overline">What You Receive</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                A real report. Not a checklist.
+                A documented portfolio record.<br />Not a checklist.
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every visit generates a written report with photos, findings, and repair estimates — timestamped and stored in your account. This is documented proof of each property's condition, ready for any conversation with a lender, insurer, or tenant.
+                Every visit generates a written report with photos, condition ratings, and prioritized findings — timestamped and stored permanently in your account. This is institutional-grade documentation for a private portfolio. Shareable with your lender, accountant, or insurer on demand.
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Baseline walkthrough with photos", why: "Establishes condition before any dispute, claim, or habitability review" },
-                  { label: "Prioritized repair list with cost estimates", why: "Know what to fix first across your whole portfolio" },
-                  { label: "Property Score (0–100) updated each visit", why: "Track improvement over time — see your investment working" },
-                  { label: "Seasonal visit reports", why: "Timestamped proof of proactive maintenance per property" },
-                  { label: "Annual portfolio health report", why: "Lender-ready, shareable with your accountant or property manager" },
-                  { label: "Move-out documentation baseline", why: "Pre-established condition record protects you in security deposit disputes" },
+                  { label: "Baseline walkthrough with photos", why: "Full condition record per property before any dispute, claim, or sale" },
+                  { label: "Prioritized findings with cost estimates", why: "Clear scope and budget across your entire portfolio" },
+                  { label: "Property Score (0–100) updated each visit", why: "Quantified asset condition — tracked over time per property" },
+                  { label: "Seasonal visit reports", why: "Timestamped record of every system, every visit, every property" },
+                  { label: "Annual portfolio health report", why: "Lender-ready — shareable with your accountant, lender, or attorney" },
+                  { label: "Move-out documentation baseline", why: "Pre-established condition record — your strongest position in any deposit dispute" },
                 ].map((row) => (
                   <div key={row.label} className="flex gap-3 rounded-lg px-4 py-3" style={{ background: "oklch(97% 0.01 80)", border: "1px solid oklch(88% 0.02 80)" }}>
                     <span style={{ color: "oklch(45% 0.12 155)", flexShrink: 0, marginTop: "2px" }}>✓</span>
@@ -672,7 +671,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── STAT BUBBLES ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="hp-overline">The Cost of Reactive Management</div>
+          <div className="hp-overline">The Portfolio Case</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {PM_STATS.map((s, i) => (
               <button
@@ -710,28 +709,28 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             PROTECT → DOCUMENT → RETAIN
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            The 360° Portfolio Plan is built around the three things that matter most to a small landlord:
-            keeping your properties in rentable condition, staying legally protected, and keeping good tenants longer.
+            The 360° Portfolio Plan is built around the three outcomes that matter to a serious property owner:
+            maintaining asset condition, building a verifiable record, and reducing the cost of ownership over time.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
                 phase: "PROTECT",
                 icon: "🛡️",
-                title: "Stop Problems Before Tenants Do",
-                body: "Four seasonal visits catch the issues that become tenant complaints, habitability violations, and emergency repair calls. We document everything — you have proof of proactive maintenance before any dispute arises.",
+                title: "Maintain Asset Condition",
+                body: "Quarterly visits address the specific demands of the Pacific Northwest climate before they become deferred maintenance. Your technician executes, documents, and flags anything that requires a larger repair — with a scope and estimate ready to authorize.",
               },
               {
                 phase: "DOCUMENT",
                 icon: "📋",
-                title: "Build a Legal & Financial Record",
-                body: "Every visit generates a written report with photos, findings, and repair estimates. This record satisfies habitability documentation requirements at the city, state, and federal level — supports insurance claims, local rental registration compliance, and is lender-ready for refinancing or sale.",
+                title: "Build a Verifiable Record",
+                body: "Every visit generates a timestamped report with photos, condition ratings, and findings. This record satisfies habitability documentation requirements at the city, state, and federal level — and is lender-ready for refinancing, sale, or insurance review.",
               },
               {
                 phase: "RETAIN",
-                icon: "🤝",
-                title: "Keep Good Tenants Longer",
-                body: "Tenants stay in well-maintained properties. A $59/mo maintenance plan per property costs less than one month of vacancy. Our data shows maintained properties see 23% lower turnover — that's thousands back in your pocket annually.",
+                icon: "📈",
+                title: "Reduce the Cost of Ownership",
+                body: "Well-maintained properties see 23% lower turnover. Issues caught early cost a fraction of deferred repairs. And a documented portfolio commands a premium at sale or refinancing. The membership pays for itself before year two.",
               },
             ].map((p) => (
               <div key={p.phase} className="rounded-lg p-6" style={{ background: "oklch(100% 0 0 / 0.08)" }}>
@@ -752,12 +751,11 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
         <div className="max-w-5xl mx-auto">
           <div className="hp-overline">PNW-Specific Service</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(22% 0.07 155)" }}>
-            Four Visits. Zero Tenant Complaints.
+            Four Visits. Fully Managed.
           </h2>
           <p className="text-center max-w-xl mx-auto mb-4" style={{ color: "oklch(50% 0.02 60)" }}>
-            Every task is calibrated to Portland and SW Washington's climate — moss-prone roofs, clay soil drainage,
-            Douglas Fir needle accumulation, and freeze-thaw cycles. Exterior visits cover all properties.
-            Interior visits are an optional add-on per occupied door.
+            Every task is calibrated to the Pacific Northwest's specific demands — moss-prone roofs, clay soil drainage,
+            Douglas Fir needle accumulation, and freeze-thaw cycles. Your technician handles scheduling, access coordination, and documentation. You receive the report.
           </p>
           <div className="flex justify-center gap-4 mb-8 text-sm">
             <span className="flex items-center gap-1.5 font-semibold" style={{ color: "oklch(22% 0.07 155)" }}>
@@ -817,15 +815,15 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── SAVINGS STATS ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="hp-overline">The Math</div>
+          <div className="hp-overline">The Return</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black mb-6" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Does a Portfolio Membership Return?
+            What a Managed Portfolio Returns
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              { label: "Avg. repair caught early vs. ignored", value: "$3,200", sub: "per incident" },
-              { label: "Lower turnover rate in maintained properties", value: "23%", sub: "vs. reactive landlords" },
-              { label: "Avg. annual return on membership", value: "8.1×", sub: "vs. cost" },
+              { label: "Median value of issues resolved before escalation", value: "$3,200", sub: "per incident" },
+              { label: "Lower turnover in documented, maintained portfolios", value: "23%", sub: "vs. unmanaged" },
+              { label: "Median annual return on membership", value: "8.1×", sub: "vs. annual fee" },
             ].map((stat, i) => (
               <div key={i} className="hp-card text-center">
                 <div className="text-3xl font-black font-display" style={{ color: "oklch(65% 0.15 72)" }}>
@@ -847,7 +845,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
         <div className="max-w-4xl mx-auto">
           <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Property Owners Say
+            What Portfolio Members Say
           </h2>
           {/* PM Testimonial */}
           <div className="hp-card mb-8 max-w-2xl mx-auto">
@@ -861,7 +859,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                   <span className="text-xs ml-1" style={{ color: "oklch(55% 0.02 60)" }}>Google Review</span>
                 </div>
                 <p className="text-sm leading-relaxed mb-3" style={{ color: "oklch(35% 0.03 255)" }}>
-                  &ldquo;My favorite handyman in Vancouver. Prompt quality work at a discount price. Marcin is skilled in many different trades and makes owning a rental property hands off and easy. I am no longer burdened with any repairs small or large and he has saved me a lot of time and headaches. 10/10&rdquo;
+                  &ldquo;Marcin makes owning a rental property completely hands off. I am no longer burdened with any repairs small or large. Skilled across many trades, prompt, and the quality of work is excellent. He has saved me a significant amount of time and money. 10/10.&rdquo;
                 </p>
                 <div className="text-xs font-bold" style={{ color: "oklch(22% 0.07 155)" }}>Bryce — Vancouver, WA</div>
                 <div className="text-xs" style={{ color: "oklch(55% 0.02 60)" }}>Rental property owner · Verified Google review</div>
@@ -883,8 +881,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
             Priced Per Property — Not Per Unit
           </h2>
           <p className="text-center max-w-2xl mx-auto mb-3" style={{ color: "oklch(50% 0.02 60)" }}>
-            A fourplex exterior is not four times the work of a single-family home — it's a similar structure with more doors inside.
-            We price the exterior scope fairly, then add interior visits per occupied door as an optional add-on.
+            A fourplex exterior is not four times the scope of a single-family home. We price the exterior and common area work as a flat retainer per property, then add interior visits per occupied door as an optional add-on.
           </p>
 
           {/* Cadence toggle */}
@@ -1608,19 +1605,19 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
       {/* ── FINAL CTA ── */}
       <section className="py-20 px-4 section-green text-center">
         <div className="max-w-2xl mx-auto">
-          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Ready to Protect Your Portfolio?</div>
+          <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>Ready to Manage Your Portfolio Properly?</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
-            Stop managing maintenance. Start managing returns.
+            You manage the returns.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>We manage the properties.</span>
           </h2>
           <p className="text-lg mb-8" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            Join Portland and SW Washington landlords who've replaced reactive repair calls with a proactive system
-            that protects their properties, satisfies their tenants, and documents their compliance.
+            Join Portland metro and SW Washington property owners who have replaced reactive repair calls with a fully managed stewardship program — documented, lender-ready, and handled.
           </p>
           <a href="#calculator" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
             Build My Portfolio Plan →
           </a>
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
-            Starting at $59/mo per property · No contracts · Cancel anytime
+            Annual membership from $588/property · No contracts · Cancel anytime
           </p>
           <p className="mt-3 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.35)", lineHeight: 1.55 }}>
             The 360° Method is a proactive maintenance service — not a licensed property inspection. We work in tandem with inspectors: they identify, we maintain and document. Reports do not replace a licensed inspector or structural engineer.{" "}

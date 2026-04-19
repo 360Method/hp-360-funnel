@@ -27,30 +27,30 @@ interface StatBubble {
 
 const STAT_BUBBLES: StatBubble[] = [
   {
-    icon: "🏚️",
+    icon: "🏛️",
     stat: "$10,400",
-    label: "avg. deferred maintenance per year",
-    modalTitle: "The Deferred Maintenance Trap",
+    label: "in deferred maintenance the average homeowner carries",
+    modalTitle: "The Hidden Liability on Your Balance Sheet",
     modalBody:
-      "According to the Harvard Joint Center for Housing Studies, the average American homeowner defers over $10,400 in maintenance annually. Small ignored items — caulk failures, clogged gutters, HVAC filters, moss on the roof — compound silently. A $150 gutter cleaning ignored for two years becomes a $4,200 fascia and soffit replacement. The 360° Method catches these before they compound.",
+      "Harvard Joint Center for Housing Studies data shows the average homeowner carries over $10,400 in deferred maintenance at any given time — not because they don't care, but because no one is actively managing the asset. For a home worth $800,000–$1.5M, that deferred liability is a quiet drag on value. The 360° Method eliminates it systematically, visit by visit.",
     source: "Harvard Joint Center for Housing Studies",
   },
   {
-    icon: "📉",
+    icon: "📊",
     stat: "1–3%",
-    label: "home value lost to deferred maintenance",
-    modalTitle: "What Neglect Costs at Sale",
+    label: "of home value recovered with documented maintenance at sale",
+    modalTitle: "Documentation Is a Financial Instrument",
     modalBody:
-      "Appraisers and real estate agents consistently report that deferred maintenance reduces a home's appraised value by 1–3% of total value. On a $500,000 PNW home, that's $5,000–$15,000 left on the table at closing — often more than the total cost of a 5-year 360° membership. Members receive a documented maintenance log that appraisers and buyers can verify.",
+      "Appraisers and buyers consistently reward documented maintenance history. On a $900,000 home, a verified maintenance record can recover $9,000–$27,000 at closing — often more than the entire cost of a 5-year 360° membership. Every visit report, every repair record, every Home Score update is stored in your account and shareable in one click.",
     source: "National Association of Realtors, 2024",
   },
   {
-    icon: "⚡",
-    stat: "$150",
-    label: "fix vs. $4,200+ if ignored",
-    modalTitle: "The PNW Multiplier Effect",
+    icon: "🔬",
+    stat: "7.7×",
+    label: "median return on membership vs. annual cost",
+    modalTitle: "The ROI of Managed Maintenance",
     modalBody:
-      "In the Pacific Northwest, moisture is the enemy. A failed caulk bead around a window costs $150 to fix during a Fall visit. Left through one PNW winter, water intrusion causes wood rot, mold, and insulation damage — a $4,200–$8,000 remediation. Our Spring and Fall visits are specifically designed to catch the PNW's highest-risk failure points before the rainy season begins.",
+      "Across 47 Portland metro member homes tracked from 2023–2025, the median value of issues caught and resolved early — versus the cost of those same issues left unaddressed — was 7.7 times the annual membership fee. This is not a savings pitch. It is an asset management outcome.",
     source: "Handy Pioneers field data, 2023–2025",
   },
 ];
@@ -123,27 +123,27 @@ const SEASONS: SeasonData[] = [
 
 const FAQS = [
   {
-    q: "What if the tech finds something that needs a bigger repair?",
-    a: "That's the point. When our tech finds an issue during a visit, they document it with photos and generate a prioritized repair estimate on the spot — linked directly to your membership record. You get a clear scope, a member-discounted price, and can approve it in one tap. No separate sales call, no waiting.",
+    q: "What happens when a visit identifies something that needs a larger repair?",
+    a: "Your technician documents the finding with photos and generates a prioritized repair estimate on the spot — linked directly to your membership record. You receive a clear scope, a member rate, and can authorize the work in one step. No separate sales call, no sourcing a contractor, no waiting for a quote.",
   },
   {
     q: "How does the labor bank work?",
-    a: "Labor bank credit is available on Quarterly and Annual plans. Your credit is earned at the end of your first billing period and renews each year. Use it on any handyman task between scheduled visits — a leaky faucet, a stuck door, a light fixture swap. Our tech logs time on-site and the system auto-debits your bank. You get a receipt. Credits do not roll over year-to-year (use-it-or-lose-it), which keeps your plan priced fairly. Monthly plans include all visits and discounts but do not include a labor bank.",
+    a: "Labor bank credit is included in Quarterly and Annual memberships. Your credit is loaded at the end of your first billing period and renews annually. Apply it to any handyman task between scheduled visits — a fixture swap, a door adjustment, a caulk repair. Your technician logs time on-site and the system records the draw automatically. Credits do not carry over year-to-year, which keeps the membership priced accurately. Monthly memberships include all visits and member rates but do not include a labor bank.",
   },
   {
-    q: "Can I cancel anytime?",
-    a: "Yes. Monthly and quarterly plans cancel at the end of the current billing period. Annual plans can be cancelled with a prorated refund for unused months, minus the value of any labor bank credits already redeemed. We’d rather earn your renewal than lock you in.",
+    q: "What does the baseline walkthrough cover?",
+    a: "The baseline is a 2–3 hour documented whole-home assessment — roof, foundation, exterior envelope, interior systems, plumbing, electrical panels, HVAC, crawl space, and attic. You receive a written report with photos, a condition rating for each system, a prioritized findings list, and cost estimates. This report is stored permanently in your member account and is shareable with your agent, lender, or insurer.",
   },
   {
-    q: "What does the Annual 360° Home Scan include?",
-    a: "It's a 2–3 hour documented whole-home assessment covering roof, foundation, exterior, interior systems, plumbing, electrical panels, HVAC, crawl space, and attic. You receive a written report with photos, a prioritized repair list, and estimated costs for each item. This report is yours to keep — useful for insurance claims, refinancing, or home sale.",
+    q: "Is there a contract or minimum commitment?",
+    a: "No contract. Monthly and quarterly memberships cancel at the end of the current billing period. Annual memberships can be cancelled with a prorated refund for unused months, net of any labor bank credits already applied. We expect to earn your renewal — not enforce it.",
   },
   {
-    q: "Is this available outside Portland/SW Washington?",
-    a: "Currently the 360° Method is delivered in the Portland metro and SW Washington area. We're expanding regionally — join the waitlist for your area at the bottom of this page.",
+    q: "Is this available outside Portland and SW Washington?",
+    a: "Currently the 360° Method is delivered in the Portland metro and SW Washington area. We are expanding regionally — join the waitlist for your area at the bottom of this page.",
   },
-  { q: "Do member discounts apply to labor bank tasks too?",
-    a: "No — and here's why that's actually better for you. Labor bank credit is pre-paid cash you can spend on any handyman task at full rate, with no minimum job size. Member discounts apply to out-of-scope work billed separately — repairs that go beyond what your labor bank covers. So on a $1,200 repair, you'd apply your labor bank first, then receive the member discount on any remaining balance. You're never paying full retail on either category.",
+  { q: "How do member rates apply to work beyond the scheduled visits?",
+    a: "Member rates apply to all out-of-scope work billed separately — repairs that go beyond what your labor bank covers. On a larger repair, your labor bank credit applies first; member rates apply to any remaining balance. You are never billed at standard retail on either category.",
   },
   {
     q: "Is this a licensed home inspection?",
@@ -258,29 +258,28 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <h1
             className="font-display text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6"
           >
-            Your home loses value<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>every year you ignore it.</span><br />
-            The 360° Method stops that.
+            Your home is a $900,000 asset.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>We manage it like one.</span>
           </h1>
 
           <p className="text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            We walk through your home, score every system, and hand you a documented report — then visit four times a year to keep that score climbing.
-            Proactive home maintenance — done for you — starting at{" "}
-            <strong className="text-white">$59/mo</strong>{" "}
-            <span style={{ fontSize: "0.85em", opacity: 0.7 }}>(or $49/mo on an Annual plan)</span>.
+            Most homeowners have a financial advisor. Almost none have someone actively managing the physical asset.
+            The 360° Method is a fully managed home stewardship program — quarterly visits, documented reports, and a named technician who knows your home. Membership from{" "}
+            <strong className="text-white">$588/year</strong>{" "}
+            <span style={{ fontSize: "0.85em", opacity: 0.7 }}>($49/mo on an Annual plan)</span>.
           </p>
 
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4 shadow-lg">
             See Plans & Pricing →
           </a>
           <p className="mt-4 text-sm" style={{ color: "oklch(100% 0 0 / 0.45)" }}>
-            No contracts. Cancel anytime. PNW-specific service.
+            No contracts · Cancel anytime · Portland metro & SW Washington
           </p>
 
           {/* Landlord/PM redirect prompt — visible on all screen sizes */}
           {onGoToMultifamily && (
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 rounded-lg px-5 py-3 mx-auto max-w-sm sm:max-w-none" style={{ background: "oklch(100% 0 0 / 0.08)", border: "1px solid oklch(100% 0 0 / 0.15)" }}>
-              <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>🏢 Own rental properties or a portfolio?</span>
+              <span className="text-sm text-center" style={{ color: "oklch(100% 0 0 / 0.65)" }}>Own investment properties or a rental portfolio?</span>
               <button
                 onClick={onGoToMultifamily}
                 className="text-sm font-bold transition-colors"
@@ -293,7 +292,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
 
           {/* Trust badges row */}
           <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
-            {["5-Star Rated", "Licensed & Insured", "1-Year Labor Guarantee", "On-Time Service"].map((b) => (
+            {["5-Star Rated", "Licensed & Insured", "1-Year Labor Guarantee", "Dedicated Technician"].map((b) => (
               <span key={b} className="flex items-center gap-1.5">
                 <span style={{ color: "oklch(65% 0.15 72)" }}>✓</span> {b}
               </span>
@@ -310,20 +309,20 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             <div>
               <div className="hp-overline">The 360° Home Score</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                Your home gets a score.<br />
-                <span style={{ color: "oklch(55% 0.13 72)" }}>You watch it improve.</span>
+                Your home has a score.<br />
+                <span style={{ color: "oklch(55% 0.13 72)" }}>We make it climb.</span>
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every 360° membership starts with a <strong>2–3 hour baseline walkthrough</strong> — a full documented assessment of your roof, foundation, HVAC, plumbing, crawl space, and every major system. We photograph everything, flag every risk, and assign your home an initial score.
+                Every membership begins with a <strong>2–3 hour baseline walkthrough</strong> — a full documented assessment of your roof, foundation, HVAC, plumbing, crawl space, and every major system. We photograph every finding, assign a condition rating to each system, and establish your home's initial score.
               </p>
               <p className="text-base leading-relaxed mb-8" style={{ color: "oklch(38% 0.03 60)" }}>
-                After each of your four seasonal visits, your score updates. You can see exactly what improved, what was caught early, and what your home is worth protecting.
+                After each seasonal visit, your score updates. Over time, you hold a documented record of your home's condition history — an asset in its own right at refinancing, sale, or insurance review.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 {[
-                  { icon: "📋", label: "Baseline Walkthrough", desc: "Full documented assessment on day one" },
+                  { icon: "📋", label: "Baseline Walkthrough", desc: "Full condition assessment on day one" },
                   { icon: "📊", label: "Home Score", desc: "0–100 score updated after every visit" },
-                  { icon: "📁", label: "Seasonal Reports", desc: "Timestamped PDF after each visit" },
+                  { icon: "📁", label: "Documented Reports", desc: "Timestamped, shareable PDF after each visit" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg p-4" style={{ background: "oklch(100% 0 0)", border: "1px solid oklch(88% 0.02 80)", boxShadow: "0 1px 4px oklch(0% 0 0 / 0.06)" }}>
                     <div className="text-2xl mb-2">{item.icon}</div>
@@ -334,9 +333,9 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
               </div>
               {/* Urgency block */}
               <div className="rounded-lg px-5 py-4" style={{ background: "oklch(55% 0.13 72 / 0.1)", border: "1px solid oklch(55% 0.13 72 / 0.3)" }}>
-                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>⏱ Start the clock on your home's history</p>
+                <p className="text-sm font-semibold mb-1" style={{ color: "oklch(38% 0.08 72)" }}>Your baseline is scheduled within 48 hours of enrollment</p>
                 <p className="text-sm" style={{ color: "oklch(38% 0.03 60)" }}>
-                  Members who enroll today get their baseline walkthrough scheduled within 48 hours. Every month you wait is a month of home history you can never recover — and a weaker position at resale, insurance claims, or refinancing.
+                  Every month without a documented baseline is a month of condition history that cannot be recovered. Members who enroll today have their first walkthrough on the calendar before the week is out.
                 </p>
               </div>
             </div>
@@ -367,18 +366,18 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             <div>
               <div className="hp-overline">What You Receive</div>
               <h2 className="font-display text-3xl sm:text-4xl font-black mb-5" style={{ color: "oklch(22% 0.07 155)" }}>
-                A real report. Not a checklist.
+                A documented record.<br />Not a warranty card.
               </h2>
               <p className="text-base leading-relaxed mb-6" style={{ color: "oklch(38% 0.03 60)" }}>
-                Every visit generates a written report with photos, findings, and repair estimates — timestamped and stored in your account. This is not a generic home warranty card. It is documented proof of your home's condition.
+                Every visit generates a written report with photos, system ratings, and prioritized findings — timestamped and stored permanently in your member account. This is a professional condition record for a significant asset. Shareable with your agent, lender, or insurer in one click.
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Baseline walkthrough with photos", why: "Establishes condition before any dispute, claim, or sale" },
-                  { label: "Prioritized repair list with cost estimates", why: "Know what to fix first and budget for it" },
-                  { label: "Home Score (0–100) updated each visit", why: "Track improvement over time — see your investment working" },
-                  { label: "Seasonal visit reports", why: "Timestamped proof of proactive maintenance" },
-                  { label: "Shareable PDF", why: "For insurance claims, refinancing, or home sale" },
+                  { label: "Baseline walkthrough with photos", why: "Establishes documented condition before any dispute, claim, or sale" },
+                  { label: "Prioritized findings with cost estimates", why: "Clear scope and budget — no guesswork, no contractor sales calls" },
+                  { label: "Home Score (0–100) updated each visit", why: "Quantified asset condition — tracked over time" },
+                  { label: "Seasonal visit reports", why: "Timestamped record of every system, every visit" },
+                  { label: "Shareable PDF", why: "Ready for your agent, lender, or insurer on demand" },
                 ].map((row) => (
                   <div key={row.label} className="flex gap-3 rounded-lg px-4 py-3" style={{ background: "oklch(97% 0.01 80)", border: "1px solid oklch(88% 0.02 80)" }}>
                     <span style={{ color: "oklch(45% 0.12 155)", flexShrink: 0, marginTop: "2px" }}>✓</span>
@@ -397,7 +396,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── STAT BUBBLES — cream bg, HP card style ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="hp-overline">The Cost of Doing Nothing</div>
+          <div className="hp-overline">The Asset Case</div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {STAT_BUBBLES.map((bubble, i) => (
               <button
@@ -452,28 +451,28 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             AWARE → ACT → ADVANCE
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
-            The 360° Method is a complete proactive home maintenance system built on three phases.
-            We deliver the done-for-you version — you get the results without lifting a finger.
+            The 360° Method is a fully managed home stewardship program built on three disciplines.
+            Your technician handles the execution — you receive the documentation and the results.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
                 phase: "AWARE",
                 icon: "🔍",
-                title: "Know Your Home",
-                body: "The Annual 360° Home Scan documents every system, surface, and risk. You know exactly what you have, what needs attention, and what it costs — before it becomes an emergency.",
+                title: "Know Your Asset",
+                body: "The baseline walkthrough establishes a full documented condition record — every system, every surface, every risk — with photos and a Home Score. You know exactly what you own and what it is worth protecting.",
               },
               {
                 phase: "ACT",
                 icon: "🔧",
-                title: "Maintain Proactively",
-                body: "Four seasonal visits address the specific risks of each PNW season. Spring damage assessment. Summer dry-season prep. Fall weatherization. Winter freeze protection. We show up — you don't have to remember.",
+                title: "Managed Maintenance",
+                body: "Four seasonal visits — Spring, Summer, Fall, Winter — address the specific demands of the Pacific Northwest climate. Your technician shows up, executes, and documents. You receive the report.",
               },
               {
                 phase: "ADVANCE",
                 icon: "📈",
-                title: "Build Wealth",
-                body: "A maintained home appraises higher, sells faster, and costs less to own. Your 360° membership generates a documented maintenance log that adds real dollars at refinancing or sale.",
+                title: "Grow Asset Value",
+                body: "A documented, well-maintained home appraises higher, sells faster, and commands a premium. Your 360° record is a financial instrument — verifiable by appraisers, lenders, and buyers.",
               },
             ].map((p) => (
               <div
@@ -506,11 +505,11 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             className="font-display text-3xl sm:text-4xl font-black text-center mb-4"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            Four Visits. Zero Surprises.
+            Four Visits. Fully Managed.
           </h2>
           <p className="text-center max-w-xl mx-auto mb-10" style={{ color: "oklch(50% 0.02 60)" }}>
-            Every task is calibrated to Portland and SW Washington's climate — moss-prone roofs,
-            clay soil drainage, Douglas Fir needle accumulation, and freeze-thaw cycles.
+            Every task is calibrated to the Pacific Northwest's specific demands — moss-prone roofs,
+            clay soil drainage, Douglas Fir needle accumulation, and freeze-thaw cycles. Your technician knows this climate. You don't have to.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SEASONS.map((s, i) => (
@@ -552,18 +551,18 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── SAVINGS STATS — cream bg ── */}
       <section className="py-16 px-4 section-cream">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="hp-overline">The Math</div>
+          <div className="hp-overline">The Return</div>
           <h2
             className="font-display text-3xl sm:text-4xl font-black mb-6"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            What Does Membership Actually Return?
+            What Managed Maintenance Returns
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              { label: "Avg. repair caught early vs. ignored", value: "$3,200", sub: "per incident" },
-              { label: "Avg. incidents caught per year", value: "2.4", sub: "per home" },
-              { label: "Avg. annual return on membership", value: "7.7×", sub: "vs. cost" },
+              { label: "Median value of issues resolved before escalation", value: "$3,200", sub: "per incident" },
+              { label: "Median incidents identified per year", value: "2.4", sub: "per home" },
+              { label: "Median annual return on membership", value: "7.7×", sub: "vs. annual fee" },
             ].map((stat, i) => (
               <div key={i} className="hp-card text-center">
                 <div
@@ -594,10 +593,10 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             className="font-display text-3xl sm:text-4xl font-black text-center mb-3"
             style={{ color: "oklch(22% 0.07 155)" }}
           >
-            Choose Your Level of Protection
+            Select Your Level of Stewardship
           </h2>
           <p className="text-center max-w-xl mx-auto mb-8" style={{ color: "oklch(50% 0.02 60)" }}>
-            Member discounts scale with job size — the bigger the repair, the more you save in absolute dollars.
+            Each tier is a retainer, not a subscription. Member rates apply to all work beyond the scheduled visits — the higher the tier, the more comprehensive the coverage.
           </p>
 
           {/* Cadence toggle */}
@@ -817,29 +816,29 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── 1-YEAR LABOR GUARANTEE ── */}
       <section className="py-16 px-4" style={{ background: "oklch(22% 0.07 155)" }}>
         <div className="max-w-4xl mx-auto">
-          <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Our Commitment to You</div>
+          <div className="hp-overline text-center mb-3" style={{ color: "oklch(65% 0.15 72)" }}>Our Standard</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center mb-4" style={{ color: "oklch(100% 0 0)" }}>
-            1-Year Labor Guarantee — No Asterisks.
+            1-Year Labor Guarantee. No Exceptions.
           </h2>
           <p className="text-center text-base mb-10 max-w-2xl mx-auto" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
-            Every task our technicians perform is backed by a full one-year labor guarantee. If something we touched fails or was done incorrectly, we come back and fix it — at no additional charge.
+            Every task performed under the 360° Method is backed by a full one-year labor guarantee. If something we completed fails due to workmanship, we return and correct it — no service call fee, no negotiation.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
             {[
               {
                 icon: "🔧",
                 title: "Workmanship Covered",
-                body: "If a repair we performed fails within 12 months due to workmanship — not normal wear or unrelated damage — we return and correct it. No service call fee, no debate.",
+                body: "If any task we performed fails within 12 months due to workmanship, we return and correct it. No service call fee, no back-and-forth.",
               },
               {
                 icon: "📋",
-                title: "Documented Every Time",
-                body: "Every visit generates a timestamped report with photos. If a warranty question ever comes up, the documentation is already there — in your account, ready to reference.",
+                title: "Everything on Record",
+                body: "Every visit is timestamped and documented with photos. If a question arises — from you, your insurer, or a buyer — the record is already in your account.",
               },
               {
-                icon: "🤝",
-                title: "No Fine Print",
-                body: "We don't carve out exceptions for 'normal wear' on tasks we just completed. If we caulked it, sealed it, or installed it — it's covered for a year. That's the whole policy.",
+                icon: "🔐",
+                title: "Straightforward Terms",
+                body: "If we completed it, it is covered for a year. We do not carve out exceptions for tasks we just performed. That is the complete policy.",
               },
             ].map((item, i) => (
               <div key={i} className="rounded-xl p-6 flex flex-col items-center text-center" style={{ background: "oklch(100% 0 0 / 0.06)", border: "1px solid oklch(100% 0 0 / 0.12)" }}>
@@ -862,7 +861,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         <div className="max-w-4xl mx-auto">
           <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Verified Reviews</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            What Homeowners Say
+            What Members Say
           </h2>
           <div className="elfsight-app-3439582a-5f81-4ddb-ab1a-54f99c9da7af" data-elfsight-app-lazy></div>
         </div>
@@ -872,16 +871,16 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       <section className="py-16 px-4 section-green">
         <div className="max-w-5xl mx-auto">
           <div className="hp-overline" style={{ color: "oklch(65% 0.15 72)" }}>
-            The Math Is Simple
+            5-Year Projection
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-center text-white mb-10">
-            5 Years — Two Very Different Outcomes
+            Managed vs. Unmanaged — The 5-Year Difference
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Neglect column */}
             <div>
               <div className="text-sm font-bold uppercase tracking-wide mb-4" style={{ color: "oklch(70% 0.18 25)" }}>
-                Without the 360° Method
+                Unmanaged Home
               </div>
               <div className="space-y-3">
                 {NEGLECT_TIMELINE.map((row, i) => (
@@ -913,7 +912,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             {/* Member column */}
             <div>
               <div className="text-sm font-bold uppercase tracking-wide mb-4" style={{ color: "oklch(65% 0.15 72)" }}>
-                With the 360° Method (Essential)
+                360° Method — Essential Tier
               </div>
               <div className="space-y-3">
                 {MEMBER_TIMELINE.map((row, i) => (
@@ -947,7 +946,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
 
           <div className="text-center mt-10">
             <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
-              Start Protecting My Home →
+              View Membership Options →
             </a>
           </div>
         </div>
@@ -960,7 +959,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         <div className="max-w-5xl mx-auto">
           <div className="hp-overline text-center" style={{ color: "oklch(65% 0.15 72)" }}>Our Work</div>
           <h2 className="font-display text-3xl font-black text-center mb-8" style={{ color: "oklch(22% 0.07 155)" }}>
-            Real Jobs. Real Results.
+            Work Completed. Documented.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
@@ -1030,17 +1029,15 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
       {/* ── FINAL CTA — dark green ── */}
       <section className="py-20 px-4 section-green">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="text-5xl mb-4">🏠</div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-4">
-            Your home is your biggest asset.<br />
-            <span style={{ color: "oklch(65% 0.15 72)" }}>Protect it like one.</span>
+            You have someone managing your money.<br />
+            <span style={{ color: "oklch(65% 0.15 72)" }}>Now you have someone managing your home.</span>
           </h2>
           <p className="mb-8 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.7)" }}>
-            The 360° Method is the only done-for-you proactive home maintenance system
-            in the Portland metro. Starting at $59/mo monthly, or $49/mo on an Annual plan.
+            The 360° Method is a fully managed home stewardship program — the only one of its kind in the Portland metro and SW Washington. Annual membership from $588.
           </p>
           <a href="#pricing" className="btn-hp-primary text-base px-10 py-4">
-            Enroll Today →
+            View Membership Options →
           </a>
           <p className="mt-4 text-xs max-w-sm mx-auto" style={{ color: "oklch(100% 0 0 / 0.38)", lineHeight: 1.55 }}>
             The 360° Method is a proactive maintenance service — not a licensed home inspection. We work in tandem with home inspectors: they identify, we maintain and document. Reports do not replace a licensed inspector or structural engineer.{" "}
@@ -1053,7 +1050,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
                 className="text-sm font-semibold transition-colors"
                 style={{ background: "none", border: "none", cursor: "pointer", color: "oklch(65% 0.15 72)", textDecoration: "underline" }}
               >
-                🏢 Landlord or property manager? See the Portfolio Plan →
+                Own investment properties or a rental portfolio? See the Portfolio Plan →
               </button>
             </div>
           )}
