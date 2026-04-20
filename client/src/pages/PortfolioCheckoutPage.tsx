@@ -594,8 +594,8 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
               {/* Per-property line items */}
               <div className="px-5 py-4 space-y-3">
                 {editableProperties.map((prop, idx) => {
-                  const propPrice = getPropertyPrice(prop, cadence);
-                  const intPrice  = getInteriorPrice(prop, cadence);
+                  const propPrice = getPropertyPrice(prop, activeCadence);
+                  const intPrice  = getInteriorPrice(prop, activeCadence);
                   const tierLabel = prop.tier ? TIER_LABELS[prop.tier] : null;
                   const laborBank = prop.tier ? (TIER_LABOR_BANK[prop.tier] ?? 0) : 0;
                   return (
@@ -610,8 +610,8 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
                             {tierLabel ? ` · ${tierLabel}` : ""}
                           </p>
                           {laborBank > 0 && (
-                            <p className="text-xs mt-0.5 font-medium" style={{ color: cadence === "monthly" ? "oklch(55% 0.02 60)" : "oklch(55% 0.14 68)" }}>
-                              {cadence === "monthly"
+                            <p className="text-xs mt-0.5 font-medium" style={{ color: activeCadence === "monthly" ? "oklch(55% 0.02 60)" : "oklch(55% 0.14 68)" }}>
+                              {activeCadence === "monthly"
                                 ? `⏳ $${laborBank} labor bank — unlocks after 90 days`
                                 : `✅ $${laborBank} labor bank — day one`}
                             </p>
