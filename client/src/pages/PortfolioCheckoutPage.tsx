@@ -234,7 +234,7 @@ export default function PortfolioCheckoutPage({ properties: initialProperties, c
     }).catch(() => {});
 
     try {
-      const res = await fetch(`${API}/api/360/checkout`, {
+      const res = await fetch(`${API}/api/360/portfolio-checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
