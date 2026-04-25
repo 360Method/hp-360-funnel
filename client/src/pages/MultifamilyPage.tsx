@@ -415,6 +415,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
   const [customQuoteEmail, setCustomQuoteEmail] = useState("");
   const [customQuotePhone, setCustomQuotePhone] = useState("");
   const [customQuoteSubmitted, setCustomQuoteSubmitted] = useState(false);
+  const [customQuoteSmsConsent, setCustomQuoteSmsConsent] = useState(false);
 
   const handleEnroll = () => {
     if (hasCustom) {
@@ -440,7 +441,7 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
   };
 
   const handleCustomQuoteSubmit = () => {
-    if (!customQuoteName || !customQuoteEmail) return;
+    if (!customQuoteName || !customQuoteEmail || !customQuoteSmsConsent) return;
     const API = "https://pro.handypioneers.com/api/trpc";
     fetch(`${API}/threeSixty.portfolioAbandonedLead.capture`, {
       method: "POST",
@@ -1345,6 +1346,12 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                       className="w-full text-sm px-3 py-2.5 rounded-md"
                       style={{ background: "oklch(100% 0 0 / 0.1)", border: "1px solid oklch(100% 0 0 / 0.2)", color: "#fff" }}
                     />
+                    <p className="text-xs leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.55)" }}>
+                      By providing your phone number, you agree to receive text messages from Handy Pioneers including estimate-ready notifications, appointment reminders, project status updates, and occasional service-related offers. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. View our{" "}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(80% 0.12 72)", textDecoration: "underline" }}>Privacy Policy</a>{" "}
+                      and{" "}
+                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(80% 0.12 72)", textDecoration: "underline" }}>Terms</a>.
+                    </p>
                     <div className="text-xs rounded-md p-3" style={{ background: "oklch(100% 0 0 / 0.07)", color: "oklch(100% 0 0 / 0.6)" }}>
                       <strong className="text-white">Your portfolio:</strong>{" "}
                       {properties.map((p, i) => (
@@ -1352,14 +1359,30 @@ export default function MultifamilyPage({ onEnrollPortfolio, onGoHome }: Props) 
                       ))}
                     </div>
                   </div>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={customQuoteSmsConsent}
+                      onChange={(e) => setCustomQuoteSmsConsent(e.target.checked)}
+                      className="mt-0.5 flex-shrink-0 w-4 h-4 rounded"
+                      style={{ accentColor: "oklch(65% 0.15 72)" }}
+                    />
+                    <span className="text-xs leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.6)" }}>
+                      I agree to receive SMS text messages from Handy Pioneers at the phone number provided. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out. See{" "}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(80% 0.12 72)", textDecoration: "underline" }}>Privacy Policy</a>{" "}
+                      and{" "}
+                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(80% 0.12 72)", textDecoration: "underline" }}>Terms</a>.
+                    </span>
+                  </label>
+
                   <button
                     onClick={handleCustomQuoteSubmit}
-                    disabled={!customQuoteName || !customQuoteEmail}
+                    disabled={!customQuoteName || !customQuoteEmail || !customQuoteSmsConsent}
                     className="w-full py-4 text-base font-bold rounded-lg transition-colors"
                     style={{
-                      background: customQuoteName && customQuoteEmail ? "oklch(65% 0.15 72)" : "oklch(100% 0 0 / 0.2)",
+                      background: customQuoteName && customQuoteEmail && customQuoteSmsConsent ? "oklch(65% 0.15 72)" : "oklch(100% 0 0 / 0.2)",
                       color: "#fff", border: "none",
-                      cursor: customQuoteName && customQuoteEmail ? "pointer" : "not-allowed",
+                      cursor: customQuoteName && customQuoteEmail && customQuoteSmsConsent ? "pointer" : "not-allowed",
                       letterSpacing: "0.04em", textTransform: "uppercase",
                     }}
                   >

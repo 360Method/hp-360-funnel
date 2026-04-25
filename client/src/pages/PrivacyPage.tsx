@@ -79,10 +79,15 @@ export default function PrivacyPage() {
           <p>Stripe's privacy policy is available at <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(65% 0.15 72)" }}>stripe.com/privacy</a>.</p>
         </Section>
 
-        <Section title="6. SMS / Text Message Communications">
-          <p>If you provide your phone number at enrollment and consent to receive text messages, Handy Pioneers may send you SMS messages related to your subscription, including enrollment confirmations, visit scheduling, appointment reminders, visit reports, billing notifications, and responses to inquiries you initiate. Message frequency varies based on your subscription activity.</p>
-          <p><strong>Message and data rates may apply.</strong> You may opt out of SMS communications at any time by replying <strong>STOP</strong> to any message. After opting out, you will receive one final confirmation message and no further SMS messages will be sent. To request help, reply <strong>HELP</strong> to any message or contact us at (360) 544-9858 or help@handypioneers.com.</p>
-          <p>We do not share your phone number or SMS consent with third parties for marketing purposes. SMS opt-in data is not shared with any third party under any circumstances.</p>
+        <Section title="6. SMS / Text Messaging Communications">
+          <p>By providing your mobile phone number to Handy Pioneers — whether through our website booking form, contact form, baseline walkthrough request, membership signup, or by giving it to our team directly — you expressly consent to receive text messages (SMS) from Handy Pioneers at that number.</p>
+          <p><strong>What messages you will receive:</strong> appointment confirmations and reminders, estimate delivery and follow-up, scheduling coordination, project updates, invoice and payment notifications, customer service replies, and occasional service-related announcements.</p>
+          <p><strong>Message frequency:</strong> Message frequency varies based on your project activity and interactions with us.</p>
+          <p><strong>Message and data rates:</strong> Message and data rates may apply. Check with your mobile carrier for details.</p>
+          <p><strong>Opt-out:</strong> You can opt out of SMS messages at any time by replying <strong>STOP</strong> to any message you receive from us. After replying STOP, you will receive one final confirmation message and no further SMS messages will be sent.</p>
+          <p><strong>Help:</strong> Reply <strong>HELP</strong> to any message for assistance, or contact us at help@handypioneers.com.</p>
+          <p><strong>Carriers:</strong> Supported carriers include AT&amp;T, T-Mobile, Verizon, Sprint, U.S. Cellular, and all major U.S. mobile carriers. Carriers are not liable for delayed or undelivered messages.</p>
+          <p><strong>No sharing with third parties for marketing:</strong> Handy Pioneers will not share, sell, or transfer your mobile phone number or SMS opt-in data to any third party or affiliate for their marketing or promotional purposes. Phone numbers collected for SMS consent are used solely by Handy Pioneers to communicate with you.</p>
         </Section>
 
         <Section title="7. Visit Documentation and Photos">
