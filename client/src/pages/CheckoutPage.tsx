@@ -70,6 +70,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
   const [error, setError]           = useState<string | null>(null);
   const [zipError, setZipError]     = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "",
     address: "", city: "", state: "WA", zip: "",
@@ -83,7 +84,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreedToTerms) { setError("Please agree to the terms."); return; }
+    if (!agreedToTerms || !smsConsent) { setError("Please agree to the Terms & Conditions and SMS consent."); return; }
 
     // ZIP validation
     const zip = form.zip.trim();
@@ -335,6 +336,12 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
               <label className="block text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: M }}>Phone *</label>
               <input name="phone" type="tel" value={form.phone} onChange={handleChange} required
                 className="w-full rounded-md px-3 py-2 text-sm focus:outline-none" style={inputStyle} onFocus={focusAmber} onBlur={blurReset} />
+              <p className="text-xs leading-relaxed mt-2" style={{ color: "oklch(50% 0.02 60)" }}>
+                By providing your phone number, you agree to receive text messages from Handy Pioneers including estimate-ready notifications, appointment reminders, project status updates, and occasional service-related offers. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. View our{" "}
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: A, textDecoration: "underline" }}>Privacy Policy</a>{" "}
+                and{" "}
+                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" style={{ color: A, textDecoration: "underline" }}>Terms</a>.
+              </p>
             </div>
 
             <div>
@@ -401,12 +408,27 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
               </span>
             </label>
 
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={smsConsent}
+                onChange={(e) => setSmsConsent(e.target.checked)}
+                className="mt-0.5 flex-shrink-0 w-4 h-4 rounded accent-amber-600"
+              />
+              <span className="text-xs leading-relaxed" style={{ color: M }}>
+                I agree to receive SMS text messages from Handy Pioneers at the phone number provided. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out. See{" "}
+                <button type="button" onClick={() => window.open("/privacy-policy", "_blank", "width=800,height=600")} className="underline underline-offset-2 font-semibold transition-colors hover:opacity-70" style={{ color: G }}>Privacy Policy</button>{" "}
+                and{" "}
+                <button type="button" onClick={() => window.open("/terms-and-conditions", "_blank", "width=800,height=600")} className="underline underline-offset-2 font-semibold transition-colors hover:opacity-70" style={{ color: G }}>Terms</button>.
+              </span>
+            </label>
+
             <button
               type="submit"
-              disabled={loading || !agreedToTerms}
+              disabled={loading || !agreedToTerms || !smsConsent}
               className="w-full text-white font-bold py-3 rounded-md transition-all text-sm uppercase tracking-wide disabled:opacity-60"
               style={{ background: G }}
-              onMouseEnter={(e) => !loading && agreedToTerms && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
+              onMouseEnter={(e) => !loading && agreedToTerms && smsConsent && ((e.currentTarget as HTMLButtonElement).style.background = "oklch(30% 0.08 155)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = G)}
             >
               {loading ? (

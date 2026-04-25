@@ -89,14 +89,18 @@ export default function TermsPage() {
           <p>Custom upgrade turnovers (flooring replacement, full paint, appliance swap) are quoted separately. Contact us for a custom quote.</p>
         </Section>
 
-        <Section title="11. SMS Messaging Program">
-          <p><strong>Program Name:</strong> Handy Pioneers 360° Member Communications</p>
-          <p><strong>Program Description:</strong> By providing your mobile phone number at enrollment, you consent to receive SMS messages from Handy Pioneers related to your subscription, including enrollment confirmations, visit scheduling, appointment reminders, visit reports, billing notifications, and responses to inquiries you initiate.</p>
-          <p><strong>Message Frequency:</strong> Message frequency varies based on your subscription activity. You may receive up to 6 messages per service visit (scheduling, reminder, day-of confirmation, visit report, repair estimate if applicable, and follow-up).</p>
-          <p><strong>Message and Data Rates:</strong> Message and data rates may apply. Check with your mobile carrier for details.</p>
-          <p><strong>Opt-Out:</strong> Reply STOP to any message to opt out. You will receive one final confirmation and no further messages will be sent.</p>
-          <p><strong>Help:</strong> Reply HELP or contact us at (360) 544-9858 or help@handypioneers.com.</p>
-          <p>We do not share your phone number or SMS opt-in data with third parties for marketing purposes.</p>
+        <Section title="11. SMS / Text Messaging Terms">
+          <p>By providing your mobile phone number to Handy Pioneers, you agree to receive text messages (SMS) from us related to your service, including appointment reminders, estimates, scheduling, project updates, and customer service replies.</p>
+          <ul>
+            <li><strong>Consent:</strong> Providing your phone number through our booking form, contact form, or to our staff constitutes your express written consent to receive SMS messages from Handy Pioneers. Consent is not a condition of purchase.</li>
+            <li><strong>Frequency:</strong> Message frequency varies.</li>
+            <li><strong>Cost:</strong> Message and data rates may apply. Contact your mobile carrier for specifics on your plan.</li>
+            <li><strong>Opt-out:</strong> Reply <strong>STOP</strong> at any time to unsubscribe. You will receive one confirmation message and no further texts.</li>
+            <li><strong>Help:</strong> Reply <strong>HELP</strong> for support, or email help@handypioneers.com.</li>
+            <li><strong>Data handling:</strong> Mobile phone numbers and SMS opt-in information are never shared, sold, or transferred to third parties for marketing purposes. See our <a href="/privacy-policy" style={{ color: "oklch(65% 0.15 72)" }}>Privacy Policy</a> for full details.</li>
+            <li><strong>Service availability:</strong> SMS service is available on all major U.S. carriers. Carriers are not liable for delayed or undelivered messages.</li>
+            <li><strong>Changes:</strong> Handy Pioneers reserves the right to modify these SMS terms at any time. Continued use after modifications constitutes acceptance of the updated terms.</li>
+          </ul>
         </Section>
 
         <Section title="12. Warranty">
