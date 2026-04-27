@@ -583,6 +583,52 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
         </div>
       </section>
 
+      {/* ── ROADMAP SAMPLE — dark forest, single CTA to preview PDF ── */}
+      <section className="py-20 px-4 section-green">
+        <div className="max-w-3xl mx-auto text-center">
+          <div
+            className="hp-overline"
+            style={{ color: "oklch(78% 0.13 78)" }}
+          >
+            The Deliverable
+          </div>
+          <h2
+            className="font-display text-3xl sm:text-4xl font-black mb-4"
+            style={{ color: "oklch(96% 0.02 80)" }}
+          >
+            Every member receives a private 360° Roadmap
+          </h2>
+          <p
+            className="max-w-xl mx-auto mb-8 text-base sm:text-lg leading-relaxed"
+            style={{ color: "oklch(85% 0.04 80)" }}
+          >
+            A magazine-quality stewardship document for your property — every inspection
+            finding interpreted, organized into <em>now</em>, <em>soon</em>, and
+            <em> wait</em> horizons, with honest investment ranges. Read the
+            same roadmap a Handy Pioneers member receives.
+          </p>
+          <a
+            href="/sample-roadmap.pdf"
+            target="_blank"
+            rel="noopener"
+            className="inline-block px-8 py-4 rounded-lg font-bold tracking-wide uppercase text-sm transition-transform hover:scale-105"
+            style={{
+              background: "oklch(78% 0.13 78)",
+              color: "oklch(20% 0.07 155)",
+              boxShadow: "0 4px 16px oklch(0% 0 0 / 0.3)",
+            }}
+          >
+            Preview the Sample Roadmap
+          </a>
+          <p
+            className="text-xs mt-4"
+            style={{ color: "oklch(70% 0.04 80)" }}
+          >
+            10 pages · opens in a new tab · representative homeowner sample
+          </p>
+        </div>
+      </section>
+
       {/* ── PRICING — white bg ── */}
       <section id="pricing" className="py-20 px-4 section-white">
         <div className="max-w-5xl mx-auto">
