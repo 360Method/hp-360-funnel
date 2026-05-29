@@ -98,12 +98,10 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
     setLoading(true);
     setError(null);
 
-    const TIER_API_MAP: Record<string, string> = {
-      bronze: "exterior_shield",
-      silver: "full_coverage",
-      gold:   "max",
-    };
-    const apiTier = TIER_API_MAP[activeTier] ?? activeTier;
+    // Homeowner checkout sends the raw tier key (bronze|silver|gold) — this is
+    // the contract the backend threeSixty.checkout.createSession enforces and
+    // what STRIPE_PRICE_{BRONZE|SILVER|GOLD}_* resolve against. (The
+    // exterior_shield/full_coverage/max vocabulary is for PORTFOLIO checkout only.)
     const customer = {
       name: `${form.firstName} ${form.lastName}`.trim(),
       email: form.email,
@@ -121,7 +119,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
       body: JSON.stringify({
         event: "checkout_started",
         type: "homeowner",
-        data: { tier: apiTier, cadence: activeCadence, ...customer,
+        data: { tier: activeTier, cadence: activeCadence, ...customer,
           serviceAddress: form.address, serviceCity: form.city,
           serviceState: form.state, serviceZip: form.zip },
       }),
@@ -132,7 +130,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "homeowner", tier: apiTier, cadence: activeCadence,
+          type: "homeowner", tier: activeTier, cadence: activeCadence,
           customer, origin: window.location.origin,
         }),
       });
