@@ -36,7 +36,7 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${PRO_API}/api/trpc/threeSixty.createCheckoutSession`, {
+      const res = await fetch(`${PRO_API}/api/trpc/threeSixty.checkout.createSession`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,10 +46,10 @@ export default function CheckoutPage({ tier, cadence, onBack }: Props) {
             customerName: `${form.firstName} ${form.lastName}`,
             customerEmail: form.email,
             customerPhone: form.phone,
-            address: form.address,
-            city: form.city,
-            state: form.state,
-            zip: form.zip,
+            serviceAddress: form.address,
+            serviceCity: form.city,
+            serviceState: form.state,
+            serviceZip: form.zip,
             origin: window.location.origin,
           },
         }),
