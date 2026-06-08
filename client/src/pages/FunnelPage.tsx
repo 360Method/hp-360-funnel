@@ -448,7 +448,7 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
             The Framework
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-black text-white mb-6">
-            KNOW → MAINTAIN → ADVANCE
+            AWARE → ACT → ADVANCE
           </h2>
           <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "oklch(100% 0 0 / 0.75)" }}>
             Three phases. One continuous arc. You go from not knowing what you own, to having it maintained by someone who does, to watching its condition — and its value — improve over time. We are the guide. You are the one who arrives.
@@ -456,13 +456,13 @@ export default function FunnelPage({ onEnroll, onGoToMultifamily }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               {
-                phase: "KNOW",
+                phase: "AWARE",
                 icon: "🔍",
                 title: "You See Everything",
                 body: "Before the 360° Method, most homeowners are guessing. After your baseline walkthrough, you are not. Every system is rated, every risk is photographed, and your home has a score. You know exactly what you own.",
               },
               {
-                phase: "MAINTAIN",
+                phase: "ACT",
                 icon: "🔧",
                 title: "We Handle It",
                 body: "Four seasonal visits address the specific demands of the Pacific Northwest climate. Your technician shows up, executes, and documents. You receive the report. Nothing falls through the cracks — because we are watching.",
